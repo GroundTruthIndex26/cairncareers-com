@@ -1,0 +1,36 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cairncareers-com",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-08-01",
+  // Production is reachable only via the custom domain below, so the plain
+  // workers.dev URL stays off. But `preview_urls` defaults to matching
+  // `workers_dev`, so leaving it unset means every production `wrangler
+  // deploy` silently disables versioned preview URLs account-wide for this
+  // Worker — which breaks the *next* build's scripts/prerender.mjs, which
+  // needs a `wrangler versions upload` preview URL to crawl. Asserting both
+  // explicitly on every deploy keeps preview URLs on without exposing prod.
+  "workers_dev": false,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // Every marketing route is prerendered to its own index.html by
+    // scripts/prerender.mjs, so the SPA catch-all is not used for those
+    // routes — see ROUTES there, which must cover every route below or a
+    // missing file becomes a live 404.
+    //
+    // "404-page" serves dist/404.html for anything unmatched.
+    // "auto-trailing-slash" lets /contact resolve to /contact/index.html.
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  // Only /api/* is handled by worker/index.ts (the launch-notification
+  // endpoint); every other request is served directly from assets.
+  "run_worker_first": ["/api/*"],
+  "routes": [
+    { "pattern": "cairncareers.com", "custom_domain": true },
+    { "pattern": "www.cairncareers.com", "custom_domain": true }
+  ],
+  "observability": { "enabled": true }
+}

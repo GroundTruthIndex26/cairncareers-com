@@ -1,0 +1,143 @@
+/*
+ * Roadmap page — the "product demo" type system, shared with the
+ * dashboard-preview sample pages it's promoted from (Space Grotesk/Mono,
+ * not the site's IBM Plex identity). Kept deliberately distinct: it signals
+ * to a reader that they've stepped from marketing copy into a product demo.
+ */
+:root {
+  --rm-ink: #0b0b0b;
+  --rm-paper: #ece7d8;
+  --rm-paper2: #e4decb;
+  --rm-paper3: #dad3bd;
+  --rm-card: #ffffff;
+  --rm-lime: #c7f94b;
+  --rm-cyan: #1fe3e3;
+  --rm-magenta: #ff3d8b;
+  --rm-amber: #ffc53d;
+}
+.roadmap-page { color: var(--rm-ink); background-color: var(--rm-paper);
+  background-image: linear-gradient(rgba(11,11,11,.045) 1px,transparent 1px), linear-gradient(90deg,rgba(11,11,11,.045) 1px,transparent 1px);
+  background-size: 26px 26px;
+  font-family: "Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size: 15.5px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+.roadmap-page a { color: inherit; }
+.roadmap-page img, .roadmap-page svg { max-width: 100%; }
+.roadmap-page .dsp { font-family: "Archivo Black",Impact,"Arial Black",sans-serif; font-weight: 400; letter-spacing: -.01em; }
+.roadmap-page .mono { font-family: "Space Mono",ui-monospace,SFMono-Regular,Menlo,monospace; }
+
+.roadmap-page .hdr { position: sticky; top: 0; z-index: 50; background: var(--rm-lime); border-bottom: 3px solid var(--rm-ink); }
+.roadmap-page .hdr-in { max-width: 1180px; margin: 0 auto; padding: 0 20px; height: 74px; display: flex; align-items: center; gap: 18px; }
+.roadmap-page .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--rm-ink); flex: none; }
+.roadmap-page .mark { border: 2px solid var(--rm-ink); background: var(--rm-ink); padding: 2px; display: block; }
+.roadmap-page .brand .nm { line-height: 1; }
+.roadmap-page .brand .nm b { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-size: 1.32rem; }
+.roadmap-page .brand .nm span { font-family: "Space Mono",monospace; font-size: .6rem; font-weight: 700; letter-spacing: .18em; margin-left: 5px; text-transform: uppercase; }
+.roadmap-page .hdr nav { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; flex: 1; }
+.roadmap-page .hdr nav::-webkit-scrollbar { display: none; }
+.roadmap-page .hdr nav a { font-family: "Space Mono",monospace; font-size: .66rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; text-decoration: none; white-space: nowrap; padding: 5px 2px; border-bottom: 3px solid transparent; }
+.roadmap-page .hdr nav a:hover { border-bottom-color: var(--rm-ink); }
+.roadmap-page .hdr nav a.on { border-bottom-color: var(--rm-ink); }
+.roadmap-page .hdr .right { display: flex; align-items: center; gap: 10px; flex: none; }
+.roadmap-page .chip { font-family: "Space Mono",monospace; font-size: .6rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; border: 2px solid var(--rm-ink); background: var(--rm-ink); color: var(--rm-lime); padding: 5px 9px; text-decoration: none; }
+
+.roadmap-page .foot { border-top: 3px solid var(--rm-lime); background: var(--rm-ink); color: var(--rm-paper); padding: 40px 20px; }
+.roadmap-page .foot-in { max-width: 1180px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 26px; align-items: flex-end; }
+.roadmap-page .foot .tag { max-width: 44ch; font-size: .82rem; color: #b7b7b7; margin: 14px 0 0; line-height: 1.55; }
+.roadmap-page .foot .q { font-family: "Space Mono",monospace; font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; margin-top: 12px; }
+.roadmap-page .foot .q a { color: var(--rm-lime); text-decoration: none; }
+.roadmap-page .foot .links { font-family: "Space Mono",monospace; display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.roadmap-page .foot .links a { text-decoration: none; }
+.roadmap-page .foot .links a:hover { color: var(--rm-lime); text-decoration: underline; }
+@media (max-width: 640px) {
+  .roadmap-page .hdr-in { gap: 12px; }
+  .roadmap-page .hdr nav { gap: 12px; }
+}
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 34px 20px 0; }
+.stack { display: flex; flex-direction: column; gap: 34px; padding-bottom: 56px; }
+.eyebrow { font-family: "Space Mono",monospace; font-size: .68rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.chipbrow { display: inline-block; border: 2px solid var(--rm-ink); background: var(--rm-lime); padding: 4px 9px; box-shadow: 4px 4px 0 var(--rm-ink); }
+h1.t { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-size: 2.3rem; line-height: 1.02; letter-spacing: -.02em; margin: 16px 0 0; max-width: 22ch; }
+h2.t { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-size: 1.5rem; line-height: 1.06; letter-spacing: -.015em; margin: 10px 0 0; max-width: 26ch; }
+.lede { margin: 12px 0 0; max-width: 62ch; font-size: 1rem; color: #2a2a2a; }
+.sec { display: flex; flex-direction: column; gap: 16px; }
+.card { background: var(--rm-card); border: 3px solid var(--rm-ink); box-shadow: 6px 6px 0 var(--rm-ink); padding: 20px; }
+.g { display: grid; gap: 16px; }
+.g2 { grid-template-columns: 1fr 1fr; }
+.g4 { grid-template-columns: repeat(4,1fr); }
+.note { font-size: .86rem; color: #2a2a2a; }
+.mockbar { border: 3px solid var(--rm-ink); background: var(--rm-amber); padding: 10px 14px; font-family: "Space Mono",monospace; font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; box-shadow: 4px 4px 0 var(--rm-ink); }
+.pip { display: inline-block; font-family: "Space Mono",monospace; font-size: .6rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border: 2px solid var(--rm-ink); padding: 3px 8px; }
+.pip.lime { background: var(--rm-lime); } .pip.cy { background: var(--rm-cyan); } .pip.mg { background: var(--rm-magenta); }
+.row { display: flex; gap: 12px; padding: 12px 0; border-top: 2px solid var(--rm-ink); }
+.row:first-of-type { border-top: none; }
+.row .sq { width: 13px; height: 13px; border: 2.5px solid var(--rm-ink); flex: none; margin-top: 5px; }
+.row .tt { font-weight: 600; font-size: .95rem; line-height: 1.3; }
+.row .ss { font-size: .82rem; color: #3a3a3a; margin-top: 3px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border: 2.5px solid var(--rm-ink); background: var(--rm-lime); color: var(--rm-ink); padding: 11px 15px; font-family: "Space Mono",monospace; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; box-shadow: 4px 4px 0 var(--rm-ink); cursor: pointer; text-decoration: none; }
+.btn:hover { background: var(--rm-cyan); }
+.btn.ghost { background: var(--rm-card); }
+.btnrow { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.sources { border-top: 3px solid var(--rm-ink); margin-top: 10px; padding: 22px 0 40px; font-size: .8rem; line-height: 1.6; color: #2a2a2a; }
+.sources h4 { font-family: "Space Mono",monospace; font-size: .68rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 12px; }
+.sources ol { margin: 0; padding-left: 20px; }
+.sources a { color: #0b0b0b; border-bottom: 2px solid var(--rm-magenta); text-decoration: none; word-break: break-word; }
+
+/* The car moves smoothly along the route, then pivots over the rear tire for
+   a wheelie before settling level on the same route line. */
+.road { position: relative; height: 122px; overflow: hidden; isolation: isolate; }
+.road::after { content: ""; position: absolute; z-index: 1; left: 0; right: 0; bottom: 17px; height: 8px; border: 2px solid var(--rm-ink); border-radius: 999px; background: linear-gradient(90deg,var(--rm-cyan) 0 42%,var(--rm-lime) 42% 72%,var(--rm-magenta) 72% 100%); box-shadow: 4px 4px 0 var(--rm-ink); }
+.road::before { content: ""; position: absolute; z-index: 2; left: -96px; bottom: 37px; width: 62px; height: 38px; opacity: 0; background: radial-gradient(circle at 13px 26px,rgba(255,255,255,.96) 0 5px,transparent 6px),radial-gradient(circle at 26px 16px,rgba(255,255,255,.9) 0 8px,transparent 9px),radial-gradient(circle at 42px 25px,rgba(255,255,255,.84) 0 6px,transparent 7px),radial-gradient(circle at 53px 10px,rgba(255,255,255,.72) 0 4px,transparent 5px); filter: drop-shadow(2px 2px 0 rgba(11,11,11,.24)); }
+.roadlabel { position: absolute; z-index: 4; top: 6px; left: 2px; color: #3a3a3a; font-family: "Space Mono",monospace; font-size: .62rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.car { position: absolute; z-index: 3; bottom: 20px; left: -170px; width: 156px; transform-origin: 24% 74%; will-change: left,transform; }
+.road.go .car { animation: drive 8.4s linear forwards; }
+.road.go::before { animation: rear-smoke 8.4s linear forwards; }
+@keyframes drive {
+  0% { left: -170px; transform: rotate(0deg); }
+  30% { left: 3%; transform: rotate(0deg); }
+  56% { left: 27%; transform: rotate(0deg); }
+  76% { left: 56%; transform: rotate(0deg); }
+  88% { left: 72%; transform: rotate(0deg); }
+  91% { left: calc(100% - 188px); transform: rotate(0deg); }
+  94%, 97% { left: calc(100% - 188px); transform: rotate(-18deg); }
+  100% { left: calc(100% - 188px); transform: rotate(0deg); }
+}
+@keyframes rear-smoke {
+  0%, 90% { left: -96px; opacity: 0; transform: scale(.3) translateY(10px); }
+  93% { left: calc(100% - 205px); opacity: .7; transform: scale(.5) translateY(6px); }
+  96% { left: calc(100% - 202px); opacity: .95; transform: scale(1.05) translateY(-3px); }
+  98% { left: calc(100% - 198px); opacity: .55; transform: scale(1.35) translateY(-14px); }
+  100% { left: calc(100% - 194px); opacity: 0; transform: scale(1.6) translateY(-24px); }
+}
+.wheel { transform-box: fill-box; transform-origin: center; }
+.road.go .wheel { animation: spin .5s linear 16 forwards; }
+@keyframes spin { to { transform: rotate(5760deg); } }
+.termhead { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.termhead .mono-sub { font-family: "Space Mono",monospace; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #3a3a3a; }
+.stack > .sec:has(.termhead) { isolation: isolate; z-index: 0; position: relative; gap: 18px; margin: 6px -20px; padding: 24px 24px 28px 58px; border-block: 2px solid var(--rm-ink); background: rgba(255,255,255,.48); }
+.stack > .sec:has(.termhead)::before { content: ""; position: absolute; z-index: 0; top: -38px; bottom: -38px; left: 21px; width: 12px; background: linear-gradient(to bottom,var(--rm-cyan) 0 70%,var(--rm-lime) 70% 100%); box-shadow: 2px 0 0 var(--rm-ink),-2px 0 0 var(--rm-ink); }
+.stack > .sec:has(.termhead)::after { content: ""; position: absolute; z-index: 2; top: 20px; left: 11px; width: 32px; height: 32px; border: 3px solid var(--rm-ink); border-radius: 50%; background: var(--rm-lime); box-shadow: 4px 4px 0 var(--rm-ink),0 0 0 6px rgba(236,231,216,.92); }
+.stack > .sec:has(.termhead) > * { position: relative; z-index: 1; }
+.stack > .sec:nth-child(5):has(.termhead) { background: rgba(199,249,75,.2); }
+.stack > .sec:nth-child(7):has(.termhead) { background: rgba(31,227,227,.17); }
+.stack > .sec:nth-child(9):has(.termhead) { background: rgba(255,61,139,.12); }
+.stack > .sec:nth-child(7):has(.termhead)::after { background: var(--rm-cyan); }
+.stack > .sec:nth-child(9):has(.termhead)::after { background: var(--rm-magenta); }
+.stack > .sec:has(.termhead) .termhead .dsp { display: grid; place-items: center; width: 46px; height: 46px; border: 3px solid var(--rm-ink); background: #fffefa; box-shadow: 4px 4px 0 var(--rm-ink); line-height: 1; }
+.stack > .sec:nth-child(5):has(.termhead) .termhead .dsp { background: var(--rm-lime); }
+.stack > .sec:nth-child(7):has(.termhead) .termhead .dsp { background: var(--rm-cyan); }
+.stack > .sec:nth-child(9):has(.termhead) .termhead .dsp { background: var(--rm-magenta); }
+.stack > .sec:has(.termhead) .g.g4 > .mon:last-child { background: #fffefa; box-shadow: 8px 8px 0 var(--rm-ink); transform: translateY(-5px); }
+.stack > .sec:has(.termhead) + .sec { position: relative; margin: 0 -20px; padding: 11px 20px 14px 58px; background: repeating-linear-gradient(135deg,rgba(11,11,11,.04) 0 5px,transparent 5px 11px); border-block: 2px dashed var(--rm-ink); }
+.breakband { border: 3px dashed var(--rm-ink); background: var(--rm-paper2); padding: 16px 20px; }
+.stack > .sec:has(.termhead) + .sec .breakband { margin-left: 0; border-left-width: 12px; padding: 20px 22px; background: #f4f0e2; box-shadow: 4px 4px 0 rgba(11,11,11,.3); }
+.stack > .sec:has(.termhead) + .sec .breakband::after { content: "OFF-RAMP  ·  pause, reset, prepare"; display: block; margin-top: 12px; font-family: "Space Mono",monospace; font-size: .57rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #4d5047; }
+.stack > .sec:nth-child(7):has(.termhead) + .sec .breakband { background: #e8ff86; border-left-color: var(--rm-magenta); }
+
+@media (max-width: 640px) {
+  .road { height: 112px; }
+  .car { width: 128px; }
+}
+@media (max-width: 980px) { .g2, .g4 { grid-template-columns: 1fr; } h1.t { font-size: 1.85rem; } }
+@media (prefers-reduced-motion: reduce) { .car, .wheel, .road.go .car, .road.go .wheel, .road.go::before { animation: none !important; } .car { left: 12%; } .road::before { display: none; } }

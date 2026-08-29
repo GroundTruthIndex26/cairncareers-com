@@ -1,0 +1,198 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Network | CairnCareers Premium</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"><style>
+:root{
+  --ink:#0b0b0b; --paper:#ece7d8; --paper2:#e4decb; --paper3:#dad3bd; --card:#ffffff;
+  --lime:#c7f94b; --cyan:#1fe3e3; --magenta:#ff3d8b; --amber:#ffc53d;
+  --chrome1:#f5f8f9; --chrome2:#c2ced4; --chrome3:#8fa0a8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--ink); background-color:var(--paper);
+  background-image:linear-gradient(rgba(11,11,11,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(11,11,11,.045) 1px,transparent 1px);
+  background-size:26px 26px;
+  font-family:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size:15.5px; line-height:1.55; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+::selection{background:var(--lime); color:var(--ink)}
+:focus-visible{outline:3px solid var(--magenta); outline-offset:2px}
+a{color:inherit}
+img,svg{max-width:100%}
+.dsp{font-family:"Archivo Black",Impact,"Arial Black",sans-serif; font-weight:400; letter-spacing:-.01em}
+.mono{font-family:"Space Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.hard{box-shadow:6px 6px 0 var(--ink)}
+.hard-sm{box-shadow:4px 4px 0 var(--ink)}
+.hard-cyan{box-shadow:9px 9px 0 var(--cyan)}
+.hard-magenta{box-shadow:6px 6px 0 var(--magenta)}
+.hard-lime{box-shadow:6px 6px 0 var(--lime)}
+
+/* Header, carried over from the landing page in its scrolled state */
+.hdr{position:sticky; top:0; z-index:50; background:var(--lime); border-bottom:3px solid var(--ink)}
+.hdr-in{max-width:1180px; margin:0 auto; padding:0 20px; height:74px; display:flex; align-items:center; gap:18px}
+.brand{display:flex; align-items:center; gap:11px; text-decoration:none; color:var(--ink); flex:none}
+.mark{border:2px solid var(--ink); background:var(--ink); padding:2px; display:block}
+.brand .nm{line-height:1}
+.brand .nm b{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:1.32rem}
+.brand .nm span{font-family:"Space Mono",monospace; font-size:.58rem; font-weight:700; letter-spacing:.18em; margin-left:5px; text-transform:uppercase}
+.hdr nav{display:flex; gap:16px; overflow-x:auto; scrollbar-width:none; flex:1}
+.hdr nav::-webkit-scrollbar{display:none}
+.hdr nav a{font-family:"Space Mono",monospace; font-size:.66rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; text-decoration:none; white-space:nowrap; padding:5px 2px; border-bottom:3px solid transparent}
+.hdr nav a:hover{border-bottom-color:var(--ink)}
+.hdr nav a.on{border-bottom-color:var(--ink)}
+.hdr .right{display:flex; align-items:center; gap:10px; flex:none}
+.chip{font-family:"Space Mono",monospace; font-size:.6rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; border:2px solid var(--ink); background:var(--ink); color:var(--lime); padding:5px 9px}
+.ava{width:36px; height:36px; border:2.5px solid var(--ink); background:var(--cyan); display:grid; place-items:center; font-family:"Space Mono",monospace; font-weight:700; font-size:.78rem; box-shadow:3px 3px 0 var(--ink)}
+
+/* Layout */
+.wrap{max-width:1180px; margin:0 auto; padding:34px 20px 0}
+.stack{display:flex; flex-direction:column; gap:34px; padding-bottom:56px}
+.eyebrow{font-family:"Space Mono",monospace; font-size:.68rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase}
+.chipbrow{display:inline-block; border:2px solid var(--ink); background:var(--lime); padding:4px 9px; box-shadow:4px 4px 0 var(--ink)}
+h1.t{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:2.3rem; line-height:1.02; letter-spacing:-.02em; margin:16px 0 0; max-width:22ch}
+h2.t{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:1.5rem; line-height:1.06; letter-spacing:-.015em; margin:10px 0 0; max-width:26ch}
+h3.t{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:1.1rem; line-height:1.1; margin:0}
+.lede{margin:12px 0 0; max-width:62ch; font-size:1rem; color:#2a2a2a}
+.sec{display:flex; flex-direction:column; gap:16px}
+.card{background:var(--card); border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); padding:20px}
+.card.ink{background:var(--ink); color:var(--paper)}
+.card.lime{background:var(--lime)}
+.card.paper2{background:var(--paper2)}
+.card.chrome{background:linear-gradient(160deg,var(--chrome1),var(--chrome2) 55%,var(--chrome3)); box-shadow:9px 9px 0 var(--ink), inset 2px 2px 0 rgba(255,255,255,.8), inset -2px -2px 0 rgba(0,0,0,.22)}
+.g{display:grid; gap:16px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g-hero{grid-template-columns:1.4fr 1fr 1fr}
+
+/* Numbers */
+.big{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:4.2rem; line-height:.85; letter-spacing:-.03em}
+.mid{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:2.5rem; line-height:.9}
+.of{font-family:"Space Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-top:8px}
+.bar{height:14px; border:2.5px solid var(--ink); background:var(--paper3); margin:14px 0 10px; position:relative; overflow:hidden}
+.bar i{position:absolute; inset:0 auto 0 0; display:block}
+.note{font-size:.86rem; color:#2a2a2a}
+.tiny{font-family:"Space Mono",monospace; font-size:.68rem; color:#3a3a3a; margin-top:10px; line-height:1.5}
+sup{font-size:.42em; line-height:0; vertical-align:super; font-family:"Space Mono",monospace}
+sup a{color:inherit; font-weight:700; text-decoration:none; border-bottom:2px solid var(--magenta)}
+
+/* Tiles */
+.tiles{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+.tile{display:flex; flex-direction:column; text-decoration:none; color:var(--ink); background:var(--card); border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); padding:18px; transition:transform .1s linear, box-shadow .1s linear}
+.tile:hover{transform:translate(-3px,-3px); box-shadow:9px 9px 0 var(--ink); background:var(--lime)}
+.tile:active{transform:translate(2px,2px); box-shadow:3px 3px 0 var(--ink)}
+.tile .ic{width:46px; height:46px; border:2.5px solid var(--ink); display:grid; place-items:center; box-shadow:3px 3px 0 var(--ink); margin-bottom:14px}
+.tile .nm{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:1.05rem; line-height:1.1}
+.tile .ds{font-size:.85rem; color:#2a2a2a; margin-top:6px; line-height:1.4}
+.tile .mt{font-family:"Space Mono",monospace; font-size:.64rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-top:auto; padding-top:14px; border-top:2px solid var(--ink); display:flex; justify-content:space-between; gap:8px}
+
+/* Pips and rows */
+.pip{display:inline-block; font-family:"Space Mono",monospace; font-size:.6rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; border:2px solid var(--ink); padding:3px 8px}
+.pip.lime{background:var(--lime)} .pip.cy{background:var(--cyan)} .pip.mg{background:var(--magenta)} .pip.am{background:var(--amber)}
+.pip.gh{background:transparent}
+.row{display:flex; gap:12px; padding:12px 0; border-top:2px solid var(--ink)}
+.row:first-of-type{border-top:none}
+.row .sq{width:13px; height:13px; border:2.5px solid var(--ink); flex:none; margin-top:5px}
+.row .tt{font-weight:600; font-size:.95rem; line-height:1.3}
+.row .ss{font-size:.82rem; color:#3a3a3a; margin-top:3px}
+.kv{display:flex; justify-content:space-between; gap:12px; border-top:2px solid var(--ink); padding:10px 0; font-size:.9rem}
+.kv:first-of-type{border-top:none}
+.kv b{font-family:"Space Mono",monospace; font-weight:700}
+
+/* Buttons */
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; border:2.5px solid var(--ink); background:var(--lime); color:var(--ink); padding:11px 15px; font-family:"Space Mono",monospace; font-size:.72rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; box-shadow:4px 4px 0 var(--ink); cursor:pointer; text-decoration:none}
+.btn:hover{background:var(--cyan)}
+.btn:active{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink)}
+.btn.ghost{background:var(--card)}
+.btn.inkbtn{background:var(--ink); color:var(--lime); box-shadow:4px 4px 0 var(--magenta)}
+.btnrow{display:flex; gap:12px; flex-wrap:wrap; margin-top:16px}
+
+/* Footer */
+.foot{border-top:3px solid var(--lime); background:var(--ink); color:var(--paper); padding:40px 20px}
+.foot-in{max-width:1180px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:space-between; gap:26px; align-items:flex-end}
+.foot .tag{max-width:44ch; font-size:.82rem; color:#b7b7b7; margin:14px 0 0; line-height:1.55}
+.foot .q{font-family:"Space Mono",monospace; font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em; margin-top:12px}
+.foot .q a{color:var(--lime); text-decoration:none}
+.foot .links{font-family:"Space Mono",monospace; display:flex; flex-wrap:wrap; gap:8px 20px; font-size:.74rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em}
+.foot .links a{text-decoration:none}
+.foot .links a:hover{color:var(--lime); text-decoration:underline}
+
+/* Sources */
+.sources{border-top:3px solid var(--ink); margin-top:10px; padding:22px 0 40px; font-size:.8rem; line-height:1.6; color:#2a2a2a}
+.sources h4{font-family:"Space Mono",monospace; font-size:.68rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px}
+.sources ol{margin:0; padding-left:20px}
+.sources li{margin-bottom:7px}
+.sources a{color:#0b0b0b; border-bottom:2px solid var(--magenta); text-decoration:none; word-break:break-word}
+.mockbar{border:3px solid var(--ink); background:var(--amber); padding:10px 14px; font-family:"Space Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; box-shadow:4px 4px 0 var(--ink)}
+
+/* Toast */
+.toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(14px); background:var(--ink); color:var(--lime); border:3px solid var(--lime); font-family:"Space Mono",monospace; font-size:.74rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; padding:11px 18px; opacity:0; pointer-events:none; transition:.2s; z-index:80}
+.toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
+
+/* One button pattern sitewide plus the floating up arrow */
+.btn.ghost{background:var(--lime)}
+.btn.inkbtn{background:var(--lime);color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.btn:active{background:var(--cyan)}
+.totop{position:fixed;right:22px;bottom:22px;z-index:70;width:48px;height:48px;padding:0;display:none;font-size:1.05rem;line-height:1}
+.totop.show{display:inline-flex}
+
+/* Network page: shared route IDs lead the eye from each diagram node to its outreach card. */
+.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card{position:relative;padding-left:60px}
+.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card::before{position:absolute;left:18px;top:18px;display:grid;place-items:center;width:27px;height:27px;border:2px solid var(--ink);font-family:"Space Mono",monospace;font-size:.65rem;font-weight:700;letter-spacing:.04em;box-shadow:2px 2px 0 var(--ink)}
+.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card:nth-child(1)::before{content:"01";background:var(--lime)}
+.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card:nth-child(2)::before{content:"02";background:var(--magenta)}
+.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card:nth-child(3)::before{content:"03";background:var(--amber)}
+.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card:nth-child(1)>div:first-child>span:first-child::after,.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card:nth-child(2)>div:first-child>span:first-child::after,.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card:nth-child(3)>div:first-child>span:first-child::after{content:"Route 01";display:block;margin-top:4px;font-family:"Space Mono",monospace;font-size:.53rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#51615b}
+.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card:nth-child(2)>div:first-child>span:first-child::after{content:"Route 02";color:#9f2056}
+.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card:nth-child(3)>div:first-child>span:first-child::after{content:"Route 03";color:#76500a}
+@media (max-width:640px){.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card{padding-left:54px}.stack>.sec:nth-child(3) .g-split>div:nth-child(2)>.card::before{left:14px;top:16px}}
+
+
+/* Two-column split used on this page; collapses on small screens */
+.g-split{grid-template-columns:.9fr 1.1fr;align-items:start}
+
+@media (max-width:980px){
+  .g2,.g3,.g4,.g-hero,.tiles,.g-split{grid-template-columns:1fr}
+  h1.t{font-size:1.85rem}
+  .big{font-size:3.4rem}
+}
+@media (max-width:640px){
+  .hdr-in{gap:12px}
+  .hdr nav{gap:12px}
+  .hdr .right{gap:7px}
+  .hdr .right .btn{padding:8px 8px}
+  .hdr .chip{padding:5px 6px;letter-spacing:.06em}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style><link rel="icon" href="../brand/cairn-favicon.svg" type="image/svg+xml" sizes="any"><link rel="icon" href="../brand/cairn-favicon.svg" type="image/svg+xml" sizes="any"><style id="cairn-canonical-brand">
+.mark{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.mark img{display:block;width:36px;height:36px;object-fit:contain}
+.totop{position:fixed;right:22px;bottom:22px;z-index:70;width:48px;height:48px;padding:0;display:none;font-size:1.05rem;line-height:1}
+.totop.show{display:inline-flex}
+</style></head><body><header class="hdr"><div class="hdr-in"><a class="brand" href="../#top" aria-label="CairnCareers pricing"><span class="mark"><img src="../brand/cairn-icon.svg" width="36" height="36" alt="" aria-hidden="true"></span><span class="nm"><b>Cairn</b><span>Careers</span></span></a><nav aria-label="Dashboard sections"><a href="evidence.html">Evidence</a><a href="portfolio.html">Portfolio</a><a href="resume.html">Resume</a><a href="linkedin.html">LinkedIn</a><a href="network.html" class="on">Network</a><a href="interview.html">Interview</a><a href="careers.html">Careers</a><a href="roadmap.html">Roadmap</a><a href="cleanup.html">Clean-up</a></nav><div class="right"><a class="btn" href="../#dashboard-preview" style="padding:8px 12px;font-size:.62rem">Dashboard</a><a class="chip" href="../#pricing" style="text-decoration:none">Preorder now</a></div></div></header><div class="wrap"><div class="stack"><div><span class="eyebrow chipbrow">Warm paths</span><h1 class="t">The loose ties you already have are the ones that get people hired.</h1><p class="lede">A causal experiment across more than 20 million LinkedIn users found an inverted U. Moderately weak ties, the acquaintances you already have and undervalue, drive more job mobility than either close friends or strangers. This page finds exactly those and tells you what to say.<sup><a href="#src">1</a></sup></p></div><div class="mockbar">Sample data. These people and companies are invented.</div><div class="sec"><div class="g g-split"><div class="card" style="padding:10px;background:var(--ink)">
+<svg viewBox="0 0 420 340" width="100%" role="img" aria-label="Maya at the centre, two contacts who reach her target employers, and one path she still has to find.">
+  <rect x="0" y="0" width="420" height="340" fill="#0b0b0b"/>
+  <g stroke-width="3" fill="none" stroke-linecap="round">
+    <line x1="210" y1="170" x2="96" y2="76" stroke="#c7f94b"/>
+    <line x1="210" y1="170" x2="326" y2="72" stroke="#ff3d8b"/>
+    <line x1="326" y1="72" x2="374" y2="150" stroke="#ff3d8b" stroke-dasharray="3 8"/>
+    <line x1="210" y1="170" x2="310" y2="274" stroke="#c7f94b"/>
+    <line x1="210" y1="170" x2="108" y2="266" stroke="#ffc53d" stroke-dasharray="3 8"/>
+  </g>
+  <g font-family="Space Mono, monospace" font-size="10" font-weight="700" text-anchor="middle">
+    <g><rect x="26" y="140" width="82" height="30" fill="#0b0b0b" stroke="#c7f94b" stroke-width="2.5"/><text x="67" y="159" fill="#c7f94b">NORTHBEAM</text></g>
+    <g><rect x="336" y="136" width="66" height="30" fill="#0b0b0b" stroke="#ff3d8b" stroke-width="2.5"/><text x="369" y="155" fill="#ff3d8b">LUMEN</text></g>
+    <g><rect x="46" y="292" width="94" height="30" fill="#0b0b0b" stroke="#ffc53d" stroke-width="2.5"/><text x="93" y="311" fill="#ffc53d">VERDI LABS</text></g>
+  </g>
+  <g font-family="Space Mono, monospace" font-weight="700" text-anchor="middle">
+    <g><rect x="74" y="54" width="44" height="44" fill="#c7f94b" stroke="#ece7d8" stroke-width="2.5"/><text x="96" y="82" fill="#0b0b0b" font-size="14">PN</text></g>
+    <g><rect x="304" y="50" width="44" height="44" fill="#ff3d8b" stroke="#ece7d8" stroke-width="2.5"/><text x="326" y="78" fill="#0b0b0b" font-size="14">MB</text></g>
+    <g><rect x="290" y="254" width="40" height="40" fill="#c7f94b" stroke="#ece7d8" stroke-width="2.5"/><text x="310" y="280" fill="#0b0b0b" font-size="13">JL</text></g>
+    <g><rect x="88" y="246" width="40" height="40" fill="none" stroke="#ffc53d" stroke-width="2.5" stroke-dasharray="4 4"/><text x="108" y="273" fill="#ffc53d" font-size="16">?</text></g>
+    <g font-size="8"><rect x="47" y="47" width="21" height="15" fill="#c7f94b" stroke="#ece7d8" stroke-width="1.5"/><text x="57.5" y="57.5" fill="#0b0b0b">01</text></g>
+    <g font-size="8"><rect x="352" y="43" width="21" height="15" fill="#ff3d8b" stroke="#ece7d8" stroke-width="1.5"/><text x="362.5" y="53.5" fill="#0b0b0b">02</text></g>
+    <g font-size="8"><rect x="62" y="239" width="21" height="15" fill="#ffc53d" stroke="#ece7d8" stroke-width="1.5"/><text x="72.5" y="249.5" fill="#0b0b0b">03</text></g>
+    <g><rect x="178" y="138" width="64" height="64" fill="#1fe3e3" stroke="#ece7d8" stroke-width="3"/>
+       <text x="210" y="168" fill="#0b0b0b" font-size="13">YOU</text>
+       <text x="210" y="184" fill="#0b0b0b" font-size="10">MAYA</text></g>
+  </g>
+</svg>
+</div><div><div class="card" style="margin-bottom:16px"><div style="display:flex;gap:14px;align-items:center"><span style="width:46px;height:46px;flex:none;border:2.5px solid var(--ink);background:var(--lime);display:grid;place-items:center;font-family:'Space Mono',monospace;font-weight:700;box-shadow:3px 3px 0 var(--ink)">PN</span><div style="flex:1"><div style="font-weight:700;font-size:1.02rem">Priya Nadar</div><div class="ss">you both did Design Club</div></div><span class="pip lime">Layer 1, talk first</span></div><p class="note" style="margin:14px 0 0"><b>Why her:</b> she is a UX Researcher at Northbeam, one of your targets, and you already share a tie. This is the warmest door you have and it needs nothing from anyone else.</p><div style="border-left:4px solid var(--ink);padding:10px 0 10px 14px;margin-top:14px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><span class="eyebrow">Send this</span><button class="btn ghost" data-toast="Message copied">Copy</button></div><p class="note" style="margin:8px 0 0;font-style:italic">Hi Priya, we overlapped in Design Club. I am a junior moving toward UX research and I admire your team's work at Northbeam. Could I ask you a few questions about how you got started, maybe a quick 15 minute call?</p></div></div><div class="card" style="margin-bottom:16px"><div style="display:flex;gap:14px;align-items:center"><span style="width:46px;height:46px;flex:none;border:2.5px solid var(--ink);background:var(--magenta);display:grid;place-items:center;font-family:'Space Mono',monospace;font-weight:700;box-shadow:3px 3px 0 var(--ink)">MB</span><div style="flex:1"><div style="font-weight:700;font-size:1.02rem">Marcus Bell</div><div class="ss">your internship manager last summer</div></div><span class="pip mg">Layer 2, ask for an intro</span></div><p class="note" style="margin:14px 0 0"><b>Why him:</b> you know nobody at Lumen, but Marcus does. He is the bridge. He opens the door and you walk through it, which is the one step only a person can take.</p><div style="border-left:4px solid var(--ink);padding:10px 0 10px 14px;margin-top:14px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><span class="eyebrow">Send this</span><button class="btn ghost" data-toast="Message copied">Copy</button></div><p class="note" style="margin:8px 0 0;font-style:italic">Hi Marcus, I loved working with you last summer. I am focused on UX research roles and noticed you are connected to a few people at Lumen. Would you be open to introducing me to someone on their research team?</p></div></div><div class="card" style="margin-bottom:16px"><div style="display:flex;gap:14px;align-items:center"><span style="width:46px;height:46px;flex:none;border:2.5px solid var(--ink);background:var(--amber);display:grid;place-items:center;font-family:'Space Mono',monospace;font-weight:700;box-shadow:3px 3px 0 var(--ink)">?</span><div style="flex:1"><div style="font-weight:700;font-size:1.02rem">Find your way into Verdi Labs</div><div class="ss">a second-degree path only you can see</div></div><span class="pip am">Layer 3, go find</span></div><p class="note" style="margin:14px 0 0"><b>Why this is manual:</b> no platform exposes your second-degree network to an app, and nothing here will ever scrape one. So you run the search and bring back what you see.</p><p class="note" style="margin-top:14px"><b>Do this:</b> on LinkedIn, search UX Researcher at Verdi Labs and filter to second degree. LinkedIn will show you connected through, then bring that name back here and the intro gets written for you.</p></div></div></div></div><div class="sec"><div class="card ink"><span class="eyebrow" style="color:var(--lime)">The safety line</span><h2 class="t" style="color:#fff;margin-top:10px">Only your own uploaded contacts</h2><p class="note" style="color:#cfcfcf;margin-top:10px;max-width:74ch">Contacts arrive by export from you, never by a live connection to any platform. Nothing is scraped, no account is ever accessed on your behalf, and no claim is made about anyone's private network. Networking is context and never moves the AI-exposure number.</p></div></div></div><div class="sources" id="src"><h4>Method and sources</h4><ol><li><a href="https://www.science.org/doi/10.1126/science.abl4476">Rajkumar et al. (2022), Science, a causal test of the strength of weak ties</a></li><li><a href="https://www.naceweb.org/">NACE, Job Outlook 2026</a></li></ol><p style="margin:14px 0 0">The published AI-exposure number is built only from O*NET task data, Eloundou et al., and METR. Pay, growth, networking, portfolio, and clean-up are context and never move it. A 0–100 exposure scale.</p><p style="margin:14px 0 0">This dashboard is a sample. Maya Rivera, Northlight University, Northbeam, Lumen, and Verdi Labs are invented, and every figure on this page is sample data, not a real result.</p></div></div><footer class="foot"><div class="foot-in"><div><a class="brand" href="../#top" style="color:#ece7d8"><span class="mark" style="border-color:#c7f94b"><img src="../brand/cairn-icon.svg" width="36" height="36" alt="" aria-hidden="true"></span><span class="nm"><b style="color:#fff">Cairn</b><span>Careers</span></span></a><p class="tag">Career context for college students and recent graduates.</p><p class="q">Questions? <a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a></p><p class="tag" style="margin:10px 0 0">CairnCareers is a product of <a href="https://phronesislabs.net" target="_blank" rel="noopener" style="color:var(--lime);text-decoration:none">Phronesis Labs LLC</a>.</p><div style="margin:18px 0 0;border-top:1px solid #2f2f2f;padding-top:13px;max-width:44ch"><p style="font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:#8f8f8f;margin:0">Also from Phronesis Labs</p><p class="tag" style="margin:8px 0 0"><a href="https://aijobriskcheck.com" target="_blank" rel="noopener" style="color:var(--lime);text-decoration:none">AI Job Risk Check</a> <span style="color:#5a5a5a">/</span> <a href="https://n8nclientready.phronesislabs.net" target="_blank" rel="noopener" style="color:var(--lime);text-decoration:none">ClientReady for n8n</a> <span style="color:#5a5a5a">/</span> <a href="https://businesstimeback.com" target="_blank" rel="noopener" style="color:var(--lime);text-decoration:none">Business Time Back</a></p></div></div><div class="links"><a href="https://cairncareers.com/#faq">FAQ</a><a href="https://cairncareers.com/#pricing">Pricing</a><a href="https://cairncareers.com/contact">Contact</a><a href="../privacy.html">Privacy</a><a href="https://cairncareers.com/terms">Terms</a><a href="../refunds.html">Refunds</a></div></div></footer><div class="toast" id="toast">Copied</div><script>(function(){var t=document.getElementById("toast"),h=null;document.querySelectorAll("[data-toast]").forEach(function(b){b.addEventListener("click",function(e){e.preventDefault();t.textContent=b.getAttribute("data-toast");t.classList.add("on");clearTimeout(h);h=setTimeout(function(){t.classList.remove("on")},1400)})})})();</script><button class="btn totop" id="totop" aria-label="Back to top">&#9650;</button><script>(function(){var b=document.getElementById("totop");if(!b)return;b.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"})});function u(){b.classList.toggle("show",window.scrollY>300)}window.addEventListener("scroll",u,{passive:true});u()})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a316f7887bdba586',t:'MTc4Nzc5MDYxOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>

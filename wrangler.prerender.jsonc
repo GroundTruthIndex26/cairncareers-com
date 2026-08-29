@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Same Worker as wrangler.jsonc (same "name") but in single-page-application
+  // mode. It exists only so scripts/prerender.mjs has a real public URL where
+  // every client-side route (not just "/") resolves to the SPA shell for
+  // Browser Rendering to crawl. This version is uploaded with
+  // `wrangler versions upload` and is NEVER promoted to production traffic —
+  // see scripts/prerender.mjs.
+  "name": "cairncareers-com",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-08-01",
+  "workers_dev": false,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "html_handling": "auto-trailing-slash"
+  },
+  "run_worker_first": ["/api/*"]
+}

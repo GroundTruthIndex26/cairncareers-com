@@ -1,0 +1,205 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Resume | CairnCareers Premium</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"><style>
+:root{
+  --ink:#0b0b0b; --paper:#ece7d8; --paper2:#e4decb; --paper3:#dad3bd; --card:#ffffff;
+  --lime:#c7f94b; --cyan:#1fe3e3; --magenta:#ff3d8b; --amber:#ffc53d;
+  --chrome1:#f5f8f9; --chrome2:#c2ced4; --chrome3:#8fa0a8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--ink); background-color:var(--paper);
+  background-image:linear-gradient(rgba(11,11,11,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(11,11,11,.045) 1px,transparent 1px);
+  background-size:26px 26px;
+  font-family:"Space Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size:15.5px; line-height:1.55; -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+::selection{background:var(--lime); color:var(--ink)}
+:focus-visible{outline:3px solid var(--magenta); outline-offset:2px}
+a{color:inherit}
+img,svg{max-width:100%}
+.dsp{font-family:"Archivo Black",Impact,"Arial Black",sans-serif; font-weight:400; letter-spacing:-.01em}
+.mono{font-family:"Space Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.hard{box-shadow:6px 6px 0 var(--ink)}
+.hard-sm{box-shadow:4px 4px 0 var(--ink)}
+.hard-cyan{box-shadow:9px 9px 0 var(--cyan)}
+.hard-magenta{box-shadow:6px 6px 0 var(--magenta)}
+.hard-lime{box-shadow:6px 6px 0 var(--lime)}
+
+/* Header, carried over from the landing page in its scrolled state */
+.hdr{position:sticky; top:0; z-index:50; background:var(--lime); border-bottom:3px solid var(--ink)}
+.hdr-in{max-width:1180px; margin:0 auto; padding:0 20px; height:74px; display:flex; align-items:center; gap:18px}
+.brand{display:flex; align-items:center; gap:11px; text-decoration:none; color:var(--ink); flex:none}
+.mark{border:2px solid var(--ink); background:var(--ink); padding:2px; display:block}
+.brand .nm{line-height:1}
+.brand .nm b{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:1.32rem}
+.brand .nm span{font-family:"Space Mono",monospace; font-size:.58rem; font-weight:700; letter-spacing:.18em; margin-left:5px; text-transform:uppercase}
+.hdr nav{display:flex; gap:16px; overflow-x:auto; scrollbar-width:none; flex:1}
+.hdr nav::-webkit-scrollbar{display:none}
+.hdr nav a{font-family:"Space Mono",monospace; font-size:.66rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; text-decoration:none; white-space:nowrap; padding:5px 2px; border-bottom:3px solid transparent}
+.hdr nav a:hover{border-bottom-color:var(--ink)}
+.hdr nav a.on{border-bottom-color:var(--ink)}
+.hdr .right{display:flex; align-items:center; gap:10px; flex:none}
+.chip{font-family:"Space Mono",monospace; font-size:.6rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; border:2px solid var(--ink); background:var(--ink); color:var(--lime); padding:5px 9px}
+.ava{width:36px; height:36px; border:2.5px solid var(--ink); background:var(--cyan); display:grid; place-items:center; font-family:"Space Mono",monospace; font-weight:700; font-size:.78rem; box-shadow:3px 3px 0 var(--ink)}
+
+/* Layout */
+.wrap{max-width:1180px; margin:0 auto; padding:34px 20px 0}
+.stack{display:flex; flex-direction:column; gap:34px; padding-bottom:56px}
+.eyebrow{font-family:"Space Mono",monospace; font-size:.68rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase}
+.chipbrow{display:inline-block; border:2px solid var(--ink); background:var(--lime); padding:4px 9px; box-shadow:4px 4px 0 var(--ink)}
+h1.t{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:2.3rem; line-height:1.02; letter-spacing:-.02em; margin:16px 0 0; max-width:22ch}
+h2.t{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:1.5rem; line-height:1.06; letter-spacing:-.015em; margin:10px 0 0; max-width:26ch}
+h3.t{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:1.1rem; line-height:1.1; margin:0}
+.lede{margin:12px 0 0; max-width:62ch; font-size:1rem; color:#2a2a2a}
+.sec{display:flex; flex-direction:column; gap:16px}
+.card{background:var(--card); border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); padding:20px}
+.card.ink{background:var(--ink); color:var(--paper)}
+.card.lime{background:var(--lime)}
+.card.paper2{background:var(--paper2)}
+.card.chrome{background:linear-gradient(160deg,var(--chrome1),var(--chrome2) 55%,var(--chrome3)); box-shadow:9px 9px 0 var(--ink), inset 2px 2px 0 rgba(255,255,255,.8), inset -2px -2px 0 rgba(0,0,0,.22)}
+.g{display:grid; gap:16px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g-hero{grid-template-columns:1.4fr 1fr 1fr}
+
+/* Numbers */
+.big{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:4.2rem; line-height:.85; letter-spacing:-.03em}
+.mid{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:2.5rem; line-height:.9}
+.of{font-family:"Space Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-top:8px}
+.bar{height:14px; border:2.5px solid var(--ink); background:var(--paper3); margin:14px 0 10px; position:relative; overflow:hidden}
+.bar i{position:absolute; inset:0 auto 0 0; display:block}
+.note{font-size:.86rem; color:#2a2a2a}
+.tiny{font-family:"Space Mono",monospace; font-size:.68rem; color:#3a3a3a; margin-top:10px; line-height:1.5}
+sup{font-size:.42em; line-height:0; vertical-align:super; font-family:"Space Mono",monospace}
+sup a{color:inherit; font-weight:700; text-decoration:none; border-bottom:2px solid var(--magenta)}
+
+/* Tiles */
+.tiles{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+.tile{display:flex; flex-direction:column; text-decoration:none; color:var(--ink); background:var(--card); border:3px solid var(--ink); box-shadow:6px 6px 0 var(--ink); padding:18px; transition:transform .1s linear, box-shadow .1s linear}
+.tile:hover{transform:translate(-3px,-3px); box-shadow:9px 9px 0 var(--ink); background:var(--lime)}
+.tile:active{transform:translate(2px,2px); box-shadow:3px 3px 0 var(--ink)}
+.tile .ic{width:46px; height:46px; border:2.5px solid var(--ink); display:grid; place-items:center; box-shadow:3px 3px 0 var(--ink); margin-bottom:14px}
+.tile .nm{font-family:"Archivo Black",Impact,sans-serif; font-weight:400; font-size:1.05rem; line-height:1.1}
+.tile .ds{font-size:.85rem; color:#2a2a2a; margin-top:6px; line-height:1.4}
+.tile .mt{font-family:"Space Mono",monospace; font-size:.64rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-top:auto; padding-top:14px; border-top:2px solid var(--ink); display:flex; justify-content:space-between; gap:8px}
+
+/* Pips and rows */
+.pip{display:inline-block; font-family:"Space Mono",monospace; font-size:.6rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; border:2px solid var(--ink); padding:3px 8px}
+.pip.lime{background:var(--lime)} .pip.cy{background:var(--cyan)} .pip.mg{background:var(--magenta)} .pip.am{background:var(--amber)}
+.pip.gh{background:transparent}
+.row{display:flex; gap:12px; padding:12px 0; border-top:2px solid var(--ink)}
+.row:first-of-type{border-top:none}
+.row .sq{width:13px; height:13px; border:2.5px solid var(--ink); flex:none; margin-top:5px}
+.row .tt{font-weight:600; font-size:.95rem; line-height:1.3}
+.row .ss{font-size:.82rem; color:#3a3a3a; margin-top:3px}
+.kv{display:flex; justify-content:space-between; gap:12px; border-top:2px solid var(--ink); padding:10px 0; font-size:.9rem}
+.kv:first-of-type{border-top:none}
+.kv b{font-family:"Space Mono",monospace; font-weight:700}
+
+/* Buttons */
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:.5rem; border:2.5px solid var(--ink); background:var(--lime); color:var(--ink); padding:11px 15px; font-family:"Space Mono",monospace; font-size:.72rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; box-shadow:4px 4px 0 var(--ink); cursor:pointer; text-decoration:none}
+.btn:hover{background:var(--cyan)}
+.btn:active{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink)}
+.btn.ghost{background:var(--card)}
+.btn.inkbtn{background:var(--ink); color:var(--lime); box-shadow:4px 4px 0 var(--magenta)}
+.btnrow{display:flex; gap:12px; flex-wrap:wrap; margin-top:16px}
+
+/* Footer */
+.foot{border-top:3px solid var(--lime); background:var(--ink); color:var(--paper); padding:40px 20px}
+.foot-in{max-width:1180px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:space-between; gap:26px; align-items:flex-end}
+.foot .tag{max-width:44ch; font-size:.82rem; color:#b7b7b7; margin:14px 0 0; line-height:1.55}
+.foot .q{font-family:"Space Mono",monospace; font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em; margin-top:12px}
+.foot .q a{color:var(--lime); text-decoration:none}
+.foot .links{font-family:"Space Mono",monospace; display:flex; flex-wrap:wrap; gap:8px 20px; font-size:.74rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em}
+.foot .links a{text-decoration:none}
+.foot .links a:hover{color:var(--lime); text-decoration:underline}
+
+/* Sources */
+.sources{border-top:3px solid var(--ink); margin-top:10px; padding:22px 0 40px; font-size:.8rem; line-height:1.6; color:#2a2a2a}
+.sources h4{font-family:"Space Mono",monospace; font-size:.68rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; margin:0 0 12px}
+.sources ol{margin:0; padding-left:20px}
+.sources li{margin-bottom:7px}
+.sources a{color:#0b0b0b; border-bottom:2px solid var(--magenta); text-decoration:none; word-break:break-word}
+.mockbar{border:3px solid var(--ink); background:var(--amber); padding:10px 14px; font-family:"Space Mono",monospace; font-size:.7rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; box-shadow:4px 4px 0 var(--ink)}
+
+/* Toast */
+.toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(14px); background:var(--ink); color:var(--lime); border:3px solid var(--lime); font-family:"Space Mono",monospace; font-size:.74rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; padding:11px 18px; opacity:0; pointer-events:none; transition:.2s; z-index:80}
+.toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
+
+/* Paper resume preview */
+.paper{background:#fff;padding:30px 34px;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:#1c1c1c;min-height:600px}
+.rz-name{font-size:20px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.rz-contact{font-size:10.5px;color:#4a4a4a;margin-top:4px;letter-spacing:.01em}
+.rz-h{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#1c1c1c;border-bottom:1px solid #8a8a8a;padding-bottom:3px;margin:16px 0 7px}
+.rz-role{display:flex;justify-content:space-between;gap:10px;font-size:11.5px;font-weight:700;margin-top:8px}
+.rz-role em{font-weight:400;font-style:normal;color:#4a4a4a;font-size:10.5px;white-space:nowrap}
+.rz-org{font-size:10.5px;color:#4a4a4a;margin-top:1px}
+.rz-b{font-size:10.8px;line-height:1.45;color:#2e2e2e;margin:3px 0 0;padding-left:13px;position:relative}
+.rz-b::before{content:"\2022";position:absolute;left:2px}
+.rz-line{font-size:10.8px;line-height:1.5;color:#2e2e2e;margin-top:2px}
+
+/* One button pattern sitewide plus the floating up arrow */
+.btn.ghost{background:var(--lime)}
+.btn.inkbtn{background:var(--lime);color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.btn:active{background:var(--cyan)}
+.totop{position:fixed;right:22px;bottom:22px;z-index:70;width:48px;height:48px;padding:0;display:none;font-size:1.05rem;line-height:1}
+.totop.show{display:inline-flex}
+
+/* Two-column splits used on this page; collapse on small screens */
+.g-split{grid-template-columns:1.25fr .75fr}
+.g-doc{grid-template-columns:1.05fr .95fr;align-items:start}
+
+/* Resume page: make the specimen read as a finished document, not another dashboard card. */
+.g-doc>div:first-child{position:relative;padding:18px 18px 22px;background:rgba(11,11,11,.08);border:2px dashed rgba(11,11,11,.5)}
+.g-doc>div:first-child>.card.chrome{position:relative;max-width:100%;padding:54px 18px 18px !important;border:3px solid var(--ink);background:linear-gradient(145deg,#f6f8f7 0%,#b9c5c7 100%);box-shadow:13px 13px 0 var(--ink),19px 19px 0 var(--cyan),inset 2px 2px 0 rgba(255,255,255,.92),inset -2px -2px 0 rgba(0,0,0,.2)}
+.g-doc>div:first-child>.card.chrome::before{content:"PDF specimen  ·  one-page, print-ready";position:absolute;top:15px;left:16px;right:16px;padding:7px 10px;border:2px solid var(--ink);background:#e9e6dd;font-family:"Space Mono",monospace;font-size:.59rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#252525}
+.g-doc>div:first-child>.card.chrome>div{background:#121212 !important;border-color:#121212 !important;padding:10px !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
+.g-doc>div:first-child .paper{background:#fffefa;box-shadow:0 2px 0 rgba(0,0,0,.14);min-height:624px}
+.g-doc>div:first-child::after{content:"Finished document";position:absolute;right:12px;bottom:8px;padding:3px 6px;border:2px solid var(--ink);background:var(--lime);font-family:"Space Mono",monospace;font-size:.54rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;box-shadow:2px 2px 0 var(--ink)}
+
+@media (max-width:980px){
+  .g2,.g3,.g4,.g-hero,.tiles,.g-split,.g-doc{grid-template-columns:1fr}
+  h1.t{font-size:1.85rem}
+  .big{font-size:3.4rem}
+}
+@media (max-width:640px){
+  .hdr-in{gap:12px}
+  .hdr nav{gap:12px}
+  .hdr .right{gap:7px}
+  .hdr .right .btn{padding:8px 8px}
+  .hdr .chip{padding:5px 6px;letter-spacing:.06em}
+  .paper{padding:20px 14px;min-height:0}
+  .rz-role{flex-wrap:wrap}
+  .g-doc>div:first-child{padding:12px 12px 18px}
+  .g-doc>div:first-child>.card.chrome{padding:50px 10px 10px !important;box-shadow:8px 8px 0 var(--ink),13px 13px 0 var(--cyan)}
+  .g-doc>div:first-child>.card.chrome::before{left:10px;right:10px;top:12px;font-size:.52rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style><link rel="icon" href="../brand/cairn-favicon.svg" type="image/svg+xml" sizes="any"><link rel="icon" href="../brand/cairn-favicon.svg" type="image/svg+xml" sizes="any"><style id="cairn-canonical-brand">
+.mark{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.mark img{display:block;width:36px;height:36px;object-fit:contain}
+.totop{position:fixed;right:22px;bottom:22px;z-index:70;width:48px;height:48px;padding:0;display:none;font-size:1.05rem;line-height:1}
+.totop.show{display:inline-flex}
+</style></head><body><header class="hdr"><div class="hdr-in"><a class="brand" href="../#top" aria-label="CairnCareers pricing"><span class="mark"><img src="../brand/cairn-icon.svg" width="36" height="36" alt="" aria-hidden="true"></span><span class="nm"><b>Cairn</b><span>Careers</span></span></a><nav aria-label="Dashboard sections"><a href="evidence.html">Evidence</a><a href="portfolio.html">Portfolio</a><a href="resume.html" class="on">Resume</a><a href="linkedin.html">LinkedIn</a><a href="network.html">Network</a><a href="interview.html">Interview</a><a href="careers.html">Careers</a><a href="roadmap.html">Roadmap</a><a href="cleanup.html">Clean-up</a></nav><div class="right"><a class="btn" href="../#dashboard-preview" style="padding:8px 12px;font-size:.62rem">Dashboard</a><a class="chip" href="../#pricing" style="text-decoration:none">Preorder now</a></div></div></header><div class="wrap"><div class="stack"><div><span class="eyebrow chipbrow">Living document</span><h1 class="t">One profile. The resume rewrites itself.</h1><p class="lede">Change a win once and it lands here, in your LinkedIn text, and in your interview answer. No copy kept in three places drifting apart.</p></div><div class="mockbar">Sample dashboard. Every name and number here is invented so you can see how it works.</div><div class="sec"><div class="g g-split"><div class="card"><span class="eyebrow">Experience</span><div style="margin-top:12px"><div class="row"><span class="sq" style="background:var(--lime)"></span><div><div class="tt">UX Research Intern, Northbeam</div><div class="ss">Ran 12 moderated usability sessions and cut task failure from 40 percent to 18 percent in one release.</div></div></div><div class="row"><span class="sq" style="background:var(--lime)"></span><div><div class="tt">Project Lead, University Design Club</div><div class="ss">Led a 6-person team through a term-long redesign and shipped on time.</div></div></div><div class="row"><span class="sq" style="background:var(--lime)"></span><div><div class="tt">Peer Tutor, Intro Psychology</div><div class="ss">Tutored 8 classmates weekly. Seven raised their grade a full letter.</div></div></div><div class="row"><span class="sq" style="background:var(--lime)"></span><div><div class="tt">Research Assistant, Decision Fatigue Study</div><div class="ss">Coded 40 interview transcripts and built the qualitative codebook the team still uses.</div></div></div></div><div style="margin-top:22px"><span class="eyebrow">Skills and tools</span><p class="note" style="margin-top:10px">User interviews, usability testing, survey design, qualitative coding, Figma, AI-assisted synthesis.</p></div><div style="margin-top:22px"><span class="eyebrow">Education</span><p class="note" style="margin-top:10px">Northlight University, B.A. Psychology with a minor in Design, expected 2027.</p></div><div class="btnrow"><button class="btn" data-toast="Building your PDF">Download resume</button><a class="btn ghost" href="linkedin.html">Open the LinkedIn version</a></div></div><div class="card ink"><span class="eyebrow" style="color:var(--lime)">Kept in step</span><h2 class="t" style="color:#fff;margin-top:10px">Four places, one edit</h2><div style="margin-top:16px"><div class="kv" style="border-color:#3a3a3a"><span>Resume bullets</span><b>4</b></div><div class="kv" style="border-color:#3a3a3a"><span>LinkedIn lines</span><b>4</b></div><div class="kv" style="border-color:#3a3a3a"><span>Interview answer</span><b>Uses 3</b></div><div class="kv" style="border-color:#3a3a3a"><span>Portfolio links</span><b>3 attached</b></div></div><p class="note" style="color:#cfcfcf;margin-top:16px">Every line above traces back to a prompt you answered on the evidence page. Nothing here was written for you out of thin air.</p><div class="btnrow"><a class="btn inkbtn" href="evidence.html">Edit a win</a></div></div></div></div></div><div class="sec" style="margin-bottom:40px"><div><span class="eyebrow">The finished document</span><h2 class="t">Exactly what the PDF looks like</h2></div><div class="g g-doc"><div class="card chrome" style="padding:14px"><div style="background:#0b0b0b;border:3px solid #0b0b0b;padding:8px"><div class="paper">
+<div class="rz-name">Maya Rivera</div>
+<div class="rz-contact">Boston, MA &middot; maya.rivera@northlight.edu &middot; (617) 555-0184 &middot; linkedin.com/in/mayarivera-sample</div>
+<div class="rz-h">Education</div>
+<div class="rz-role"><span>Northlight University, Boston, MA</span><em>Expected May 2027</em></div>
+<div class="rz-org">B.A. Psychology, minor in Design</div>
+<div class="rz-line">Coursework: research methods, statistics, human factors, design studio</div>
+<div class="rz-h">Experience</div>
+<div class="rz-role"><span>UX Research Intern, Northbeam</span><em>Jun 2026 to present</em></div>
+<div class="rz-b">Ran 12 moderated usability sessions with real users across two release cycles</div>
+<div class="rz-b">Cut task failure from 40 percent to 18 percent in one release</div>
+<div class="rz-b">Clustered 200 open survey responses with AI, turning six hours of analysis into one</div>
+<div class="rz-role"><span>Research Assistant, Decision Fatigue Study</span><em>Jan to May 2026</em></div>
+<div class="rz-b">Coded 40 interview transcripts and built the qualitative codebook the team still uses</div>
+<div class="rz-role"><span>Project Lead, University Design Club</span><em>Sep 2025 to May 2026</em></div>
+<div class="rz-b">Led a 6-person team through a term-long redesign and shipped on time</div>
+<div class="rz-b">Started a monthly critique night that grew turnout from 5 to 23</div>
+<div class="rz-role"><span>Peer Tutor, Intro Psychology</span><em>Sep to Dec 2025</em></div>
+<div class="rz-b">Tutored 8 classmates weekly; seven raised their grade a full letter</div>
+<div class="rz-h">Skills</div>
+<div class="rz-line">User interviews &middot; usability testing &middot; survey design &middot; qualitative coding &middot; Figma &middot; AI-assisted synthesis</div>
+</div></div></div><div><div class="card" style="margin-bottom:16px"><span class="eyebrow">Why it looks this plain</span><p class="note" style="margin-top:12px">One page, standard type, no template tricks. Recruiters skim in seconds and parsing software chokes on decoration, so the design stays out of the way and the numbers do the arguing.</p><div style="margin-top:14px"><div class="kv"><span>Format</span><b>PDF, one page</b></div><div class="kv"><span>Built from</span><b>Your 6 evidence records</b></div><div class="kv"><span>Contact block</span><b>Yours, never invented</b></div><div class="kv"><span>Updates</span><b>Every time a win changes</b></div></div><div class="btnrow"><button class="btn" data-toast="Building your PDF">Download resume</button></div></div><div class="card ink"><span class="eyebrow" style="color:var(--lime)">Same records, third surface</span><p class="note" style="color:#cfcfcf;margin-top:10px">Each line here is the same record that powers the LinkedIn text and the interview answer. Fix a number once on the evidence page and this document is already right.</p></div></div></div></div><div class="sources" id="src"><h4>Method and sources</h4><ol><li><a href="https://www.naceweb.org/">NACE, Job Outlook 2026</a></li></ol><p style="margin:14px 0 0">The published AI-exposure number is built only from O*NET task data, Eloundou et al., and METR. Pay, growth, networking, portfolio, and clean-up are context and never move it. A 0–100 exposure scale.</p><p style="margin:14px 0 0">This dashboard is a sample. Maya Rivera, Northlight University, Northbeam, Lumen, and Verdi Labs are invented, and every figure on this page is sample data, not a real result.</p></div></div><footer class="foot"><div class="foot-in"><div><a class="brand" href="../#top" style="color:#ece7d8"><span class="mark" style="border-color:#c7f94b"><img src="../brand/cairn-icon.svg" width="36" height="36" alt="" aria-hidden="true"></span><span class="nm"><b style="color:#fff">Cairn</b><span>Careers</span></span></a><p class="tag">Career context for college students and recent graduates.</p><p class="q">Questions? <a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a></p><p class="tag" style="margin:10px 0 0">CairnCareers is a product of <a href="https://phronesislabs.net" target="_blank" rel="noopener" style="color:var(--lime);text-decoration:none">Phronesis Labs LLC</a>.</p><div style="margin:18px 0 0;border-top:1px solid #2f2f2f;padding-top:13px;max-width:44ch"><p style="font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:#8f8f8f;margin:0">Also from Phronesis Labs</p><p class="tag" style="margin:8px 0 0"><a href="https://aijobriskcheck.com" target="_blank" rel="noopener" style="color:var(--lime);text-decoration:none">AI Job Risk Check</a> <span style="color:#5a5a5a">/</span> <a href="https://n8nclientready.phronesislabs.net" target="_blank" rel="noopener" style="color:var(--lime);text-decoration:none">ClientReady for n8n</a> <span style="color:#5a5a5a">/</span> <a href="https://businesstimeback.com" target="_blank" rel="noopener" style="color:var(--lime);text-decoration:none">Business Time Back</a></p></div></div><div class="links"><a href="https://cairncareers.com/#faq">FAQ</a><a href="https://cairncareers.com/#pricing">Pricing</a><a href="https://cairncareers.com/contact">Contact</a><a href="../privacy.html">Privacy</a><a href="https://cairncareers.com/terms">Terms</a><a href="../refunds.html">Refunds</a></div></div></footer><div class="toast" id="toast">Copied</div><script>(function(){var t=document.getElementById("toast"),h=null;document.querySelectorAll("[data-toast]").forEach(function(b){b.addEventListener("click",function(e){e.preventDefault();t.textContent=b.getAttribute("data-toast");t.classList.add("on");clearTimeout(h);h=setTimeout(function(){t.classList.remove("on")},1400)})})})();</script><button class="btn totop" id="totop" aria-label="Back to top">&#9650;</button><script>(function(){var b=document.getElementById("totop");if(!b)return;b.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"})});function u(){b.classList.toggle("show",window.scrollY>300)}window.addEventListener("scroll",u,{passive:true});u()})();</script><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a316f779bd454f26',t:'MTc4Nzc5MDYxNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>

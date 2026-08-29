@@ -23,11 +23,11 @@
     // "404-page" serves dist/404.html for anything unmatched.
     // "auto-trailing-slash" lets /contact resolve to /contact/index.html.
     "not_found_handling": "404-page",
-    "html_handling": "auto-trailing-slash"
+    "html_handling": "auto-trailing-slash",
+    // Only /api/* is handled by worker/index.ts (the launch-notification
+    // endpoint); every other request is served directly from assets.
+    "run_worker_first": ["/api/*"]
   },
-  // Only /api/* is handled by worker/index.ts (the launch-notification
-  // endpoint); every other request is served directly from assets.
-  "run_worker_first": ["/api/*"],
   "routes": [
     { "pattern": "cairncareers.com", "custom_domain": true },
     { "pattern": "www.cairncareers.com", "custom_domain": true }

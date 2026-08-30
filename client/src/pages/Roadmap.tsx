@@ -66,7 +66,7 @@ export default function Roadmap() {
             ))}
           </nav>
           <div className="right">
-            <a className="chip" href={`${DASHBOARD}/index.html`}>Dashboard</a>
+            <a className="hdr-textlink" href={`${DASHBOARD}/index.html`}>Dashboard</a>
             <a className="chip" href="/#pricing">Preorder now</a>
           </div>
         </div>

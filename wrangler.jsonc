@@ -24,9 +24,13 @@
     // "auto-trailing-slash" lets /contact resolve to /contact/index.html.
     "not_found_handling": "404-page",
     "html_handling": "auto-trailing-slash",
-    // Only /api/* is handled by worker/index.ts (the launch-notification
-    // endpoint); every other request is served directly from assets.
-    "run_worker_first": ["/api/*"]
+    // The Worker must see every request, not just /api/*, because it issues
+    // the www -> apex 301 (see apexRedirect in worker/index.ts) and a redirect
+    // has to happen before the asset router answers. Asset requests still get
+    // the configured html_handling / not_found_handling behaviour, because the
+    // Worker falls through to env.ASSETS.fetch() for everything it does not
+    // handle itself.
+    "run_worker_first": true
   },
   "routes": [
     { "pattern": "cairncareers.com", "custom_domain": true },

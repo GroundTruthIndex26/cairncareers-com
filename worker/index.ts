@@ -1,7 +1,8 @@
 /**
- * The only server-side logic this site needs: saving a launch-notification
- * email to Supabase. Everything else is served as static assets — see
- * wrangler.jsonc's run_worker_first, which routes only /api/* here.
+ * Two pieces of server-side logic: redirecting www to the apex domain, and
+ * saving a launch-notification email to Supabase. Everything else is served
+ * as static assets via env.ASSETS, which still applies the html_handling and
+ * not_found_handling rules configured in wrangler.jsonc.
  */
 
 interface Env {
@@ -55,9 +56,26 @@ async function handleLaunchNotifications(request: Request, env: Env): Promise<Re
   }
 }
 
+/**
+ * Both cairncareers.com and www.cairncareers.com are custom domains on this
+ * Worker, so without this the whole site answers 200 on both hostnames — a
+ * duplicate-content signal that the canonical tags mitigate but do not remove.
+ * A 301 to the apex makes the canonical host unambiguous. Path and query are
+ * preserved so deep links keep working.
+ */
+function apexRedirect(url: URL): Response | null {
+  if (url.hostname !== "www.cairncareers.com") return null;
+  const target = new URL(url);
+  target.hostname = "cairncareers.com";
+  return Response.redirect(target.toString(), 301);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    const redirect = apexRedirect(url);
+    if (redirect) return redirect;
 
     if (url.pathname === "/api/launch-notifications" && request.method === "POST") {
       return handleLaunchNotifications(request, env);

@@ -8,15 +8,15 @@ const DASHBOARD = `${BASE_URL}dashboard-preview`;
 const BREADCRUMB = [{ name: "Home", href: "/" }, { name: "Roadmap", href: "/roadmap" }];
 
 const DASHBOARD_NAV = [
-  { href: `${DASHBOARD}/evidence.html`, label: "Evidence" },
-  { href: `${DASHBOARD}/portfolio.html`, label: "Portfolio" },
-  { href: `${DASHBOARD}/resume.html`, label: "Resume" },
-  { href: `${DASHBOARD}/linkedin.html`, label: "LinkedIn" },
-  { href: `${DASHBOARD}/network.html`, label: "Network" },
-  { href: `${DASHBOARD}/interview.html`, label: "Interview" },
-  { href: `${DASHBOARD}/careers.html`, label: "Careers" },
+  { href: `${DASHBOARD}/evidence`, label: "Evidence" },
+  { href: `${DASHBOARD}/portfolio`, label: "Portfolio" },
+  { href: `${DASHBOARD}/resume`, label: "Resume" },
+  { href: `${DASHBOARD}/linkedin`, label: "LinkedIn" },
+  { href: `${DASHBOARD}/network`, label: "Network" },
+  { href: `${DASHBOARD}/interview`, label: "Interview" },
+  { href: `${DASHBOARD}/careers`, label: "Careers" },
   { href: "/roadmap", label: "Roadmap", current: true },
-  { href: `${DASHBOARD}/cleanup.html`, label: "Clean-up" },
+  { href: `${DASHBOARD}/cleanup`, label: "Clean-up" },
 ];
 
 /**
@@ -66,7 +66,7 @@ export default function Roadmap() {
             ))}
           </nav>
           <div className="right">
-            <a className="hdr-textlink" href={`${DASHBOARD}/index.html`}>Dashboard</a>
+            <a className="hdr-textlink" href={DASHBOARD}>Dashboard</a>
             <a className="chip" href="/#pricing">Preorder now</a>
           </div>
         </div>
@@ -189,8 +189,8 @@ export default function Roadmap() {
               <h2 className="t" style={{ marginTop: 10 }}>The order changes when your evidence does</h2>
               <p className="note" style={{ marginTop: 10, maxWidth: "74ch" }}>Answer a prompt and a step can drop off. Change your target career and the whole sequence rebuilds around the new durable core. This is the reason the product is a subscription rather than a report: a plan written once for a junior is wrong by the following autumn.</p>
               <div className="btnrow">
-                <a className="btn" href={`${DASHBOARD}/evidence.html#open`}>Update the evidence</a>
-                <a className="btn ghost" href={`${DASHBOARD}/careers.html`}>Change the target career</a>
+                <a className="btn" href={`${DASHBOARD}/evidence#open`}>Update the evidence</a>
+                <a className="btn ghost" href={`${DASHBOARD}/careers`}>Change the target career</a>
               </div>
             </div>
           </div>

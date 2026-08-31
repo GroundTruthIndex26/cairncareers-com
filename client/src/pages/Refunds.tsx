@@ -6,7 +6,7 @@ export default function Refunds() {
     eyebrow="Our commitment · purchases"
     title="Refund Policy"
     path="/refunds"
-    documentTitle="Refund Policy | CairnCareers"
+    documentTitle="Refund Policy: 30-Day Money-Back Guarantee | CairnCareers"
     description="CairnCareers' 30-day money-back guarantee: for pre-launch purchases, 30 days from launch on October 31; for purchases made after launch, 30 days from purchase."
     updated="August 27, 2026"
     updatedDateTime="2026-08-27"

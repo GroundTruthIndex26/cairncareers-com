@@ -6,7 +6,7 @@ export default function Terms() {
     eyebrow="Legal · using CairnCareers"
     title="Terms of Service"
     path="/terms"
-    documentTitle="Terms of Service | CairnCareers"
+    documentTitle="Terms of Service: Your Rights and Ours | CairnCareers"
     description="The terms that govern using CairnCareers: what the service is (and isn't), your responsibilities, ownership of content, and liability and refund terms."
     updated="August 23, 2026"
     updatedDateTime="2026-08-23"

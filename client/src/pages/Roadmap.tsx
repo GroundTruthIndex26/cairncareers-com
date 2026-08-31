@@ -75,7 +75,7 @@ function howToJsonLd() {
  */
 export default function Roadmap() {
   usePageMeta({
-    title: "Roadmap | CairnCareers Premium",
+    title: "Sample 12-Month Career Roadmap | CairnCareers Premium",
     description: "A sample twelve-month roadmap: each month tied to a specific evidence gap, sequenced so the earliest work makes the later work easier.",
   });
 
@@ -246,7 +246,7 @@ export default function Roadmap() {
         </div>
 
         <div className="sources" id="src">
-          <h4>Method and sources</h4>
+          <h3>Method and sources</h3>
           <ol><li><a href="https://www.naceweb.org/">NACE, Job Outlook 2026</a></li></ol>
           <p style={{ margin: "14px 0 0" }}>The published AI-exposure number is built only from O*NET task data, Eloundou et al., and METR. Pay, growth, networking, portfolio, and clean-up are context and never move it. A 0–100 exposure scale.</p>
           <p style={{ margin: "14px 0 0" }}>This dashboard is a sample. Maya Rivera, Northlight University, Northbeam, Lumen, and Verdi Labs are invented, and every figure on this page is sample data, not a real result.</p>

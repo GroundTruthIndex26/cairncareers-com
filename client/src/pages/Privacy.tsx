@@ -6,7 +6,7 @@ export default function Privacy() {
     eyebrow="Legal · your information"
     title="Privacy Policy"
     path="/privacy"
-    documentTitle="Privacy Policy | CairnCareers"
+    documentTitle="Privacy Policy: How We Handle Your Data | CairnCareers"
     description="How CairnCareers collects, uses, and protects your information as a college student or recent graduate: what we collect, why, and the choices and rights you have."
     updated="August 23, 2026"
     updatedDateTime="2026-08-23"

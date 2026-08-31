@@ -37,7 +37,7 @@ export default function Methodology() {
     title="Methodology"
     path="/methodology"
     documentTitle="How the AI-Exposure Score Is Calculated | CairnCareers"
-    description="The data and research behind the CairnCareers AI-exposure score: O*NET occupational task data, the Eloundou et al. (2024) exposure framework in Science, and METR's long-run time-horizon trend, with every source linked."
+    description="How the CairnCareers AI-exposure score is built: O*NET task data, the Eloundou et al. (2024) framework in Science, and METR's trend, every source linked."
     updated="August 31, 2026"
     updatedDateTime="2026-08-31"
     intro={<><strong>The exposure number is not our opinion.</strong> It is built from federal occupational task data and peer-reviewed research, and this page names every source, links it, and explains exactly what the number does and does not measure.</>}

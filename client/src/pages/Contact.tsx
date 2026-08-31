@@ -13,7 +13,7 @@ const BREADCRUMB = [{ name: "Home", href: "/" }, { name: "Contact", href: "/cont
 
 export default function Contact() {
   usePageMeta({
-    title: "Contact CairnCareers | Questions About Career Planning & Pre-Order",
+    title: "Contact Us: Questions About the Pre-Order | CairnCareers",
     description: "Ask CairnCareers about the pre-order, career-planning features, or how the site can better serve college students and recent graduates.",
   });
 

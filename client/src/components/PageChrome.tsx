@@ -67,7 +67,7 @@ export function PageFooter() {
         <div className="footer-links">
           <a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a>
           <span>
-            <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/refunds">Refunds</a> · <a href="/contact">Contact</a>
+            <a href="/methodology">Methodology</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/refunds">Refunds</a> · <a href="/contact">Contact</a>
           </span>
         </div>
       </div>

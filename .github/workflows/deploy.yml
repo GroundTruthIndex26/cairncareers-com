@@ -91,7 +91,7 @@ jobs:
       # Guard against shipping a build whose prerender silently under-produced.
       - name: Verify prerendered routes exist
         run: |
-          for f in index.html roadmap/index.html contact/index.html \
+          for f in index.html roadmap/index.html methodology/index.html contact/index.html \
                    privacy/index.html terms/index.html refunds/index.html 404.html \
                    sitemap.xml; do
             if [ ! -s "dist/$f" ]; then echo "::error::missing dist/$f"; exit 1; fi

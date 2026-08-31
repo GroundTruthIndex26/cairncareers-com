@@ -31,6 +31,7 @@ const ORIGIN = "https://cairncareers.com";
 const ROUTES = [
   { path: "/",        priority: "1.0", changefreq: "weekly",  source: "client/src/pages/Home.tsx" },
   { path: "/roadmap", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Roadmap.tsx" },
+  { path: "/methodology", priority: "0.8", changefreq: "monthly", source: "client/src/pages/Methodology.tsx" },
   { path: "/contact", priority: "0.5", changefreq: "monthly", source: "client/src/pages/Contact.tsx" },
   { path: "/privacy", priority: "0.3", changefreq: "monthly", source: "client/src/pages/Privacy.tsx" },
   { path: "/terms",   priority: "0.3", changefreq: "monthly", source: "client/src/pages/Terms.tsx" },

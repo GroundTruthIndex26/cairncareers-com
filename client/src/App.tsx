@@ -10,6 +10,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
+import Methodology from "./pages/Methodology";
 import NotFound from "./pages/NotFound";
 import Privacy from "./pages/Privacy";
 import Refunds from "./pages/Refunds";
@@ -24,6 +25,7 @@ function AppRoutes() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/roadmap" component={Roadmap} />
+      <Route path="/methodology" component={Methodology} />
       <Route path="/contact" component={Contact} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />

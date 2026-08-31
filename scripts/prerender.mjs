@@ -42,6 +42,7 @@ const BROWSER_TOKEN = process.env.PRERENDER_CF_BROWSER_TOKEN;
 const ROUTES = [
   { path: "/", minBytes: 15000 },
   { path: "/roadmap", minBytes: 15000 },
+  { path: "/methodology", minBytes: 8000 },
   { path: "/contact", minBytes: 8000 },
   { path: "/privacy", minBytes: 8000 },
   { path: "/terms", minBytes: 8000 },

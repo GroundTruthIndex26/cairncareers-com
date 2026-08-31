@@ -1,0 +1,99 @@
+# Push-to-live deploy for cairncareers.com.
+#
+# WHY GITHUB ACTIONS AND NOT WORKERS BUILDS
+# scripts/prerender.mjs was written to run inside Cloudflare Workers Builds,
+# but that repo connection was never made (the repo has no webhooks), so
+# pushing to main deployed nothing. Connecting Workers Builds needs an
+# interactive GitHub App grant in the Cloudflare dashboard; this workflow
+# reaches the same end state — push to main, site goes live — using the same
+# `npm run build && wrangler deploy` the deploy script runs locally.
+#
+# REQUIRED REPOSITORY SECRETS (Settings -> Secrets and variables -> Actions)
+#   CLOUDFLARE_API_TOKEN       Workers Scripts:Edit + Browser Rendering:Edit
+#   PRERENDER_CF_ACCOUNT_ID    Cloudflare account ID
+#   PRERENDER_CF_BROWSER_TOKEN Browser Rendering token (may be the same token
+#                              as CLOUDFLARE_API_TOKEN if it carries both
+#                              permissions)
+# This repo is public, so none of these may be inlined here.
+
+name: Deploy to Cloudflare
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never let two deploys race to publish different versions of the site.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Fail with an actionable message rather than a confusing wrangler or
+      # prerender error 3 minutes into the run.
+      - name: Check required secrets are set
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PRERENDER_CF_ACCOUNT_ID: ${{ secrets.PRERENDER_CF_ACCOUNT_ID }}
+          PRERENDER_CF_BROWSER_TOKEN: ${{ secrets.PRERENDER_CF_BROWSER_TOKEN }}
+        run: |
+          missing=""
+          [ -z "$CLOUDFLARE_API_TOKEN" ]       && missing="$missing CLOUDFLARE_API_TOKEN"
+          [ -z "$PRERENDER_CF_ACCOUNT_ID" ]    && missing="$missing PRERENDER_CF_ACCOUNT_ID"
+          [ -z "$PRERENDER_CF_BROWSER_TOKEN" ] && missing="$missing PRERENDER_CF_BROWSER_TOKEN"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repository secret(s):$missing"
+            echo "Add them under Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          echo "All required secrets present."
+
+      - run: npm ci
+
+      - run: npm run check
+
+      # vite build + scripts/prerender.mjs. The prerender step shells out to
+      # `wrangler versions upload`, so it needs CLOUDFLARE_API_TOKEN too.
+      - name: Build (vite + prerender)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          PRERENDER_CF_ACCOUNT_ID: ${{ secrets.PRERENDER_CF_ACCOUNT_ID }}
+          PRERENDER_CF_BROWSER_TOKEN: ${{ secrets.PRERENDER_CF_BROWSER_TOKEN }}
+        run: npm run build
+
+      # Guard against shipping a build whose prerender silently under-produced.
+      - name: Verify prerendered routes exist
+        run: |
+          for f in index.html roadmap/index.html contact/index.html \
+                   privacy/index.html terms/index.html refunds/index.html 404.html; do
+            if [ ! -s "dist/$f" ]; then echo "::error::missing dist/$f"; exit 1; fi
+          done
+          echo "All 7 prerendered routes present."
+
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx wrangler deploy
+
+      - name: Smoke test production
+        run: |
+          set -e
+          for p in / /roadmap /contact /privacy /terms /refunds; do
+            code=$(curl -sSL -o /dev/null -w '%{http_code}' "https://cairncareers.com$p")
+            echo "  $p -> $code"
+            [ "$code" = "200" ] || { echo "::error::$p returned $code"; exit 1; }
+          done
+          code=$(curl -sS -o /dev/null -w '%{http_code}' https://cairncareers.com/BingSiteAuth.xml)
+          echo "  /BingSiteAuth.xml -> $code"
+          [ "$code" = "200" ] || { echo "::error::BingSiteAuth.xml returned $code"; exit 1; }

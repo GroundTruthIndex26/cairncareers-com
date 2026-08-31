@@ -6,13 +6,14 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender.mjs",
+    "build": "vite build && node scripts/prerender.mjs && node scripts/sitemap.mjs",
     "build:spa": "vite build",
     "prerender": "node scripts/prerender.mjs",
     "preview": "vite preview",
     "check": "tsc --noEmit",
     "deploy": "npm run build && wrangler deploy",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "sitemap": "node scripts/sitemap.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

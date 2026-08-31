@@ -36,7 +36,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      # Full history: scripts/sitemap.mjs dates each route from the last
+      # commit touching its source, and a shallow clone hides that.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -88,10 +92,11 @@ jobs:
       - name: Verify prerendered routes exist
         run: |
           for f in index.html roadmap/index.html contact/index.html \
-                   privacy/index.html terms/index.html refunds/index.html 404.html; do
+                   privacy/index.html terms/index.html refunds/index.html 404.html \
+                   sitemap.xml; do
             if [ ! -s "dist/$f" ]; then echo "::error::missing dist/$f"; exit 1; fi
           done
-          echo "All 7 prerendered routes present."
+          echo "All prerendered routes and the generated sitemap are present."
 
       - name: Deploy
         env:

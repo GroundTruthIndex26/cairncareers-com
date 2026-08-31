@@ -6,7 +6,7 @@ const BASE_URL = import.meta.env.BASE_URL;
 const BRAND_ICON = `${BASE_URL}brand/cairn-icon.svg`;
 
 /**
- * Shared site header, footer, and back-to-top control — the chrome every
+ * Shared site header, footer, and back-to-top control: the chrome every
  * page carries, extracted from the landing page so secondary pages (legal,
  * contact, roadmap) get the same identity instead of a second design.
  */
@@ -94,7 +94,7 @@ export function BackToTop() {
   );
 }
 
-/** Lighter page header for secondary pages — reuses the site's editorial
+/** Lighter page header for secondary pages. Reuses the site's editorial
  * vocabulary (.section-label chip, Archivo Black display type) rather than
  * the landing page's full dark hero, which is homepage-specific. */
 export function PageHero({ eyebrow, title, breadcrumb, children }: { eyebrow: string; title: string; breadcrumb?: Crumb[]; children?: ReactNode }) {

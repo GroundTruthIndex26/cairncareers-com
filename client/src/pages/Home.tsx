@@ -90,7 +90,7 @@ const campaignVariants: Record<
   default: {
     label: "Default",
     eyebrow: "For college students and recent graduates",
-    body: "Compare realistic career paths using salary, job growth, and AI context—then leave with a next move you can explain.",
+    body: "Compare realistic career paths using salary, job growth, and AI context, then leave with a next move you can explain.",
   },
   campus: {
     label: "Campus partner",
@@ -100,13 +100,13 @@ const campaignVariants: Record<
   social: {
     label: "Paid social",
     eyebrow: "Worried AI changes your first-job options?",
-    body: "See which tasks are exposed, which skills stay durable, and what to do next—without asking a general chatbot to guess.",
+    body: "See which tasks are exposed, which skills stay durable, and what to do next, without asking a general chatbot to guess.",
   },
 };
 
 const steps = [
   ["01", "Bring what you know", "Your interests, coursework, experience, and the work that holds your attention."],
-  ["02", "Read the whole picture", "Salary, job growth, and AI exposure in one place—not isolated numbers."],
+  ["02", "Read the whole picture", "Salary, job growth, and AI exposure in one place, not isolated numbers."],
   ["03", "Leave with a route", "A practical LinkedIn, networking, and first-conversation direction."],
 ];
 
@@ -121,7 +121,7 @@ const dashboardAreas = [
   {
     number: "02",
     title: "Portfolio",
-    body: "Keep the work itself beside the claim it supports—case studies, reports, prototypes, and decks.",
+    body: "Keep the work itself beside the claim it supports: case studies, reports, prototypes, and decks.",
     href: `${BASE_URL}dashboard-preview/portfolio.html`,
     accent: "cyan",
   },
@@ -215,7 +215,7 @@ function ProofPhotoSlot({ index }: { index: number }) {
 function MetricSlot({ label }: { label: string }) {
   return (
     <div className="metric-slot">
-      <span className="metric-value">—</span>
+      <span className="metric-value">&nbsp;</span>
       <strong>{label}</strong>
       <small>Publish with cohort, date range, and source</small>
     </div>
@@ -543,7 +543,7 @@ export default function Home() {
                 </div>
               </article>
               <article className="rating-slot">
-                <div className="rating-mark">★ — / 5</div>
+                <div className="rating-mark">★ &nbsp;/ 5</div>
                 <span className="slot-badge">Third-party rating · reserved</span>
                 <h3>Connect one verified review profile.</h3>
                 <p>Use G2, Capterra, Trustpilot, Product Hunt, App Store, or an equivalent source only after the profile and rating are live.</p>

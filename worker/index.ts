@@ -1,7 +1,7 @@
 /**
  * Server-side logic: redirecting www to the apex domain, and saving the two
- * kinds of message the site collects — launch-notification signups and contact
- * form submissions — to Supabase. Everything else is served as static assets
+ * kinds of message the site collects (launch-notification signups and contact
+ * form submissions) to Supabase. Everything else is served as static assets
  * via env.ASSETS, which still applies the html_handling and not_found_handling
  * rules configured in wrangler.jsonc.
  *
@@ -149,7 +149,7 @@ async function handleLaunchNotifications(request: Request, env: Env): Promise<Re
 
 /**
  * Both cairncareers.com and www.cairncareers.com are custom domains on this
- * Worker, so without this the whole site answers 200 on both hostnames — a
+ * Worker, so without this the whole site answers 200 on both hostnames, a
  * duplicate-content signal that the canonical tags mitigate but do not remove.
  * A 301 to the apex makes the canonical host unambiguous. Path and query are
  * preserved so deep links keep working.
@@ -177,7 +177,7 @@ export default {
     }
 
     // Any other /api/* path (or a non-POST on this one) falls through to assets,
-    // which will 404 it via not_found_handling — there's nothing else to serve here.
+    // which will 404 it via not_found_handling. There's nothing else to serve here.
     return env.ASSETS.fetch(request);
   },
 } satisfies ExportedHandler<Env>;

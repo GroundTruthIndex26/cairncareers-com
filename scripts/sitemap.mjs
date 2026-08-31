@@ -1,5 +1,5 @@
 /**
- * sitemap.mjs — writes dist/sitemap.xml from what was actually prerendered.
+ * sitemap.mjs: writes dist/sitemap.xml from what was actually prerendered.
  *
  * WHY THIS IS GENERATED AND NOT A STATIC FILE
  * client/public/sitemap.xml was maintained by hand, so every <lastmod> froze
@@ -14,7 +14,7 @@
  *
  * SAFETY
  * The build FAILS if a listed route was not prerendered, or if an indexable
- * route was prerendered but is missing from ROUTES — otherwise the sitemap
+ * route was prerendered but is missing from ROUTES. Otherwise the sitemap
  * silently drifts from the site, which is exactly the failure being fixed.
  */
 
@@ -75,7 +75,7 @@ function prerenderedRoutes() {
 
 function run() {
   if (!fs.existsSync(path.join(DIST, "index.html"))) {
-    throw new Error("dist/index.html not found — run the build before generating the sitemap.");
+    throw new Error("dist/index.html not found. Run the build before generating the sitemap.");
   }
 
   // Repo-wide date, used when a route has no source file history yet.

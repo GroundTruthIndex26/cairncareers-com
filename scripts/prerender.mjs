@@ -1,5 +1,5 @@
 /**
- * prerender.mjs — turns the built SPA into real HTML files, one per route.
+ * prerender.mjs: turns the built SPA into real HTML files, one per route.
  *
  * WHY A REAL BROWSER AND NOT react-dom/server
  * The app reads window, navigator and localStorage during startup. Rendering
@@ -12,7 +12,7 @@
  * this script (1) uploads the just-built SPA shell as a throwaway, never-
  * promoted Worker version to get a real public URL, then (2) asks Cloudflare's
  * own remote Browser Rendering service to load each route on that URL and
- * hand back the rendered HTML — the pattern documented at
+ * hand back the rendered HTML, the pattern documented at
  * https://developers.cloudflare.com/browser-run/how-to/pre-render-pages/.
  * That public URL is uploaded from wrangler.prerender.jsonc, a single-page-
  * application variant of wrangler.jsonc, so every client-side route (not
@@ -75,7 +75,7 @@ function applyPerRouteHead(html, route) {
 function uploadPreviewVersion() {
   const configPath = path.join(ROOT, "wrangler.prerender.jsonc");
   if (!fs.existsSync(configPath)) {
-    throw new Error(`${configPath} not found — required to crawl client-side routes.`);
+    throw new Error(`${configPath} not found. Required to crawl client-side routes.`);
   }
 
   log("uploading throwaway preview version for crawling...");
@@ -148,11 +148,11 @@ async function renderContent(url, attempt = 1) {
 
 async function run() {
   if (!fs.existsSync(path.join(DIST, "index.html"))) {
-    throw new Error("dist/index.html not found — run `vite build` before prerendering.");
+    throw new Error("dist/index.html not found. Run `vite build` before prerendering.");
   }
   if (!ACCOUNT_ID || !BROWSER_TOKEN) {
     throw new Error(
-      "PRERENDER_CF_ACCOUNT_ID and PRERENDER_CF_BROWSER_TOKEN must be set — this script renders routes via " +
+      "PRERENDER_CF_ACCOUNT_ID and PRERENDER_CF_BROWSER_TOKEN must be set. This script renders routes via " +
         "Cloudflare Browser Rendering, not a local browser.",
     );
   }
@@ -193,13 +193,13 @@ async function run() {
   written.forEach((w) => log("ok  ", w));
 
   if (failures.length) {
-    console.error("\n[prerender] FAILED — these routes did not render:");
+    console.error("\n[prerender] FAILED. These routes did not render:");
     failures.forEach((f) => console.error("  -", f));
     console.error("\nThe build is stopping on purpose. A missing prerendered file becomes a live 404.\n");
     process.exit(1);
   }
 
-  log(`done — ${written.length} routes prerendered`);
+  log(`done, ${written.length} routes prerendered`);
 }
 
 run().catch((err) => {

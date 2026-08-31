@@ -5,7 +5,7 @@
 # but that repo connection was never made (the repo has no webhooks), so
 # pushing to main deployed nothing. Connecting Workers Builds needs an
 # interactive GitHub App grant in the Cloudflare dashboard; this workflow
-# reaches the same end state — push to main, site goes live — using the same
+# reaches the same end state (push to main, site goes live) using the same
 # `npm run build && wrangler deploy` the deploy script runs locally.
 #
 # REQUIRED REPOSITORY SECRETS (Settings -> Secrets and variables -> Actions)
@@ -104,7 +104,7 @@ jobs:
         run: npx wrangler deploy
 
       # Cloudflare challenges requests from GitHub's datacenter IP range, so a
-      # 403 here means "the edge answered us", not "the site is broken" — the
+      # 403 here means "the edge answered us", not "the site is broken". The
       # same URLs return 200 from a normal network. Treat it as a warning and
       # keep failing on the codes that would indicate a bad deploy (404, 5xx).
       - name: Smoke test production

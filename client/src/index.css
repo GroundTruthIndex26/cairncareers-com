@@ -499,7 +499,7 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
 
-/* Secondary pages: legal, contact, roadmap — lighter than the homepage hero,
+/* Secondary pages: legal, contact, roadmap. Lighter than the homepage hero,
    but built from the same editorial vocabulary (section-label chip, Archivo
    Black display type, hard offset shadows) rather than a second design. */
 .page-hero { padding:64px 0 48px; background:var(--paper); border-bottom:2px solid var(--ink); }

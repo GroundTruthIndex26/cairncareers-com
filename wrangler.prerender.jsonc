@@ -4,8 +4,8 @@
   // mode. It exists only so scripts/prerender.mjs has a real public URL where
   // every client-side route (not just "/") resolves to the SPA shell for
   // Browser Rendering to crawl. This version is uploaded with
-  // `wrangler versions upload` and is NEVER promoted to production traffic —
-  // see scripts/prerender.mjs.
+  // `wrangler versions upload` and is NEVER promoted to production traffic.
+  // See scripts/prerender.mjs.
   "name": "cairncareers-com",
   "main": "worker/index.ts",
   "compatibility_date": "2026-08-01",

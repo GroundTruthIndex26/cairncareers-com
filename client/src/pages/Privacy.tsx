@@ -7,7 +7,7 @@ export default function Privacy() {
     title="Privacy Policy"
     path="/privacy"
     documentTitle="Privacy Policy | CairnCareers"
-    description="How CairnCareers collects, uses, and protects your information as a college student or recent graduate — what we collect, why, and the choices and rights you have."
+    description="How CairnCareers collects, uses, and protects your information as a college student or recent graduate: what we collect, why, and the choices and rights you have."
     updated="August 23, 2026"
     updatedDateTime="2026-08-23"
     intro={<><strong>CairnCareers is designed to respect your right to privacy and control over your information.</strong> This policy explains what we collect, why we collect it, and the choices you have. We do not sell or trade personal information.</>}

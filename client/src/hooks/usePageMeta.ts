@@ -11,8 +11,8 @@ function setMetaContent(selector: string, value: string) {
 }
 
 /**
- * Sets the document title and description — and their Open Graph / Twitter
- * mirrors — for the page that calls it, restoring index.html's defaults on
+ * Sets the document title and description (and their Open Graph / Twitter
+ * mirrors) for the page that calls it, restoring index.html's defaults on
  * unmount. index.html ships one static title/description for the whole app,
  * so without this every route (and every social share or AI crawler reading
  * it) saw the homepage's copy. Only the homepage relies on those defaults

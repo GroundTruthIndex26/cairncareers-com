@@ -20,6 +20,54 @@ const DASHBOARD_NAV = [
 ];
 
 /**
+ * HowTo structured data for the twelve-month sequence this page lays out.
+ *
+ * WHY THE STEPS ARE NAMED THE WAY THEY ARE
+ * The month cards on this page carry invented specifics (a UX-research
+ * student, a named course) because the page is an explicitly labelled
+ * sample. Marking those specifics up as instructions would present invented
+ * detail as advice, so each step is named for the move it demonstrates,
+ * which is the part that generalises and the part the page is really
+ * teaching. The name and description say plainly that it is an example.
+ *
+ * WHAT THIS IS AND IS NOT WORTH
+ * Google removed HowTo rich results in 2023, so this earns no rich result
+ * there. It is here because answer engines and non-Google consumers still
+ * parse JSON-LD, and it is close to free to carry.
+ */
+const HOWTO_STEPS = [
+  { name: "Close your largest evidence gap first", text: "Start with the single gap that the rest of the year builds on, so every later month has something to stand on. In the sample this is a research-methods course beginning in the first term." },
+  { name: "Keep the foundational work running across the term", text: "Carry that first commitment through the full term rather than switching focus each month. The sample runs it from September through December." },
+  { name: "Apply for the practical placement in the new term", text: "With the foundation underway, apply for the internship or placement that turns coursework into real evidence. The sample begins applications in January." },
+  { name: "Work the search through to an offer", text: "Continue the search across the following weeks instead of treating it as a one-month task, and accept the offer when it lands. The sample accepts in April." },
+  { name: "Show the work publicly before recruiting starts", text: "Present or publish something concrete ahead of recruiting season so there is evidence to point at. The sample presents at a design showcase in March." },
+  { name: "Turn the placement into published case studies", text: "After the placement, convert what you did into case studies that a stranger can evaluate without you in the room. The sample publishes two across September and October." },
+  { name: "Apply with the portfolio attached", text: "Send applications only once the portfolio is real, so each application carries evidence rather than claims. The sample applies in November." },
+  { name: "Interview using answers you drafted earlier", text: "Go into interviews with answers already written against the evidence you built, rather than composing them under pressure. The sample interviews in December." },
+];
+
+/** HowTo structured data describing the sequence, generated from HOWTO_STEPS. */
+function howToJsonLd() {
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: "Example twelve-month roadmap from coursework to a first job",
+    description:
+      "An illustrative twelve-month sequence for a college student moving from coursework to a first job, with each month tied to a specific evidence gap and ordered so the earliest work makes the later work easier. Every name and figure in the worked example is invented for illustration.",
+    totalTime: "P12M",
+    step: HOWTO_STEPS.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+      // No per-step url: these steps describe the sequence the page teaches
+      // rather than mapping one-to-one onto anchored elements, and pointing
+      // at #step-N anchors that do not exist would be a dangling reference.
+    })),
+  });
+}
+
+/**
  * The one dashboard-preview page promoted to a real, indexable route (per
  * the sitewide link to it from Home's sample-dashboard grid). Every other
  * sample page stays a plain static file under /dashboard-preview/. This is
@@ -54,6 +102,7 @@ export default function Roadmap() {
   return (
     <div className="roadmap-page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd(BREADCRUMB) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: howToJsonLd() }} />
       <header className="hdr">
         <div className="hdr-in">
           <a className="brand" href="/" aria-label="CairnCareers home">

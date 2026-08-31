@@ -176,6 +176,80 @@ const dashboardAreas = [
   },
 ];
 
+/**
+ * FAQ content, single-sourced.
+ *
+ * The visible markup and the FAQPage JSON-LD below are both generated from
+ * this one array, so the structured data can never drift from what a reader
+ * actually sees, which is the requirement structured data has to meet.
+ *
+ * WHY THESE ANSWERS ARE SHAPED THIS WAY
+ * Every answer states its conclusion in the first sentence and stands on its
+ * own without the question or the neighbouring answers. That is what an
+ * answer engine can lift cleanly. Ten pages linked to /#faq for a section
+ * that did not exist, so this also fixes a dead anchor sitewide.
+ */
+const FAQS: { q: string; a: React.ReactNode; plain: string }[] = [
+  {
+    q: "What is Cairn Careers?",
+    a: <>Cairn Careers is a career-planning tool for college students and recent graduates. It turns your interests, coursework, and experience into an AI-exposure score for each career path you are weighing, alongside a sequenced plan toward a first job. It is a product of Phronesis Labs LLC and is not affiliated with Cairn University or Cairn Group.</>,
+    plain: "Cairn Careers is a career-planning tool for college students and recent graduates. It turns your interests, coursework, and experience into an AI-exposure score for each career path you are weighing, alongside a sequenced plan toward a first job. It is a product of Phronesis Labs LLC and is not affiliated with Cairn University or Cairn Group.",
+  },
+  {
+    q: "How is the AI-exposure score calculated?",
+    a: <>Each task in an occupation is weighted by how much of the work it accounts for, multiplied by that task's AI-exposure value, and the result is placed on a 0 to 100 scale. Task data comes from O*NET, exposure values from Eloundou et al. (2024) in Science, and the outlook from METR's long-run time-horizon trend. The full calculation is set out on the <a href="/methodology">methodology page</a>.</>,
+    plain: "Each task in an occupation is weighted by how much of the work it accounts for, multiplied by that task's AI-exposure value, and the result is placed on a 0 to 100 scale. Task data comes from O*NET, exposure values from Eloundou et al. (2024) in Science, and the outlook from METR's long-run time-horizon trend. The full calculation is set out on the methodology page at https://cairncareers.com/methodology.",
+  },
+  {
+    q: "Does the score predict whether I will lose my job?",
+    a: <>No. The score measures task exposure, meaning what current AI can already do, not whether a particular job will disappear. It cannot see your employer, your skill, your judgment, or the relationships you build, and it is not career, financial, or legal advice.</>,
+    plain: "No. The score measures task exposure, meaning what current AI can already do, not whether a particular job will disappear. It cannot see your employer, your skill, your judgment, or the relationships you build, and it is not career, financial, or legal advice.",
+  },
+  {
+    q: "Which entry-level jobs are most exposed to AI?",
+    a: <>Exposure follows the mix of tasks inside a job rather than the job title, so two roles that sound similar can score very differently. Work that is mostly drafting, summarizing, routine analysis, or standardized documentation tends to score higher, while work that turns on physical presence, negotiation, or accountability for a judgment call tends to score lower. Cairn Careers scores the specific paths you are weighing rather than publishing one general ranking.</>,
+    plain: "Exposure follows the mix of tasks inside a job rather than the job title, so two roles that sound similar can score very differently. Work that is mostly drafting, summarizing, routine analysis, or standardized documentation tends to score higher, while work that turns on physical presence, negotiation, or accountability for a judgment call tends to score lower. Cairn Careers scores the specific paths you are weighing rather than publishing one general ranking.",
+  },
+  {
+    q: "Do I need a resume or work history to use it?",
+    a: <>No. You bring your interests, your coursework, and the experience you already have, including class projects and part-time work. There is no resume upload and no work-history requirement.</>,
+    plain: "No. You bring your interests, your coursework, and the experience you already have, including class projects and part-time work. There is no resume upload and no work-history requirement.",
+  },
+  {
+    q: "How is this different from asking a general AI chatbot about my career?",
+    a: <>A general chatbot produces an answer from patterns in its training data and cannot show you where a number came from. Cairn Careers scores your paths against federal occupational task data and published research, names and links every source on its <a href="/methodology">methodology page</a>, and keeps pay and growth data structurally separate from the exposure score so you can see exactly what moved the result.</>,
+    plain: "A general chatbot produces an answer from patterns in its training data and cannot show you where a number came from. Cairn Careers scores your paths against federal occupational task data and published research, names and links every source on its methodology page, and keeps pay and growth data structurally separate from the exposure score so you can see exactly what moved the result.",
+  },
+  {
+    q: "Where does Cairn Careers get its data?",
+    a: <>Occupational task data comes from O*NET, the U.S. Department of Labor's occupational database. AI task exposure comes from Eloundou et al. (2024) in Science. The capability trajectory comes from METR. Pay and growth figures come from the U.S. Bureau of Labor Statistics and are shown as context only, and they never enter the exposure score. Every source is linked on the <a href="/methodology">methodology page</a>.</>,
+    plain: "Occupational task data comes from O*NET, the U.S. Department of Labor's occupational database. AI task exposure comes from Eloundou et al. (2024) in Science. The capability trajectory comes from METR. Pay and growth figures come from the U.S. Bureau of Labor Statistics and are shown as context only, and they never enter the exposure score. Every source is linked on the methodology page.",
+  },
+  {
+    q: "Who is Cairn Careers for?",
+    a: <>College students and recent graduates deciding what to aim for and what to do next. It is most useful if you are choosing between several paths, or have already chosen one and want a month-by-month plan toward a first job. You can see that plan in the <a href="/roadmap">sample roadmap</a>.</>,
+    plain: "College students and recent graduates deciding what to aim for and what to do next. It is most useful if you are choosing between several paths, or have already chosen one and want a month-by-month plan toward a first job.",
+  },
+  {
+    q: "What does Cairn Careers cost?",
+    a: <>Premium is $61 a year at the pre-order rate, rising to $86 a year after launch on October 31, 2026. Pro is $46 a year. Every purchase is covered by a 30-day money-back guarantee, described on the <a href="/refunds">refund policy page</a>.</>,
+    plain: "Premium is $61 a year at the pre-order rate, rising to $86 a year after launch on October 31, 2026. Pro is $46 a year. Every purchase is covered by a 30-day money-back guarantee.",
+  },
+];
+
+/** FAQPage structured data built from the same FAQS array shown on the page. */
+function faqJsonLd() {
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQS.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.plain },
+    })),
+  });
+}
+
 function SectionLabel({ number, children }: { number: string; children: React.ReactNode }) {
   return (
     <div className="section-label">
@@ -407,6 +481,7 @@ export default function Home() {
         )}
       </header>
 
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd() }} />
       <main id="top">
         <section className="hero-section">
           <div className="container hero-grid">
@@ -615,6 +690,21 @@ export default function Home() {
                 <img src={ASSETS.founder} alt="Brooke Houck, PhD, founder of CairnCareers" width="300" height="300" loading="lazy" decoding="async" />
                 <div><span className="slot-badge">Built by a PhD research scientist</span><h3><a href="https://www.linkedin.com/in/brookehouck" target="_blank" rel="noreferrer">Brooke Houck, PhD · Founder</a></h3><p>“Everyone has an opinion about AI. And a lot of people want to give you good advice. But work isn't the same anymore. Work has changed and is changing. Cairn Careers uses research standards you can read about openly. We give you data, not vibes, about what work looks like now and will look like 3 years from now.”</p></div>
               </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="faq" className="paper-section faq-section">
+          <div className="container">
+            <SectionLabel number="06">Common questions</SectionLabel>
+            <h2>Questions people actually ask.</h2>
+            <div className="faq-list">
+              {FAQS.map((item) => (
+                <article className="faq-item" key={item.q}>
+                  <h3>{item.q}</h3>
+                  <p>{item.a}</p>
+                </article>
+              ))}
             </div>
           </div>
         </section>

@@ -83,6 +83,15 @@ const localeOptions: Record<
   },
 };
 
+/**
+ * The permissioned-proof queue is written and ready, but every slot in it is
+ * still empty. Rendering it shipped roughly 1.5 KB of "reserved story 1",
+ * "publish with cohort, date range, and source" and the review-site checklist
+ * into the HTML of every visitor and crawler. `hidden` stops it being seen, not
+ * being read. Flip this to true once there is a verified story to publish.
+ */
+const SHOW_PROOF_QUEUE = false;
+
 const campaignVariants: Record<
   CampaignKey,
   { label: string; eyebrow: string; body: string }
@@ -574,64 +583,66 @@ export default function Home() {
           </div>
         </section>
 
+        {SHOW_PROOF_QUEUE && (
         <section id="proof" className="paper-section proof-section" hidden aria-hidden="true">
-          <div className="container">
-            <div className="section-heading split-heading">
-              <div>
-                <SectionLabel number="04">Permissioned proof queue</SectionLabel>
-                <h2>Build proof without pretending it already exists.</h2>
-              </div>
-              <p>Every slot below stays visibly unpublished until a real student grants permission and the result can be verified.</p>
-            </div>
-
-            <div className="outcomes-panel">
-              <div className="outcomes-map-bg" aria-hidden="true"><i /><i /><i /></div>
-              <div className="outcomes-content">
-                <div className="outcomes-heading">
-                  <span className="slot-badge">Verified outcomes · reserved</span>
-                  <h3>Publish only what can be sourced.</h3>
-                </div>
-                <div className="metrics-grid">
-                  <MetricSlot label="Students mapped" />
-                  <MetricSlot label="Next moves completed" />
-                  <MetricSlot label="Time to first useful route" />
-                </div>
-              </div>
-            </div>
-
-            <div className="story-grid">
-              <ProofPhotoSlot index={1} />
-              <ProofPhotoSlot index={2} />
-              <ProofPhotoSlot index={3} />
-            </div>
-
-            <div className="video-rating-grid">
-              <article className="video-slot">
-                <div className="video-art">
-                  <div className="video-illustration" aria-label="Illustrative empty interview set reserved for a future permissioned student video">
-                    <div className="studio-light" />
-                    <div className="empty-chair"><i /><i /><i /></div>
-                    <div className="microphone"><i /></div>
-                    <div className="studio-route"><i /><i /><i /></div>
-                  </div>
-                  <CirclePlay aria-hidden="true" />
-                </div>
+            <div className="container">
+              <div className="section-heading split-heading">
                 <div>
-                  <span className="slot-badge">Permissioned video story · reserved</span>
-                  <h3>Before, after, and the verified result between.</h3>
-                  <p>Required: a real student, explicit consent, and one measurable change worth showing.</p>
+                  <SectionLabel number="04">Permissioned proof queue</SectionLabel>
+                  <h2>Build proof without pretending it already exists.</h2>
                 </div>
-              </article>
-              <article className="rating-slot">
-                <div className="rating-mark">★ &nbsp;/ 5</div>
-                <span className="slot-badge">Third-party rating · reserved</span>
-                <h3>Connect one verified review profile.</h3>
-                <p>Use G2, Capterra, Trustpilot, Product Hunt, App Store, or an equivalent source only after the profile and rating are live.</p>
-                <div className="source-placeholder">Verified source URL required <ArrowRight /></div>
-              </article>
+                <p>Every slot below stays visibly unpublished until a real student grants permission and the result can be verified.</p>
+              </div>
+  
+              <div className="outcomes-panel">
+                <div className="outcomes-map-bg" aria-hidden="true"><i /><i /><i /></div>
+                <div className="outcomes-content">
+                  <div className="outcomes-heading">
+                    <span className="slot-badge">Verified outcomes · reserved</span>
+                    <h3>Publish only what can be sourced.</h3>
+                  </div>
+                  <div className="metrics-grid">
+                    <MetricSlot label="Students mapped" />
+                    <MetricSlot label="Next moves completed" />
+                    <MetricSlot label="Time to first useful route" />
+                  </div>
+                </div>
+              </div>
+  
+              <div className="story-grid">
+                <ProofPhotoSlot index={1} />
+                <ProofPhotoSlot index={2} />
+                <ProofPhotoSlot index={3} />
+              </div>
+  
+              <div className="video-rating-grid">
+                <article className="video-slot">
+                  <div className="video-art">
+                    <div className="video-illustration" aria-label="Illustrative empty interview set reserved for a future permissioned student video">
+                      <div className="studio-light" />
+                      <div className="empty-chair"><i /><i /><i /></div>
+                      <div className="microphone"><i /></div>
+                      <div className="studio-route"><i /><i /><i /></div>
+                    </div>
+                    <CirclePlay aria-hidden="true" />
+                  </div>
+                  <div>
+                    <span className="slot-badge">Permissioned video story · reserved</span>
+                    <h3>Before, after, and the verified result between.</h3>
+                    <p>Required: a real student, explicit consent, and one measurable change worth showing.</p>
+                  </div>
+                </article>
+                <article className="rating-slot">
+                  <div className="rating-mark">★ &nbsp;/ 5</div>
+                  <span className="slot-badge">Third-party rating · reserved</span>
+                  <h3>Connect one verified review profile.</h3>
+                  <p>Use G2, Capterra, Trustpilot, Product Hunt, App Store, or an equivalent source only after the profile and rating are live.</p>
+                  <div className="source-placeholder">Verified source URL required <ArrowRight /></div>
+                </article>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <section id="pricing" className="pricing-section">
           <div className="container">
@@ -680,7 +691,12 @@ export default function Home() {
                 <div className="price"><s>{premiumPlan.regular} · 35% savings</s><strong>{premiumPlan.prelaunch}</strong><span>{premiumPlan.cadence}</span><em className="prelaunch-label">Limited Time prelaunch price</em><small className="limited-spots">Limited spots remain</small></div>
                 <ul><li><Check /> Everything in Pro</li><li><Check /> Living resume + LinkedIn system</li><li><Check /> Warm-path networking engine</li><li><Check /> Graduation-timeline roadmap</li></ul>
                 <a className="primary-cta full-cta" href={premiumPaymentLink || "#stripe-payment-link"} onClick={handlePremiumCheckout} target={premiumPaymentLink ? "_blank" : undefined} rel={premiumPaymentLink ? "noreferrer" : undefined}>Continue to secure checkout <ArrowRight /></a>
-                <div id="stripe-payment-link" className="checkout-note"><LockKeyhole /> Stripe Payment Link for Premium {premiumBilling} will open here when configured.</div>
+                {!premiumPaymentLink && (
+                  // Build-time hint only. Both links are configured, so this does not
+                  // render in production; it used to, telling buyers at the checkout
+                  // button that checkout was not set up.
+                  <div id="stripe-payment-link" className="checkout-note"><LockKeyhole /> Stripe Payment Link for Premium {premiumBilling} will open here when configured.</div>
+                )}
               </article>
             </div>
           </div>

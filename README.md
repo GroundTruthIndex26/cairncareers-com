@@ -31,3 +31,19 @@ Workers Builds triggers in production, or in your shell for a local test build.
 - `client/src/pages/Roadmap.tsx`: the one dashboard-preview sample page promoted to a real, indexed route.
 - `client/public/dashboard-preview/*.html`: the other sample-dashboard pages, kept as plain static files (all `noindex`, illustrative data only).
 - `worker/index.ts`: the one server-side route this site needs.
+
+## Notes on `client/index.html`
+
+These used to be HTML comments in the `<head>`, which meant they shipped to
+every visitor and crawler. They are reference for maintainers, not for the
+public, so they live here instead.
+
+- **Google Search Console** is verified by the file at
+  `/googlee25309b4cf7bf9f6.html`, so no meta verification token is needed. The
+  `msvalidate.01` meta tag next to it is Bing's, which does need one.
+- The **Plausible** snippet is account-specific; it is not the generic one from
+  their docs, so do not swap it for a copy-paste from elsewhere.
+- **Space Grotesk and Space Mono** in the Google Fonts URL are there for
+  `/roadmap` and the `dashboard-preview` sample pages, which keep their own
+  "product demo" type system. Removing them because the marketing pages do not
+  use them would break the sample dashboard.

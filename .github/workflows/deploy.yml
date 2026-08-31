@@ -9,11 +9,14 @@
 # `npm run build && wrangler deploy` the deploy script runs locally.
 #
 # REQUIRED REPOSITORY SECRETS (Settings -> Secrets and variables -> Actions)
-#   CLOUDFLARE_API_TOKEN       Workers Scripts:Edit + Browser Rendering:Edit
-#   PRERENDER_CF_ACCOUNT_ID    Cloudflare account ID
-#   PRERENDER_CF_BROWSER_TOKEN Browser Rendering token (may be the same token
-#                              as CLOUDFLARE_API_TOKEN if it carries both
-#                              permissions)
+#   CLOUDFLARE_API_TOKEN  Workers Scripts:Edit + Browser Rendering:Edit
+#
+# That is the only secret required. prerender.mjs also wants
+# PRERENDER_CF_BROWSER_TOKEN and PRERENDER_CF_ACCOUNT_ID: the token is reused
+# for the first, and the account ID is read back from the Cloudflare API at
+# build time, so neither needs to be stored here. An optional
+# PRERENDER_CF_ACCOUNT_ID secret overrides the lookup if the token lacks
+# permission to list accounts.
 # This repo is public, so none of these may be inlined here.
 
 name: Deploy to Cloudflare
@@ -42,22 +45,32 @@ jobs:
 
       # Fail with an actionable message rather than a confusing wrangler or
       # prerender error 3 minutes into the run.
-      - name: Check required secrets are set
+      - name: Resolve Cloudflare credentials
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          PRERENDER_CF_ACCOUNT_ID: ${{ secrets.PRERENDER_CF_ACCOUNT_ID }}
-          PRERENDER_CF_BROWSER_TOKEN: ${{ secrets.PRERENDER_CF_BROWSER_TOKEN }}
+          ACCOUNT_ID_OVERRIDE: ${{ secrets.PRERENDER_CF_ACCOUNT_ID }}
         run: |
-          missing=""
-          [ -z "$CLOUDFLARE_API_TOKEN" ]       && missing="$missing CLOUDFLARE_API_TOKEN"
-          [ -z "$PRERENDER_CF_ACCOUNT_ID" ]    && missing="$missing PRERENDER_CF_ACCOUNT_ID"
-          [ -z "$PRERENDER_CF_BROWSER_TOKEN" ] && missing="$missing PRERENDER_CF_BROWSER_TOKEN"
-          if [ -n "$missing" ]; then
-            echo "::error::Missing repository secret(s):$missing"
-            echo "Add them under Settings -> Secrets and variables -> Actions."
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Missing repository secret CLOUDFLARE_API_TOKEN."
+            echo "Add it under Settings -> Secrets and variables -> Actions."
             exit 1
           fi
-          echo "All required secrets present."
+
+          # The account ID is an identifier, not a credential, but this repo is
+          # public so it is resolved at run time instead of being committed.
+          account_id="$ACCOUNT_ID_OVERRIDE"
+          if [ -z "$account_id" ]; then
+            account_id=$(curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              https://api.cloudflare.com/client/v4/accounts | jq -r '.result[0].id // empty')
+          fi
+          if [ -z "$account_id" ]; then
+            echo "::error::Could not resolve the Cloudflare account ID."
+            echo "The token cannot list accounts. Add a PRERENDER_CF_ACCOUNT_ID secret."
+            exit 1
+          fi
+          echo "::add-mask::$account_id"
+          echo "PRERENDER_CF_ACCOUNT_ID=$account_id" >> "$GITHUB_ENV"
+          echo "Credentials resolved."
 
       - run: npm ci
 
@@ -68,8 +81,7 @@ jobs:
       - name: Build (vite + prerender)
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          PRERENDER_CF_ACCOUNT_ID: ${{ secrets.PRERENDER_CF_ACCOUNT_ID }}
-          PRERENDER_CF_BROWSER_TOKEN: ${{ secrets.PRERENDER_CF_BROWSER_TOKEN }}
+          PRERENDER_CF_BROWSER_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: npm run build
 
       # Guard against shipping a build whose prerender silently under-produced.

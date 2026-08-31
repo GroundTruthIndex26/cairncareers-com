@@ -13,10 +13,17 @@
  * there is no Edge Function to keep deployed.
  */
 
+/** Minimal shape of the Workers rate-limit binding; @cloudflare/workers-types
+ * is not a dependency here, and this is the whole surface we use. */
+interface RateLimiter {
+  limit(options: { key: string }): Promise<{ success: boolean }>;
+}
+
 interface Env {
   SUPABASE_URL?: string;
   SUPABASE_SERVICE_ROLE_KEY?: string;
   ASSETS: Fetcher;
+  API_RATE_LIMITER?: RateLimiter;
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -148,6 +155,114 @@ async function handleLaunchNotifications(request: Request, env: Env): Promise<Re
 }
 
 /**
+ * SECURITY HEADERS
+ * The site previously sent none of these, so a browser had no instruction to
+ * refuse framing, to stop sniffing declared content types, or to limit where
+ * scripts may be loaded from.
+ *
+ * WHY THE CSP ALLOWS 'unsafe-inline' FOR SCRIPTS
+ * The prerendered pages carry inline JSON-LD and the inline analytics
+ * bootstrap, and the sample pages carry inline behaviour scripts. Nonces
+ * cannot be applied to static HTML that is generated at build time and then
+ * served from cache, so the honest choice is 'unsafe-inline' plus a strict
+ * source allowlist. That does NOT stop an injected inline script, but it does
+ * stop an injected script from LOADING code from an attacker's domain, and it
+ * blocks framing, plugins, form hijacking and base-tag rewriting outright.
+ *
+ * WHY HSTS OMITS `preload`
+ * Adding the domain to the browser preload list is effectively permanent and
+ * removal takes months. A one-year max-age gives the protection; preload is a
+ * commitment the site owner should make deliberately, not a side effect.
+ */
+const CSP = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "form-action 'self'",
+  "img-src 'self' data: https:",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' data: https://fonts.gstatic.com",
+  "script-src 'self' 'unsafe-inline' https://plausible.io https://www.googletagmanager.com https://*.google-analytics.com https://*.clarity.ms https://static.cloudflareinsights.com",
+  "connect-src 'self' https://plausible.io https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://cloudflareinsights.com",
+  "upgrade-insecure-requests",
+].join("; ");
+
+const SECURITY_HEADERS: Record<string, string> = {
+  "Content-Security-Policy": CSP,
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=()",
+  "Cross-Origin-Opener-Policy": "same-origin",
+};
+
+/**
+ * CACHING
+ * Every asset was served `max-age=0, must-revalidate`, so a returning visitor
+ * revalidated the hashed JS and CSS bundles and the 242 KB hero image on every
+ * navigation. Vite fingerprints everything under /assets/, so those filenames
+ * change whenever their contents do and can be cached permanently. Files under
+ * /media and /brand keep their names across edits, so they get a day of
+ * freshness plus a week of stale-while-revalidate rather than immutability.
+ * HTML keeps must-revalidate: prerendered pages change without changing URL.
+ */
+function cacheControlFor(pathname: string): string | null {
+  if (pathname.startsWith("/assets/")) return "public, max-age=31536000, immutable";
+  if (pathname.startsWith("/media/") || pathname.startsWith("/brand/")) {
+    return "public, max-age=86400, stale-while-revalidate=604800";
+  }
+  if (/\.(txt|xml)$/.test(pathname)) return "public, max-age=3600";
+  return null;
+}
+
+/** Copy a response so its headers can be edited; 204/304 carry no body. */
+function withHeaders(response: Response, pathname: string): Response {
+  const body = response.status === 204 || response.status === 304 ? null : response.body;
+  const out = new Response(body, response);
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
+  const cache = cacheControlFor(pathname);
+  if (cache) out.headers.set("Cache-Control", cache);
+  return out;
+}
+
+/** Security headers belong on API JSON too, but never its cache policy. */
+function secured(response: Response): Response {
+  const out = new Response(response.body, response);
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
+  out.headers.set("Cache-Control", "no-store");
+  return out;
+}
+
+/**
+ * ABUSE LIMIT
+ * Both endpoints write to Supabase, and neither had any limit, so a single
+ * client could insert rows as fast as it could open connections. The honeypot
+ * only catches bots that fill hidden fields. Keyed on the client IP that
+ * Cloudflare resolves, which the client cannot forge at the edge.
+ */
+async function rateLimited(request: Request, env: Env): Promise<boolean> {
+  if (!env.API_RATE_LIMITER) return false;
+  const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
+  try {
+    const { success } = await env.API_RATE_LIMITER.limit({ key: ip });
+    return !success;
+  } catch (error) {
+    // A limiter outage must not take the forms down with it.
+    console.error("rate limiter unavailable", error);
+    return false;
+  }
+}
+
+/** Reject oversized posts before parsing rather than after. */
+const MAX_BODY_BYTES = 32 * 1024;
+function tooLarge(request: Request): boolean {
+  const declared = Number(request.headers.get("Content-Length"));
+  return Number.isFinite(declared) && declared > MAX_BODY_BYTES;
+}
+
+/**
  * Both cairncareers.com and www.cairncareers.com are custom domains on this
  * Worker, so without this the whole site answers 200 on both hostnames, a
  * duplicate-content signal that the canonical tags mitigate but do not remove.
@@ -168,16 +283,26 @@ export default {
     const redirect = apexRedirect(url);
     if (redirect) return redirect;
 
-    if (url.pathname === "/api/launch-notifications" && request.method === "POST") {
-      return handleLaunchNotifications(request, env);
-    }
+    const isWrite =
+      request.method === "POST" &&
+      (url.pathname === "/api/launch-notifications" || url.pathname === "/api/contact");
 
-    if (url.pathname === "/api/contact" && request.method === "POST") {
-      return handleContact(request, env);
+    if (isWrite) {
+      if (tooLarge(request)) {
+        return secured(Response.json({ error: "That request is too large." }, { status: 413 }));
+      }
+      if (await rateLimited(request, env)) {
+        return secured(
+          Response.json({ error: "Too many requests. Please wait a moment and try again." }, { status: 429 }),
+        );
+      }
+      const handler =
+        url.pathname === "/api/contact" ? handleContact : handleLaunchNotifications;
+      return secured(await handler(request, env));
     }
 
     // Any other /api/* path (or a non-POST on this one) falls through to assets,
     // which will 404 it via not_found_handling. There's nothing else to serve here.
-    return env.ASSETS.fetch(request);
+    return withHeaders(await env.ASSETS.fetch(request), url.pathname);
   },
 } satisfies ExportedHandler<Env>;

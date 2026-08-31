@@ -7,7 +7,7 @@
   // workers.dev URL stays off. But `preview_urls` defaults to matching
   // `workers_dev`, so leaving it unset means every production `wrangler
   // deploy` silently disables versioned preview URLs account-wide for this
-  // Worker — which breaks the *next* build's scripts/prerender.mjs, which
+  // Worker, which breaks the *next* build's scripts/prerender.mjs, which
   // needs a `wrangler versions upload` preview URL to crawl. Asserting both
   // explicitly on every deploy keeps preview URLs on without exposing prod.
   "workers_dev": false,
@@ -17,13 +17,20 @@
     "binding": "ASSETS",
     // Every marketing route is prerendered to its own index.html by
     // scripts/prerender.mjs, so the SPA catch-all is not used for those
-    // routes — see ROUTES there, which must cover every route below or a
+    // routes. See ROUTES there, which must cover every route below or a
     // missing file becomes a live 404.
     //
     // "404-page" serves dist/404.html for anything unmatched.
-    // "auto-trailing-slash" lets /contact resolve to /contact/index.html.
+    //
+    // "drop-trailing-slash" lets /contact resolve to /contact/index.html and
+    // redirects /contact/ to /contact. It must stay "drop" and not the
+    // "auto-trailing-slash" default, because "auto" serves folder indexes at
+    // the SLASHED URL and 307s /contact -> /contact/. Every <link rel=canonical>
+    // (see CanonicalUrl.tsx) and every <loc> in the generated sitemap
+    // (scripts/sitemap.mjs) is the unslashed form, so under "auto" the whole
+    // sitemap and every self-referential canonical pointed at a redirect.
     "not_found_handling": "404-page",
-    "html_handling": "auto-trailing-slash",
+    "html_handling": "drop-trailing-slash",
     // The Worker must see every request, not just /api/*, because it issues
     // the www -> apex 301 (see apexRedirect in worker/index.ts) and a redirect
     // has to happen before the asset router answers. Asset requests still get

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { breadcrumbJsonLd } from "@/components/Breadcrumbs";
+import Breadcrumbs, { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import "./Roadmap.css";
 
@@ -22,7 +22,7 @@ const DASHBOARD_NAV = [
 /**
  * The one dashboard-preview page promoted to a real, indexable route (per
  * the sitewide link to it from Home's sample-dashboard grid). Every other
- * sample page stays a plain static file under /dashboard-preview/ — this is
+ * sample page stays a plain static file under /dashboard-preview/. This is
  * the only one that needed its own title, canonical URL, and prerendering.
  */
 export default function Roadmap() {
@@ -75,9 +75,9 @@ export default function Roadmap() {
       <div className="wrap">
         <div className="stack">
           <div>
-            <span className="eyebrow chipbrow" style={{ fontSize: ".68rem" }}>Home / Roadmap</span>
+            <Breadcrumbs items={BREADCRUMB} className="rm-crumbs" />
             <h1 className="t">Twelve months, mapped so the biggest gaps close first.</h1>
-            <p className="lede">This is not a list of good ideas. Each month is tied to a specific gap on your evidence page, sequenced so the earliest work makes the later work easier, with the breaks between terms doing real jobs of their own. It works the same whether you are still in classes or already out.</p>
+            <p className="lede">This is not a list of good ideas. Each month is tied to a specific gap on your evidence page, sequenced so the earliest work makes the later work easier, with the breaks between terms doing real jobs of their own. Still in classes or already graduated, the sequence works the same.</p>
           </div>
 
           <div className="mockbar">Sample dashboard. Every name and number here is invented so you can see how it works.</div>

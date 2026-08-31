@@ -1,5 +1,5 @@
 /*
- * Roadmap page — the "product demo" type system, shared with the
+ * Roadmap page: the "product demo" type system, shared with the
  * dashboard-preview sample pages it's promoted from (Space Grotesk/Mono,
  * not the site's IBM Plex identity). Kept deliberately distinct: it signals
  * to a reader that they've stepped from marketing copy into a product demo.
@@ -60,6 +60,14 @@
 .stack { display: flex; flex-direction: column; gap: 34px; padding-bottom: 56px; }
 .eyebrow { font-family: "Space Mono",monospace; font-size: .68rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
 .chipbrow { display: inline-block; border: 2px solid var(--rm-ink); background: var(--rm-lime); padding: 4px 9px; box-shadow: 4px 4px 0 var(--rm-ink); }
+
+/* The breadcrumb trail wearing this page's chip, not the sitewide muted one.
+   Was a plain "Home / Roadmap" label, which left the BreadcrumbList JSON-LD
+   below with no visible trail to match. */
+.breadcrumb-nav.rm-crumbs { display: inline-flex; margin-bottom: 0; font: 700 .68rem "Space Mono",monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--rm-ink); border: 2px solid var(--rm-ink); background: var(--rm-lime); padding: 4px 9px; box-shadow: 4px 4px 0 var(--rm-ink); }
+.breadcrumb-nav.rm-crumbs a { color: var(--rm-ink); }
+.breadcrumb-nav.rm-crumbs a:hover { color: var(--rm-ink); text-decoration: underline; }
+.breadcrumb-nav.rm-crumbs span[aria-current] { color: var(--rm-ink); font-weight: 700; }
 h1.t { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-size: 2.3rem; line-height: 1.02; letter-spacing: -.02em; margin: 16px 0 0; max-width: 22ch; }
 h2.t { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-size: 1.5rem; line-height: 1.06; letter-spacing: -.015em; margin: 10px 0 0; max-width: 26ch; }
 .lede { margin: 12px 0 0; max-width: 62ch; font-size: 1rem; color: #2a2a2a; }

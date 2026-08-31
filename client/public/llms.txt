@@ -1,0 +1,20 @@
+# Cairn Careers
+
+> A career-mapping tool for students that generates personalized dashboards with salary data, job growth projections, and step-by-step action plans.
+
+Students input their interests, coursework, and experience to receive a nine-page dashboard covering resume guidance, LinkedIn, networking, interview prep, and a graduation-timeline roadmap.
+
+## Product
+
+- [Home](https://cairncareers.com/): Overview of the career-mapping tool and how the dashboard is generated.
+- [Roadmap](https://cairncareers.com/roadmap): Sample twelve-month roadmap, each month tied to a specific evidence gap and sequenced so the earliest work makes the later work easier.
+
+## Support
+
+- [Contact](https://cairncareers.com/contact): Form or details for reaching the Cairn Careers team.
+
+## Legal
+
+- [Privacy Policy](https://cairncareers.com/privacy): How user data is collected and handled.
+- [Terms of Service](https://cairncareers.com/terms): Terms governing use of the platform.
+- [Refund Policy](https://cairncareers.com/refunds): Conditions and process for refunds.

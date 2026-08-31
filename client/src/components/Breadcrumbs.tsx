@@ -21,9 +21,9 @@ export function breadcrumbJsonLd(items: Crumb[]) {
  * Rendered on every secondary page so both users and crawlers see how a page
  * sits in the site, not just the JSON-LD a person never sees.
  */
-export default function Breadcrumbs({ items }: { items: Crumb[] }) {
+export default function Breadcrumbs({ items, className }: { items: Crumb[]; className?: string }) {
   return (
-    <nav aria-label="Breadcrumb" className="breadcrumb-nav">
+    <nav aria-label="Breadcrumb" className={className ? `breadcrumb-nav ${className}` : "breadcrumb-nav"}>
       {items.map((item, index) => (
         <span key={item.name} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
           {index > 0 && <span aria-hidden="true">/</span>}

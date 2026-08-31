@@ -52,8 +52,12 @@
 .roadmap-page .foot .links a { text-decoration: none; }
 .roadmap-page .foot .links a:hover { color: var(--rm-lime); text-decoration: underline; }
 @media (max-width: 640px) {
-  .roadmap-page .hdr-in { gap: 12px; }
+  .roadmap-page .hdr-in { gap: 12px; padding: 0 14px; }
   .roadmap-page .hdr nav { display: none; }
+  /* The Dashboard text link pushed the right-hand controls 17px past a 375px
+     viewport, clipping the Preorder chip. The dashboard is still reachable
+     from the page body and the footer. */
+  .roadmap-page .hdr-textlink { display: none; }
 }
 
 .wrap { max-width: 1180px; margin: 0 auto; padding: 34px 20px 0; }
@@ -94,9 +98,17 @@ h2.t { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-si
 .sources ol { margin: 0; padding-left: 20px; }
 .sources a { color: #0b0b0b; border-bottom: 2px solid var(--rm-magenta); text-decoration: none; word-break: break-word; }
 
-/* The car moves smoothly along the route, then pivots over the rear tire for
-   a wheelie before settling level on the same route line. */
-.road { position: relative; height: 122px; overflow: hidden; isolation: isolate; }
+/* The car accelerates along the route, then pivots over the rear tire for a
+   wheelie before settling level on the same route line.
+ *
+ * WHY EVERY STOP IS A FRACTION OF --drive-end
+ * The stops used to be percentages of the track while the finish was
+ * calc(100% - 188px). Those two cross over at about 671px of track width, so
+ * on a phone the 88% stop sat FURTHER RIGHT than the finish and the car drove
+ * forward, then reversed into position before the wheelie. Expressing every
+ * stop as a fraction of the same finish keeps the motion monotonic at any
+ * width, and the widening gaps between stops are what make it pick up speed. */
+.road { --drive-end: calc(100% - 188px); position: relative; height: 122px; overflow: hidden; isolation: isolate; }
 .road::after { content: ""; position: absolute; z-index: 1; left: 0; right: 0; bottom: 17px; height: 8px; border: 2px solid var(--rm-ink); border-radius: 999px; background: linear-gradient(90deg,var(--rm-cyan) 0 42%,var(--rm-lime) 42% 72%,var(--rm-magenta) 72% 100%); box-shadow: 4px 4px 0 var(--rm-ink); }
 .road::before { content: ""; position: absolute; z-index: 2; left: -96px; bottom: 37px; width: 62px; height: 38px; opacity: 0; background: radial-gradient(circle at 13px 26px,rgba(255,255,255,.96) 0 5px,transparent 6px),radial-gradient(circle at 26px 16px,rgba(255,255,255,.9) 0 8px,transparent 9px),radial-gradient(circle at 42px 25px,rgba(255,255,255,.84) 0 6px,transparent 7px),radial-gradient(circle at 53px 10px,rgba(255,255,255,.72) 0 4px,transparent 5px); filter: drop-shadow(2px 2px 0 rgba(11,11,11,.24)); }
 .roadlabel { position: absolute; z-index: 4; top: 6px; left: 2px; color: #3a3a3a; font-family: "Space Mono",monospace; font-size: .62rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
@@ -105,20 +117,21 @@ h2.t { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-si
 .road.go::before { animation: rear-smoke 8.4s linear forwards; }
 @keyframes drive {
   0% { left: -170px; transform: rotate(0deg); }
-  30% { left: 3%; transform: rotate(0deg); }
-  56% { left: 27%; transform: rotate(0deg); }
-  76% { left: 56%; transform: rotate(0deg); }
-  88% { left: 72%; transform: rotate(0deg); }
-  91% { left: calc(100% - 188px); transform: rotate(0deg); }
-  94%, 97% { left: calc(100% - 188px); transform: rotate(-18deg); }
-  100% { left: calc(100% - 188px); transform: rotate(0deg); }
+  26% { left: calc(var(--drive-end) * 0.07); transform: rotate(0deg); }
+  46% { left: calc(var(--drive-end) * 0.19); transform: rotate(0deg); }
+  63% { left: calc(var(--drive-end) * 0.35); transform: rotate(0deg); }
+  77% { left: calc(var(--drive-end) * 0.55); transform: rotate(0deg); }
+  86% { left: calc(var(--drive-end) * 0.77); transform: rotate(0deg); }
+  91% { left: var(--drive-end); transform: rotate(0deg); }
+  94%, 97% { left: var(--drive-end); transform: rotate(-18deg); }
+  100% { left: var(--drive-end); transform: rotate(0deg); }
 }
 @keyframes rear-smoke {
   0%, 90% { left: -96px; opacity: 0; transform: scale(.3) translateY(10px); }
-  93% { left: calc(100% - 205px); opacity: .7; transform: scale(.5) translateY(6px); }
-  96% { left: calc(100% - 202px); opacity: .95; transform: scale(1.05) translateY(-3px); }
-  98% { left: calc(100% - 198px); opacity: .55; transform: scale(1.35) translateY(-14px); }
-  100% { left: calc(100% - 194px); opacity: 0; transform: scale(1.6) translateY(-24px); }
+  93% { left: calc(var(--drive-end) - 17px); opacity: .7; transform: scale(.5) translateY(6px); }
+  96% { left: calc(var(--drive-end) - 14px); opacity: .95; transform: scale(1.05) translateY(-3px); }
+  98% { left: calc(var(--drive-end) - 10px); opacity: .55; transform: scale(1.35) translateY(-14px); }
+  100% { left: calc(var(--drive-end) - 6px); opacity: 0; transform: scale(1.6) translateY(-24px); }
 }
 .wheel { transform-box: fill-box; transform-origin: center; }
 .road.go .wheel { animation: spin .5s linear 16 forwards; }
@@ -146,7 +159,8 @@ h2.t { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-si
 .stack > .sec:nth-child(7):has(.termhead) + .sec .breakband { background: #e8ff86; border-left-color: var(--rm-magenta); }
 
 @media (max-width: 640px) {
-  .road { height: 112px; }
+  /* Car is narrower here, so the finish sits closer to the right edge. */
+  .road { height: 112px; --drive-end: calc(100% - 150px); }
   .car { width: 128px; }
 }
 @media (max-width: 980px) { .g2, .g4 { grid-template-columns: 1fr; } h1.t { font-size: 1.85rem; } }

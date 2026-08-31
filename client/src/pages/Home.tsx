@@ -477,6 +477,11 @@ export default function Home() {
             <a onClick={() => setMobileOpen(false)} href="/roadmap">Roadmap</a>
             <a onClick={() => setMobileOpen(false)} href="#pricing">Pricing</a>
             <a onClick={() => setMobileOpen(false)} href="#about">About</a>
+            <a onClick={() => setMobileOpen(false)} href="#faq">FAQ</a>
+            <a onClick={() => setMobileOpen(false)} href="/methodology">Methodology</a>
+            {/* The call to action lives here on small screens. Kept in the
+                header row it pushed the bar 175px past a 375px viewport. */}
+            <a className="mobile-nav-cta" onClick={() => setMobileOpen(false)} href="#premium-checkout">Show me my career paths <ArrowRight /></a>
           </nav>
         )}
       </header>

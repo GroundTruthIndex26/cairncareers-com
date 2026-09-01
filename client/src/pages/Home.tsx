@@ -560,7 +560,6 @@ export default function Home() {
             <div className="sample-dashboard-heading">
               <SectionLabel number="03">Sample Dashboard</SectionLabel>
               <h2>See the Sample Dashboard before you decide.</h2>
-              <p>Below is the above-the-fold view from the Sample Dashboard, followed by smaller links to each of its nine full pages.</p>
             </div>
 
             <div className="sample-dashboard-frame" aria-label="Illustrative Sample Dashboard preview">

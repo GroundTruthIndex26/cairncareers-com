@@ -716,7 +716,7 @@ export default function Home() {
 
         <section id="faq" className="paper-section faq-section">
           <div className="container">
-            <SectionLabel number="06">Common questions</SectionLabel>
+            <SectionLabel number="06">FAQs</SectionLabel>
             <h2>Questions people actually ask.</h2>
             <div className="faq-list">
               {FAQS.map((item) => (

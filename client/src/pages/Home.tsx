@@ -329,12 +329,20 @@ export default function Home() {
 
   useEffect(() => {
     document.documentElement.lang = locale;
+    /* Only a non-default choice is written into the URL. Rewriting every visit
+       to /?locale=en-US replaced the bare URL in the browser's history before
+       its title had landed, so browsers kept whatever title this domain served
+       before CairnCareers existed as the title for https://cairncareers.com/.
+       It also put a query string on every link people copied. */
     const params = new URLSearchParams(window.location.search);
-    params.set("locale", locale);
+    if (locale === "en-US") params.delete("locale");
+    else params.set("locale", locale);
     if (campaign === "default") params.delete("source");
     else params.set("source", campaign);
     const query = params.toString();
-    window.history.replaceState({}, "", `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
+    const next = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`;
+    const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    if (next !== current) window.history.replaceState({}, "", next);
   }, [campaign, locale]);
 
   useEffect(() => {

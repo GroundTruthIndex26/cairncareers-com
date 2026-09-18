@@ -75,7 +75,7 @@ export const fr: typeof en = {
   dashboard: {
     label: "Tableau de bord type",
     titleLine1: "Voici Maya.",
-    titleLine2: "Découvrez le tableau de bord type de Maya avant de décider.",
+    titleLine2: "Découvrez le tableau de bord type de Maya.",
     frameLabel: "Aperçu illustratif du tableau de bord type",
     kicker: "Tableau de bord Premium",
     stand: "Où vous en êtes, Maya.",

@@ -76,7 +76,7 @@ export const en = {
   dashboard: {
     label: "Sample Dashboard",
     titleLine1: "Meet Maya.",
-    titleLine2: "See Maya's sample dashboard before you decide.",
+    titleLine2: "See Maya's sample dashboard.",
     frameLabel: "Illustrative Sample Dashboard preview",
     kicker: "Premium dashboard",
     stand: "Where you stand, Maya.",

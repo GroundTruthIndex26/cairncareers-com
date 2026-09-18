@@ -75,7 +75,7 @@ export const es: typeof en = {
   dashboard: {
     label: "Panel de muestra",
     titleLine1: "Te presentamos a Maya.",
-    titleLine2: "Mira el panel de muestra de Maya antes de decidir.",
+    titleLine2: "Mira el panel de muestra de Maya.",
     frameLabel: "Vista ilustrativa del panel de muestra",
     kicker: "Panel Premium",
     stand: "Dónde estás, Maya.",

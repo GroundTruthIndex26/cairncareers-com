@@ -206,7 +206,6 @@ export const en = {
     emailLabel: "Email address",
     submit: "Notify me at launch",
     saving: "Saving…",
-    small: "Your email is saved to the launch-notification list.",
     close: "Close checklist offer",
     successTitle: "You are on the launch-notification list.",
     successBody: "We will use this email to let you know when CairnCareers is live.",

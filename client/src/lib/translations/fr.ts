@@ -205,7 +205,6 @@ export const fr: typeof en = {
     emailLabel: "Adresse e-mail",
     submit: "Me prévenir au lancement",
     saving: "Enregistrement…",
-    small: "Votre e-mail est enregistré dans la liste d'alerte de lancement.",
     close: "Fermer",
     successTitle: "Vous êtes sur la liste d'alerte de lancement.",
     successBody: "Nous utiliserons cet e-mail pour vous prévenir quand CairnCareers sera disponible.",

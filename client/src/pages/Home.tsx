@@ -732,7 +732,6 @@ export default function Home() {
               <label htmlFor="modal-email">{t.modal.emailLabel}</label>
               <div><Mail /><input id="modal-email" type="email" required placeholder={t.beta.placeholder} value={email} onChange={(event) => setEmail(event.target.value)} /></div>
               <button type="submit" className="primary-cta" disabled={isLeadSubmitting}>{isLeadSubmitting ? t.modal.saving : t.modal.submit} <ArrowRight /></button>
-              <small>{t.modal.small}</small>
             </form>
           </div>
         </div>

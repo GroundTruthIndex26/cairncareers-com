@@ -28,6 +28,7 @@ export function LanguageSwitch() {
     <label className="compact-select">
       <Globe2 aria-hidden="true" />
       <span className="sr-only">{t.languageSwitch}</span>
+      <span className="compact-select-value" aria-hidden="true">{LANGS[lang].short}</span>
       <select value={lang} onChange={(event) => setLang(event.target.value as Lang)}>
         {(Object.keys(LANGS) as Lang[]).map((key) => (
           <option key={key} value={key} lang={LANGS[key].locale}>{LANGS[key].short}</option>

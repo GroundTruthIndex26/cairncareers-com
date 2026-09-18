@@ -64,7 +64,13 @@ const I18nContext = createContext<I18n | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(initialLang);
-  const currency = readGeo()?.currency ?? "USD";
+  // ?currency=CAD previews what a visitor from that currency's country sees;
+  // the real value comes from the country Cloudflare resolved.
+  const currency = useMemo<Currency>(() => {
+    const override = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("currency");
+    if (override && override.toUpperCase() in RATES) return override.toUpperCase() as Currency;
+    return readGeo()?.currency ?? "USD";
+  }, []);
 
   const setLang = useCallback((next: Lang) => {
     setLangState(next);

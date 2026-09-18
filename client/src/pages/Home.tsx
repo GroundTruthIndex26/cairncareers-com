@@ -597,7 +597,6 @@ export default function Home() {
                       <button type="submit" disabled={betaStatus === "submitting"}>{betaStatus === "submitting" ? t.beta.saving : t.beta.submit} <ArrowRight /></button>
                     </div>
                     {betaError && <p className="form-error" role="alert">{betaError}</p>}
-                    <small>{t.beta.small}</small>
                   </form>
                 </>
               )}

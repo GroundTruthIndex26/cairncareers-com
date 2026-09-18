@@ -5,7 +5,7 @@
  * switch (kept in localStorage), then a ?lang= query (handy for sharing a
  * Spanish or French link), then the country Cloudflare resolved at the edge
  * (window.__cairnGeo, written by worker/index.ts), then English. Currency
- * follows the country, with the exceptions noted in I18nProvider.
+ * follows the country only; there is no manual currency switch.
  */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { type Currency, type Geo, type Lang, LANGS, RATES, isLang } from "./geo";
@@ -64,20 +64,13 @@ const I18nContext = createContext<I18n | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(initialLang);
-  // Currency follows the visitor's country. Two exceptions: ?currency=CAD
-  // previews another country's view, and a visitor in a US-dollar country who
-  // switches the page to French or Spanish by hand sees euros, because a
-  // French page quoting only dollars reads as broken. Someone located in a
-  // non-dollar country keeps their own currency whatever language they pick.
+  // ?currency=CAD previews what a visitor from that currency's country sees;
+  // the real value comes from the country Cloudflare resolved.
   const currency = useMemo<Currency>(() => {
     const override = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("currency");
     if (override && override.toUpperCase() in RATES) return override.toUpperCase() as Currency;
-    const geo = readGeo();
-    const local = geo?.currency ?? "USD";
-    if (local !== "USD") return local;
-    const geoLang = geo?.lang ?? "en";
-    return lang !== "en" && lang !== geoLang ? "EUR" : "USD";
-  }, [lang]);
+    return readGeo()?.currency ?? "USD";
+  }, []);
 
   const setLang = useCallback((next: Lang) => {
     setLangState(next);

@@ -345,6 +345,8 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .beta-confirmation svg { flex:0 0 auto; width:26px; height:26px; margin-top:3px; }
 .beta-confirmation p { margin:0; font-size:19px; font-weight:600; line-height:1.4; }
 .pricing-section { padding:105px 0; background:var(--paper-light); }
+.pricing-note { margin:52px 0 0; padding:18px 22px; background:var(--ink); color:white; border:2px solid var(--ink); box-shadow:6px 6px 0 var(--cyan); text-align:center; font-size:15px; }
+.pricing-note a { color:var(--lime); text-decoration:underline; text-underline-offset:3px; }
 .pricing-grid { position:relative; display:grid; grid-template-columns:.8fr .8fr 1.25fr; gap:20px; align-items:stretch; }
 .pricing-grid:before { content:""; position:absolute; left:-18px; right:24%; top:34px; height:2px; background:linear-gradient(90deg,var(--cyan),var(--pink)); transform:rotate(-1.5deg); }
 .price-card { padding:26px; background:white; border:2px solid var(--ink); box-shadow:6px 6px 0 var(--ink); }
@@ -383,7 +385,7 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .premium-toggle button { color:#f5f8f2; }
 .premium-toggle button.active { color:var(--ink); background:var(--lime); }
 .prelaunch-label { background:var(--pink); color:white; }
-.beta-ticker { overflow:hidden; margin-bottom:48px; background:var(--lime); color:var(--ink); border-block:2px solid var(--ink); }
+.beta-ticker { position:absolute; left:-2px; right:-2px; top:-23px; z-index:2; overflow:hidden; background:var(--lime); color:var(--ink); border:2px solid var(--ink); box-shadow:5px 5px 0 var(--ink); }
 .beta-ticker-track { display:flex; }
 .beta-ticker-group { flex:0 0 auto; min-width:100%; display:flex; justify-content:space-around; }
 .beta-ticker-group span { display:flex; align-items:center; gap:22px; padding:14px 22px; font:700 14px/1 "IBM Plex Mono",ui-monospace,monospace; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }

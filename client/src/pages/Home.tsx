@@ -774,11 +774,7 @@ export default function Home() {
                 <h2>See the price before checkout.</h2>
               </div>
             </div>
-          </div>
 
-          {!SHOW_DISCOUNTED_PRICING && <BetaTicker text="Beta users free until launch!" />}
-
-          <div className="container">
             <div className="pricing-grid">
               <article className="price-card">
                 <span className="price-for">Where do I stand?</span>
@@ -828,7 +824,12 @@ export default function Home() {
                   <div id="stripe-payment-link" className="checkout-note"><LockKeyhole /> Stripe Payment Link for Premium {premiumBilling} will open here when configured.</div>
                 )}
               </article>
+              {/* Last in the grid on purpose: the card styles above count
+                  children (nth-child), and the running line must not shift them. */}
+              {!SHOW_DISCOUNTED_PRICING && <BetaTicker text="Beta users free until launch!" />}
             </div>
+
+            <p className="pricing-note">Group pricing and enterprise pricing are available - contact for more information: <a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a></p>
           </div>
         </section>
 
@@ -865,7 +866,7 @@ export default function Home() {
             <span className="hero-eyebrow">The next marker is yours</span>
             <h2>Find my first move.</h2>
             <a className="primary-cta" href="#beta-access">Show me my career paths <ArrowRight /></a>
-            <p>Launches October 31 · 30-day money-back guarantee: pre-launch from launch; after launch from purchase</p>
+            <p>Launches October 31 · 30-day money-back guarantee</p>
           </div>
         </section>
       </main>

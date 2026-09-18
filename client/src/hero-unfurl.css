@@ -1,0 +1,52 @@
+/**
+ * Hero route map: unfurl with the scroll.
+ *
+ * index.css reveals cairn 1, 2, 3 and then the route card on a timer. This
+ * sheet replaces the timer for cairn 2, cairn 3 and the card with the page's
+ * own scroll position, so the map unfurls exactly as far as the visitor has
+ * moved the wheel or trackpad: it advances while they scroll, holds when they
+ * stop, and rolls back if they scroll up. Cairn 1 still lifts by itself on
+ * load, so the hero is never an empty frame before the first scroll.
+ *
+ * Pure CSS (scroll-driven animations). Browsers without animation-timeline
+ * ignore this whole sheet and keep the timed sequence from index.css, and
+ * visitors who prefer reduced motion get the finished picture from index.css
+ * as before. Load this after index.css; it relies on its veil-lift and
+ * reveal keyframes.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .hero-route-veil .route-veil-2,
+    .hero-route-veil .route-veil-3,
+    .hero-route-card {
+      animation-duration: auto;
+      animation-delay: 0s;
+      animation-timing-function: linear;
+      animation-timeline: scroll(root block);
+    }
+
+    /* Desktop: the map sits beside the headline and is on screen at the top
+       of the page, so the first 360px of scrolling does the unfurling. The
+       ranges overlap slightly so the route reads as one continuous motion. */
+    .hero-route-veil .route-veil-2 { animation-range: 0px 140px; }
+    .hero-route-veil .route-veil-3 { animation-range: 120px 260px; }
+    .hero-route-card { animation-range: 240px 360px; }
+
+    /* Stacked layout: the map is below the headline and scrolls into view, so
+       it unfurls against its own passage through the screen instead. "cover
+       50%" is roughly the moment the whole map is comfortably in view. */
+    @media (max-width: 1020px) {
+      /* overflow:hidden makes the hero a scroll container that never scrolls,
+         and the map's timeline would measure against it and stand still.
+         clip trims the same overflow without becoming a scroll container. */
+      .hero-section { overflow: clip; }
+      .hero-visual { view-timeline-name: --hero-map; view-timeline-axis: block; }
+      .hero-route-veil .route-veil-2,
+      .hero-route-veil .route-veil-3,
+      .hero-route-card { animation-timeline: --hero-map; }
+      .hero-route-veil .route-veil-2 { animation-range: cover 22% cover 36%; }
+      .hero-route-veil .route-veil-3 { animation-range: cover 34% cover 48%; }
+      .hero-route-card { animation-range: cover 46% cover 58%; }
+    }
+  }
+}

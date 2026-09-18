@@ -8,10 +8,8 @@ import {
   BarChart3,
   CalendarDays,
   Check,
-  ChevronDown,
   CirclePlay,
   ExternalLink,
-  Globe2,
   LayoutDashboard,
   LockKeyhole,
   Mail,
@@ -23,6 +21,9 @@ import {
 } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { LanguageSwitch } from "@/components/PageChrome";
+import { usePageMeta } from "@/hooks/usePageMeta";
+import { plain, rich, useI18n } from "@/lib/i18n";
 
 const BASE_URL = import.meta.env.BASE_URL;
 const ASSETS = {
@@ -38,18 +39,19 @@ const BRAND_ASSETS = {
 
 const leadCaptureEndpoint = import.meta.env.VITE_LEAD_CAPTURE_ENDPOINT || "/api/launch-notifications";
 
-type LocaleKey = "en-US" | "en-CA" | "en-GB";
 type CampaignKey = "default" | "campus" | "social";
 type BillingCycle = "monthly" | "annual";
 
-const proPricing: Record<BillingCycle, { price: string; cadence: string; savings?: string }> = {
-  monthly: { price: "US$6", cadence: "USD / month" },
-  annual: { price: "US$46", cadence: "USD / year", savings: "35% savings" },
+/** List prices in US dollars. The page shows them in the visitor's currency
+ * (see price() in lib/i18n.tsx); Stripe charges USD. */
+const proPricing: Record<BillingCycle, { usd: number; savings?: boolean }> = {
+  monthly: { usd: 6 },
+  annual: { usd: 46, savings: true },
 };
 
-const premiumPricing: Record<BillingCycle, { regular: string; prelaunch: string; cadence: string; savings?: string }> = {
-  monthly: { regular: "US$11", prelaunch: "US$8", cadence: "USD / month" },
-  annual: { regular: "US$86", prelaunch: "US$61", cadence: "USD / year", savings: "35% savings" },
+const premiumPricing: Record<BillingCycle, { regular: number; prelaunch: number; savings?: boolean }> = {
+  monthly: { regular: 11, prelaunch: 8 },
+  annual: { regular: 86, prelaunch: 61, savings: true },
 };
 
 /**
@@ -78,17 +80,6 @@ const premiumPaymentLinks: Record<BillingCycle, string> = {
 };
 
 /**
- * The header's country picker. It is meant to switch the page's language and
- * the currency prices are shown in; neither is built yet, so for now it only
- * sets the document language and the ?locale= query.
- */
-const localeOptions: Record<LocaleKey, { label: string; short: string }> = {
-  "en-US": { label: "United States · English", short: "US · USD" },
-  "en-CA": { label: "Canada · English (pilot)", short: "CA · CAD" },
-  "en-GB": { label: "United Kingdom · English (pilot)", short: "UK · GBP" },
-};
-
-/**
  * The permissioned-proof queue is written and ready, but every slot in it is
  * still empty. Rendering it shipped roughly 1.5 KB of "reserved story 1",
  * "publish with cohort, date range, and source" and the review-site checklist
@@ -97,105 +88,25 @@ const localeOptions: Record<LocaleKey, { label: string; short: string }> = {
  */
 const SHOW_PROOF_QUEUE = false;
 
-const campaignVariants: Record<
-  CampaignKey,
-  { label: string; eyebrow: string; body: string }
-> = {
-  default: {
-    label: "Default",
-    eyebrow: "For college students and recent graduates",
-    body: "Compare realistic career paths using salary, job growth, and AI context, then leave with a next move you can explain.",
-  },
-  campus: {
-    label: "Campus partner",
-    eyebrow: "From campus to a first role that fits",
-    body: "Turn your coursework, experiences, and interests into a career route you can discuss with an adviser, professor, or recruiter.",
-  },
-  social: {
-    label: "Paid social",
-    eyebrow: "Worried AI changes your first-job options?",
-    body: "See which tasks are exposed, which skills stay durable, and what to do next, without asking a general chatbot to guess.",
-  },
-};
-
-const steps = [
-  ["01", "Bring what you know", "Your interests, coursework, experience, and the work that holds your attention."],
-  ["02", "Read the whole picture", "Salary, job growth, and AI exposure in one place, not isolated numbers."],
-  ["03", "Leave with a route", "A practical LinkedIn, networking, and first-conversation direction."],
-];
-
+/** The nine sample-dashboard pages; their names and blurbs live in lib/translations. */
 const dashboardAreas = [
-  {
-    number: "01",
-    title: "Evidence",
-    body: "Turn real work into proof that strengthens a resume bullet, LinkedIn line, and interview answer.",
-    href: `${BASE_URL}dashboard-preview/evidence`,
-    accent: "lime",
-  },
-  {
-    number: "02",
-    title: "Portfolio",
-    body: "Keep the work itself beside the claim it supports: case studies, reports, prototypes, and decks.",
-    href: `${BASE_URL}dashboard-preview/portfolio`,
-    accent: "cyan",
-  },
-  {
-    number: "03",
-    title: "Resume",
-    body: "See how one update can carry through a clean, standard resume built from real evidence.",
-    href: `${BASE_URL}dashboard-preview/resume`,
-    accent: "pink",
-  },
-  {
-    number: "04",
-    title: "LinkedIn",
-    body: "Preview copyable profile blocks without scraping, password requests, or opaque automation.",
-    href: `${BASE_URL}dashboard-preview/linkedin`,
-    accent: "amber",
-  },
-  {
-    number: "05",
-    title: "Network",
-    body: "Follow warm paths and use the exact message that makes a first outreach easier to send.",
-    href: `${BASE_URL}dashboard-preview/network`,
-    accent: "cyan",
-  },
-  {
-    number: "06",
-    title: "Interview",
-    body: "Practice clear standard and role-specific answers grounded in evidence you can explain.",
-    href: `${BASE_URL}dashboard-preview/interview`,
-    accent: "lime",
-  },
-  {
-    number: "07",
-    title: "Careers",
-    body: "Compare pay, growth, work location, and AI context without pretending money changes the score.",
-    href: `${BASE_URL}dashboard-preview/careers`,
-    accent: "amber",
-  },
-  {
-    number: "08",
-    title: "Roadmap",
-    body: "See a term-by-term route that closes the biggest evidence gaps first.",
-    href: "/roadmap",
-    accent: "pink",
-  },
-  {
-    number: "09",
-    title: "Clean-up",
-    body: "Understand the privacy-first path for sensitive context that should never be described to a model.",
-    href: `${BASE_URL}dashboard-preview/cleanup`,
-    accent: "lime",
-  },
+  { number: "01", href: `${BASE_URL}dashboard-preview/evidence`, accent: "lime" },
+  { number: "02", href: `${BASE_URL}dashboard-preview/portfolio`, accent: "cyan" },
+  { number: "03", href: `${BASE_URL}dashboard-preview/resume`, accent: "pink" },
+  { number: "04", href: `${BASE_URL}dashboard-preview/linkedin`, accent: "amber" },
+  { number: "05", href: `${BASE_URL}dashboard-preview/network`, accent: "cyan" },
+  { number: "06", href: `${BASE_URL}dashboard-preview/interview`, accent: "lime" },
+  { number: "07", href: `${BASE_URL}dashboard-preview/careers`, accent: "amber" },
+  { number: "08", href: "/roadmap", accent: "pink" },
+  { number: "09", href: `${BASE_URL}dashboard-preview/cleanup`, accent: "lime" },
 ];
 
 /**
  * FAQ content, single-sourced.
  *
- * The visible markup and the FAQPage JSON-LD below are both generated from
- * this one array, so the structured data can never drift from what a reader
- * actually sees, which is the requirement structured data has to meet.
+ * The visible markup and the FAQPage JSON-LD are both generated from the same
+ * list in lib/translations, so the structured data can never drift from what
+ * a reader actually sees, which is the requirement structured data has to meet.
  *
  * WHY THESE ANSWERS ARE SHAPED THIS WAY
  * Every answer states its conclusion in the first sentence and stands on its
@@ -203,63 +114,14 @@ const dashboardAreas = [
  * answer engine can lift cleanly. Ten pages linked to /#faq for a section
  * that did not exist, so this also fixes a dead anchor sitewide.
  */
-const FAQS: { q: string; a: React.ReactNode; plain: string }[] = [
-  {
-    q: "What is Cairn Careers?",
-    a: <>Cairn Careers is a career-planning tool for college students and recent graduates. It turns your interests, coursework, and experience into an AI-exposure score for each career path you are weighing, alongside a sequenced plan toward a first job. It is a product of Phronesis Labs LLC and is not affiliated with Cairn University or Cairn Group.</>,
-    plain: "Cairn Careers is a career-planning tool for college students and recent graduates. It turns your interests, coursework, and experience into an AI-exposure score for each career path you are weighing, alongside a sequenced plan toward a first job. It is a product of Phronesis Labs LLC and is not affiliated with Cairn University or Cairn Group.",
-  },
-  {
-    q: "How is the AI-exposure score calculated?",
-    a: <>Each task in an occupation is weighted by how much of the work it accounts for, multiplied by that task's AI-exposure value, and the result is placed on a 0 to 100 scale. Task data comes from O*NET, exposure values from Eloundou et al. (2024) in Science, and the outlook from METR's long-run time-horizon trend. The full calculation is set out on the <a href="/methodology">methodology page</a>.</>,
-    plain: "Each task in an occupation is weighted by how much of the work it accounts for, multiplied by that task's AI-exposure value, and the result is placed on a 0 to 100 scale. Task data comes from O*NET, exposure values from Eloundou et al. (2024) in Science, and the outlook from METR's long-run time-horizon trend. The full calculation is set out on the methodology page at https://cairncareers.com/methodology.",
-  },
-  {
-    q: "Does the score predict whether I will lose my job?",
-    a: <>No. The score measures task exposure, meaning what current AI can already do, not whether a particular job will disappear. It cannot see your employer, your skill, your judgment, or the relationships you build, and it is not career, financial, or legal advice.</>,
-    plain: "No. The score measures task exposure, meaning what current AI can already do, not whether a particular job will disappear. It cannot see your employer, your skill, your judgment, or the relationships you build, and it is not career, financial, or legal advice.",
-  },
-  {
-    q: "Which entry-level jobs are most exposed to AI?",
-    a: <>Exposure follows the mix of tasks inside a job rather than the job title, so two roles that sound similar can score very differently. Work that is mostly drafting, summarizing, routine analysis, or standardized documentation tends to score higher, while work that turns on physical presence, negotiation, or accountability for a judgment call tends to score lower. Cairn Careers scores the specific paths you are weighing rather than publishing one general ranking.</>,
-    plain: "Exposure follows the mix of tasks inside a job rather than the job title, so two roles that sound similar can score very differently. Work that is mostly drafting, summarizing, routine analysis, or standardized documentation tends to score higher, while work that turns on physical presence, negotiation, or accountability for a judgment call tends to score lower. Cairn Careers scores the specific paths you are weighing rather than publishing one general ranking.",
-  },
-  {
-    q: "Do I need a resume or work history to use it?",
-    a: <>No. You bring your interests, your coursework, and the experience you already have, including class projects and part-time work. There is no resume upload and no work-history requirement.</>,
-    plain: "No. You bring your interests, your coursework, and the experience you already have, including class projects and part-time work. There is no resume upload and no work-history requirement.",
-  },
-  {
-    q: "How is this different from asking a general AI chatbot about my career?",
-    a: <>A general chatbot produces an answer from patterns in its training data and cannot show you where a number came from. Cairn Careers scores your paths against federal occupational task data and published research, names and links every source on its <a href="/methodology">methodology page</a>, and keeps pay and growth data structurally separate from the exposure score so you can see exactly what moved the result.</>,
-    plain: "A general chatbot produces an answer from patterns in its training data and cannot show you where a number came from. Cairn Careers scores your paths against federal occupational task data and published research, names and links every source on its methodology page, and keeps pay and growth data structurally separate from the exposure score so you can see exactly what moved the result.",
-  },
-  {
-    q: "Where does Cairn Careers get its data?",
-    a: <>Occupational task data comes from O*NET, the U.S. Department of Labor's occupational database. AI task exposure comes from Eloundou et al. (2024) in Science. The capability trajectory comes from METR. Pay and growth figures come from the U.S. Bureau of Labor Statistics and are shown as context only, and they never enter the exposure score. Every source is linked on the <a href="/methodology">methodology page</a>.</>,
-    plain: "Occupational task data comes from O*NET, the U.S. Department of Labor's occupational database. AI task exposure comes from Eloundou et al. (2024) in Science. The capability trajectory comes from METR. Pay and growth figures come from the U.S. Bureau of Labor Statistics and are shown as context only, and they never enter the exposure score. Every source is linked on the methodology page.",
-  },
-  {
-    q: "Who is Cairn Careers for?",
-    a: <>College students and recent graduates deciding what to aim for and what to do next. It is most useful if you are choosing between several paths, or have already chosen one and want a month-by-month plan toward a first job. You can see that plan in the <a href="/roadmap">sample roadmap</a>.</>,
-    plain: "College students and recent graduates deciding what to aim for and what to do next. It is most useful if you are choosing between several paths, or have already chosen one and want a month-by-month plan toward a first job.",
-  },
-  {
-    q: "What does Cairn Careers cost?",
-    a: <>Premium is $11 a month or $86 a year. Pro is $6 a month or $46 a year. Until launch on October 31, 2026, beta users can use Cairn Careers free. Every purchase is covered by a 30-day money-back guarantee, described on the <a href="/refunds">refund policy page</a>.</>,
-    plain: "Premium is $11 a month or $86 a year. Pro is $6 a month or $46 a year. Until launch on October 31, 2026, beta users can use Cairn Careers free. Every purchase is covered by a 30-day money-back guarantee.",
-  },
-];
-
-/** FAQPage structured data built from the same FAQS array shown on the page. */
-function faqJsonLd() {
+function faqJsonLd(items: { q: string; a: string }[]) {
   return JSON.stringify({
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: FAQS.map((item) => ({
+    mainEntity: items.map((item) => ({
       "@type": "Question",
       name: item.q,
-      acceptedAnswer: { "@type": "Answer", text: item.plain },
+      acceptedAnswer: { "@type": "Answer", text: plain(item.a) },
     })),
   });
 }
@@ -356,7 +218,7 @@ function MetricSlot({ label }: { label: string }) {
 }
 
 export default function Home() {
-  const [locale, setLocale] = useState<LocaleKey>("en-US");
+  const { t, currency, price } = useI18n();
   const [campaign, setCampaign] = useState<CampaignKey>("default");
   const [proBilling, setProBilling] = useState<BillingCycle>(DEFAULT_BILLING);
   const [premiumBilling, setPremiumBilling] = useState<BillingCycle>(DEFAULT_BILLING);
@@ -368,34 +230,31 @@ export default function Home() {
   const [betaEmail, setBetaEmail] = useState("");
   const [betaStatus, setBetaStatus] = useState<"idle" | "submitting" | "done">("idle");
   const [betaError, setBetaError] = useState("");
-  const message = campaignVariants[campaign];
+  const message = t.hero.campaigns[campaign];
+  usePageMeta({ title: t.meta.homeTitle, description: t.meta.homeDescription });
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const source = (params.get("utm_source") || params.get("source") || "").toLowerCase();
-    const localeParam = params.get("locale") as LocaleKey | null;
     if (source.includes("campus")) setCampaign("campus");
     if (source.includes("social")) setCampaign("social");
-    if (localeParam && localeOptions[localeParam]) setLocale(localeParam);
   }, []);
 
   useEffect(() => {
-    document.documentElement.lang = locale;
     /* Only a non-default choice is written into the URL. Rewriting every visit
        to /?locale=en-US replaced the bare URL in the browser's history before
        its title had landed, so browsers kept whatever title this domain served
        before CairnCareers existed as the title for https://cairncareers.com/.
        It also put a query string on every link people copied. */
     const params = new URLSearchParams(window.location.search);
-    if (locale === "en-US") params.delete("locale");
-    else params.set("locale", locale);
+    params.delete("locale");
     if (campaign === "default") params.delete("source");
     else params.set("source", campaign);
     const query = params.toString();
     const next = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`;
     const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
     if (next !== current) window.history.replaceState({}, "", next);
-  }, [campaign, locale]);
+  }, [campaign]);
 
   useEffect(() => {
     const scrollToHash = () => {
@@ -445,6 +304,7 @@ export default function Home() {
 
   const proPlan = proPricing[proBilling];
   const premiumPlan = premiumPricing[premiumBilling];
+  const cadence = (cycle: BillingCycle) => (cycle === "monthly" ? t.pricing.perMonth : t.pricing.perYear);
   const premiumPaymentLink = premiumPaymentLinks[premiumBilling];
 
   const handlePremiumCheckout = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -473,16 +333,12 @@ export default function Home() {
         body: JSON.stringify({ email: email.trim(), source: "launch-notification" }),
       });
       if (!response.ok) throw new Error("Lead capture request failed");
-      toast.success("You are on the launch-notification list.", {
-        description: "We will use this email to let you know when CairnCareers is live.",
-      });
+      toast.success(t.modal.successTitle, { description: t.modal.successBody });
       setEmail("");
       setShowLeadModal(false);
       sessionStorage.setItem("cairn-checklist-dismissed", "1");
     } catch {
-      toast.error("We could not save your email address", {
-        description: "The checklist was not downloaded. Please try again after the database connection is restored.",
-      });
+      toast.error(t.modal.errorTitle, { description: t.modal.errorBody });
     } finally {
       setIsLeadSubmitting(false);
     }
@@ -513,13 +369,13 @@ export default function Home() {
       });
       if (!response.ok) {
         const data = (await response.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(data?.error || "We could not save your request. Please try again.");
+        throw new Error(data?.error || t.beta.error);
       }
       setBetaStatus("done");
       sessionStorage.setItem("cairn-checklist-dismissed", "1");
     } catch (error) {
       setBetaStatus("idle");
-      setBetaError(error instanceof Error ? error.message : "We could not save your request. Please try again.");
+      setBetaError(error instanceof Error ? error.message : t.beta.error);
     }
   };
 
@@ -528,103 +384,86 @@ export default function Home() {
       <div className="deadline-bar">
         <div className="container deadline-inner">
           <span className="deadline-main">
-            <span><CalendarDays /> Launch Oct. 31</span>
+            <span><CalendarDays /> {t.bar.launch}</span>
             <span className="deadline-sep" aria-hidden="true">|</span>
-            <span>Free for beta users until launch</span>
+            <span>{t.bar.beta}</span>
           </span>
-          <span className="deadline-detail">30-day money-back guarantee</span>
+          <span className="deadline-detail">{t.bar.guarantee}</span>
         </div>
       </div>
 
       <header className="site-header">
         <div className="container header-inner">
-          <a href="#top" className="wordmark" aria-label="CairnCareers home">
+          <a href="#top" className="wordmark" aria-label={t.nav.home}>
             <CairnMark />
             <span><strong>Cairn</strong><small>Careers</small></span>
           </a>
-          <nav className="desktop-nav" aria-label="Primary navigation">
-            <a href="#how-it-works">How it works</a>
-            <a href="#dashboard-preview">Sample Dashboard</a>
-            <a href="/roadmap">Roadmap</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#about">About</a>
+          <nav className="desktop-nav" aria-label={t.nav.primary}>
+            <a href="#how-it-works">{t.nav.how}</a>
+            <a href="#dashboard-preview">{t.nav.dashboard}</a>
+            <a href="/roadmap">{t.nav.roadmap}</a>
+            <a href="#pricing">{t.nav.pricing}</a>
+            <a href="#about">{t.nav.about}</a>
           </nav>
           <div className="header-controls">
-            <a className="header-cta" href="#beta-access">Show me my career paths <ArrowRight /></a>
-            <label className="compact-select">
-              <Globe2 aria-hidden="true" />
-              <span className="sr-only">Country and currency</span>
-              <select
-                value={locale}
-                onChange={(event) => {
-                  setLocale(event.target.value as LocaleKey);
-                  toast.message(`Locale preview: ${localeOptions[event.target.value as LocaleKey].label}`);
-                }}
-              >
-                {Object.entries(localeOptions).map(([key, option]) => (
-                  <option key={key} value={key}>{option.short}</option>
-                ))}
-              </select>
-              <ChevronDown aria-hidden="true" />
-            </label>
-            <button className="menu-button" onClick={() => setMobileOpen((value) => !value)} aria-label="Toggle navigation">
+            <a className="header-cta" href="#beta-access">{t.nav.cta} <ArrowRight /></a>
+            <LanguageSwitch />
+            <button className="menu-button" onClick={() => setMobileOpen((value) => !value)} aria-label={t.nav.toggle}>
               {mobileOpen ? <X /> : <Menu />}
             </button>
           </div>
         </div>
         {mobileOpen && (
-          <nav className="mobile-nav container" aria-label="Mobile navigation">
-            <a onClick={() => setMobileOpen(false)} href="#how-it-works">How it works</a>
-            <a onClick={() => setMobileOpen(false)} href="#dashboard-preview">Sample Dashboard</a>
-            <a onClick={() => setMobileOpen(false)} href="/roadmap">Roadmap</a>
-            <a onClick={() => setMobileOpen(false)} href="#pricing">Pricing</a>
-            <a onClick={() => setMobileOpen(false)} href="#about">About</a>
-            <a onClick={() => setMobileOpen(false)} href="#faq">FAQ</a>
-            <a onClick={() => setMobileOpen(false)} href="/methodology">Methodology</a>
+          <nav className="mobile-nav container" aria-label={t.nav.mobile}>
+            <a onClick={() => setMobileOpen(false)} href="#how-it-works">{t.nav.how}</a>
+            <a onClick={() => setMobileOpen(false)} href="#dashboard-preview">{t.nav.dashboard}</a>
+            <a onClick={() => setMobileOpen(false)} href="/roadmap">{t.nav.roadmap}</a>
+            <a onClick={() => setMobileOpen(false)} href="#pricing">{t.nav.pricing}</a>
+            <a onClick={() => setMobileOpen(false)} href="#about">{t.nav.about}</a>
+            <a onClick={() => setMobileOpen(false)} href="#faq">{t.nav.faq}</a>
+            <a onClick={() => setMobileOpen(false)} href="/methodology">{t.nav.methodology}</a>
             {/* The call to action lives here on small screens. Kept in the
                 header row it pushed the bar 175px past a 375px viewport. */}
-            <a className="mobile-nav-cta" onClick={() => setMobileOpen(false)} href="#beta-access">Show me my career paths <ArrowRight /></a>
+            <a className="mobile-nav-cta" onClick={() => setMobileOpen(false)} href="#beta-access">{t.nav.cta} <ArrowRight /></a>
           </nav>
         )}
       </header>
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd() }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd(t.faq.items) }} />
       <main id="top">
         <section className="hero-section">
           <div className="container hero-grid">
             <div className="hero-copy">
               <div className="hero-eyebrow">{message.eyebrow}</div>
-              <h1>Find an entry-level path that holds up to AI.</h1>
+              <h1>{t.hero.title}</h1>
               <p>{message.body}</p>
               <div className="hero-actions">
-                <a className="primary-cta" href="#beta-access">Show me my career paths <ArrowRight /></a>
+                <a className="primary-cta" href="#beta-access">{t.nav.cta} <ArrowRight /></a>
               </div>
               <div className="purchase-context">
-                <div><strong>Launches Oct. 31</strong><span>30-day money-back guarantee</span></div>
+                <div><strong>{t.hero.launches}</strong><span>{t.hero.guarantee}</span></div>
               </div>
             </div>
-            <div className="hero-visual" aria-label="Career route from self-knowledge to an evidence-supported next move">
+            <div className="hero-visual" aria-label={t.hero.visualLabel}>
               <div className="hero-map">
-                <img src={ASSETS.hero} alt="Abstract route map with three career-planning waypoints" width="1200" height="675" fetchPriority="high" />
+                <img src={ASSETS.hero} alt={t.hero.imageAlt} width="1200" height="675" fetchPriority="high" />
                 <RouteVeil />
               </div>
               <div className="hero-route-card">
-                <span className="route-card-kicker">A steadier way forward</span>
-                <strong>Three signals. One next move.</strong>
+                <span className="route-card-kicker">{t.hero.routeKicker}</span>
+                <strong>{t.hero.routeTitle}</strong>
                 <ol>
-                  <li><span>1</span> What you know</li>
-                  <li><span>2</span> Market context</li>
-                  <li><span>3</span> A route to test</li>
+                  {t.hero.routeSteps.map((step, index) => <li key={step}><span>{index + 1}</span> {step}</li>)}
                 </ol>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="trust-strip" aria-label="Trust and risk reversal">
+        <section className="trust-strip" aria-label={t.trust.label}>
           <div className="container trust-strip-grid">
-            <div><ShieldCheck /><span><strong>30-day money-back guarantee</strong> · pre-launch: from launch · after launch: from purchase</span></div>
-            <div><LockKeyhole /><span><strong>Secure checkout</strong> handled by Stripe</span></div>
+            <div><ShieldCheck /><span><strong>{t.trust.guarantee}</strong> {t.trust.guaranteeDetail}</span></div>
+            <div><LockKeyhole /><span><strong>{t.trust.secure}</strong> {t.trust.secureDetail}</span></div>
           </div>
         </section>
 
@@ -632,15 +471,15 @@ export default function Home() {
           <div className="container">
             <div className="section-heading split-heading">
               <div>
-                <SectionLabel number="01">The route</SectionLabel>
-                <h2>Career planning that ends with a first move.</h2>
+                <SectionLabel number="01">{t.route.label}</SectionLabel>
+                <h2>{t.route.title}</h2>
               </div>
-              <p>Your map should make the next decision smaller, more specific, and easier to test in the real world.</p>
+              <p>{t.route.lead}</p>
             </div>
             <div className="steps-grid">
-              {steps.map(([number, title, body]) => (
-                <article key={number} className="step-card">
-                  <span className="step-number">{number}</span>
+              {t.route.steps.map(([title, body], index) => (
+                <article key={title} className="step-card">
+                  <span className="step-number">0{index + 1}</span>
                   <h3>{title}</h3>
                   <p>{body}</p>
                 </article>
@@ -652,22 +491,22 @@ export default function Home() {
         <section id="dashboard-preview" className="ink-section sample-dashboard-section">
           <div className="container">
             <div className="sample-dashboard-heading">
-              <SectionLabel number="03">Sample Dashboard</SectionLabel>
-              <h2>Meet Maya.<br /> See Maya's sample dashboard before you decide.</h2>
+              <SectionLabel number="03">{t.dashboard.label}</SectionLabel>
+              <h2>{t.dashboard.titleLine1}<br /> {t.dashboard.titleLine2}</h2>
             </div>
 
-            <div className="sample-dashboard-frame" aria-label="Illustrative Sample Dashboard preview">
-              <div className="sample-dashboard-frame-head"><span>PREMIUM DASHBOARD</span><strong>Where you stand, Maya.</strong><span>Sample data</span></div>
+            <div className="sample-dashboard-frame" aria-label={t.dashboard.frameLabel}>
+              <div className="sample-dashboard-frame-head"><span>{t.dashboard.kicker}</span><strong>{t.dashboard.stand}</strong><span>{t.dashboard.sample}</span></div>
               <div className="sample-dashboard-overview">
-                <article className="sample-dashboard-metric lime-metric"><span>Coverage</span><strong>68</strong><small>of 100 · up 12 this term</small></article>
-                <article className="sample-dashboard-metric pink-metric"><span>What AI already does</span><strong>54%</strong><div className="mini-bar"><i /></div><small>Moderate exposure</small></article>
-                <article className="sample-dashboard-metric amber-metric"><span>Readiness</span><strong>64</strong><div className="mini-bar"><i /></div><small>One private clean-up flag</small></article>
+                <article className="sample-dashboard-metric lime-metric"><span>{t.dashboard.coverage}</span><strong>68</strong><small>{t.dashboard.coverageSub}</small></article>
+                <article className="sample-dashboard-metric pink-metric"><span>{t.dashboard.ai}</span><strong>54%</strong><div className="mini-bar"><i /></div><small>{t.dashboard.aiSub}</small></article>
+                <article className="sample-dashboard-metric amber-metric"><span>{t.dashboard.readiness}</span><strong>64</strong><div className="mini-bar"><i /></div><small>{t.dashboard.readinessSub}</small></article>
               </div>
-              <div className="sample-dashboard-modules" aria-label="Sample Dashboard pages">
-                {dashboardAreas.map((area) => (
-                  <a key={area.title} className={`module-route-card ${area.accent}`} href={area.href} aria-label={`Open ${area.title}`}>
+              <div className="sample-dashboard-modules" aria-label={t.dashboard.modulesLabel}>
+                {dashboardAreas.map((area, index) => (
+                  <a key={area.number} className={`module-route-card ${area.accent}`} href={area.href} aria-label={`${t.dashboard.open} ${t.dashboard.areas[index].title}`}>
                     <span className="module-route-number">{area.number}</span>
-                    <strong>{area.title}</strong>
+                    <strong>{t.dashboard.areas[index].title}</strong>
                     <ExternalLink aria-hidden="true" />
                   </a>
                 ))}
@@ -740,25 +579,25 @@ export default function Home() {
         <section id="beta-access" className="beta-section">
           <div className="container">
             <div className="beta-panel">
-              <span className="hero-eyebrow">Beta access</span>
-              <h2>Use CairnCareers free until launch.</h2>
+              <span className="hero-eyebrow">{t.beta.eyebrow}</span>
+              <h2>{t.beta.title}</h2>
               {betaStatus === "done" ? (
                 <div className="beta-confirmation" role="status">
                   <Check aria-hidden="true" />
-                  <p>We are still building, but can't wait for you to use CairnCareers. You will receive an email when your account is fully activated.</p>
+                  <p>{t.beta.confirmation}</p>
                 </div>
               ) : (
                 <>
-                  <p>Leave your email and we will set up your account.</p>
+                  <p>{t.beta.lead}</p>
                   <form className="email-form beta-form" onSubmit={submitBetaRequest}>
-                    <label htmlFor="beta-email">Email address</label>
+                    <label htmlFor="beta-email">{t.beta.emailLabel}</label>
                     <div>
                       <Mail />
-                      <input id="beta-email" type="email" required autoComplete="email" placeholder="you@school.edu" value={betaEmail} onChange={(event) => setBetaEmail(event.target.value)} />
-                      <button type="submit" disabled={betaStatus === "submitting"}>{betaStatus === "submitting" ? "Saving…" : "Request beta access"} <ArrowRight /></button>
+                      <input id="beta-email" type="email" required autoComplete="email" placeholder={t.beta.placeholder} value={betaEmail} onChange={(event) => setBetaEmail(event.target.value)} />
+                      <button type="submit" disabled={betaStatus === "submitting"}>{betaStatus === "submitting" ? t.beta.saving : t.beta.submit} <ArrowRight /></button>
                     </div>
                     {betaError && <p className="form-error" role="alert">{betaError}</p>}
-                    <small>One email when your account is ready. No newsletter.</small>
+                    <small>{t.beta.small}</small>
                   </form>
                 </>
               )}
@@ -770,52 +609,52 @@ export default function Home() {
           <div className="container">
             <div className="section-heading split-heading">
               <div>
-                <SectionLabel number="04">Pricing</SectionLabel>
-                <h2>See the price before checkout.</h2>
+                <SectionLabel number="04">{t.pricing.label}</SectionLabel>
+                <h2>{t.pricing.title}</h2>
               </div>
             </div>
 
             <div className="pricing-grid">
               <article className="price-card">
-                <span className="price-for">Where do I stand?</span>
-                <h3>Free</h3>
-                <div className="price"><strong>$0</strong><span>forever</span></div>
-                <ul><li><Check /> AI-exposure score</li><li><Check /> Durable-versus-exposed task map</li><li><Check /> Median salary context</li></ul>
+                <span className="price-for">{t.pricing.free.for}</span>
+                <h3>{t.pricing.free.name}</h3>
+                <div className="price"><strong>{t.pricing.free.price}</strong><span>{t.pricing.free.cadence}</span></div>
+                <ul>{t.pricing.free.features.map((f) => <li key={f}><Check /> {f}</li>)}</ul>
               </article>
               <article className="price-card">
-                <span className="price-for">How do I get there?</span>
-                <h3>Pro</h3>
-                <div className="price-toggle" role="group" aria-label="Pro billing frequency">
-                  <span>Choose billing</span>
+                <span className="price-for">{t.pricing.pro.for}</span>
+                <h3>{t.pricing.pro.name}</h3>
+                <div className="price-toggle" role="group" aria-label={t.pricing.proGroup}>
+                  <span>{t.pricing.chooseBilling}</span>
                   <div>
-                    <button type="button" aria-pressed={proBilling === "monthly"} className={proBilling === "monthly" ? "active" : ""} onClick={() => setProBilling("monthly")}>Monthly</button>
-                    <button type="button" aria-pressed={proBilling === "annual"} className={proBilling === "annual" ? "active" : ""} onClick={() => setProBilling("annual")}>Annual</button>
+                    <button type="button" aria-pressed={proBilling === "monthly"} className={proBilling === "monthly" ? "active" : ""} onClick={() => setProBilling("monthly")}>{t.pricing.monthly}</button>
+                    <button type="button" aria-pressed={proBilling === "annual"} className={proBilling === "annual" ? "active" : ""} onClick={() => setProBilling("annual")}>{t.pricing.annual}</button>
                   </div>
                 </div>
-                <div className="price"><strong>{proPlan.price}</strong><span>{proPlan.cadence}</span>{proPlan.savings && <em className="price-saving">{proPlan.savings}</em>}</div>
-                <ul><li><Check /> Everything in Free</li><li><Check /> Resume reframes</li><li><Check /> Monthly re-runs</li></ul>
+                <div className="price"><strong>{price(proPlan.usd)}</strong><span>{currency} {cadence(proBilling)}</span>{proPlan.savings && <em className="price-saving">{t.pricing.savings}</em>}</div>
+                <ul>{t.pricing.pro.features.map((f) => <li key={f}><Check /> {f}</li>)}</ul>
               </article>
               <article id="premium-checkout" className="price-card featured-price">
-                {SHOW_DISCOUNTED_PRICING && <div className="price-ribbon">Limited Time prelaunch price</div>}
-                <span className="price-for">Know my first move</span>
-                <h3>Premium</h3>
-                <div className="price-toggle premium-toggle" role="group" aria-label="Premium billing frequency">
-                  <span>Choose billing</span>
+                {SHOW_DISCOUNTED_PRICING && <div className="price-ribbon">{t.pricing.ribbon}</div>}
+                <span className="price-for">{t.pricing.premium.for}</span>
+                <h3>{t.pricing.premium.name}</h3>
+                <div className="price-toggle premium-toggle" role="group" aria-label={t.pricing.premiumGroup}>
+                  <span>{t.pricing.chooseBilling}</span>
                   <div>
-                    <button type="button" aria-pressed={premiumBilling === "monthly"} className={premiumBilling === "monthly" ? "active" : ""} onClick={() => setPremiumBilling("monthly")}>Monthly</button>
-                    <button type="button" aria-pressed={premiumBilling === "annual"} className={premiumBilling === "annual" ? "active" : ""} onClick={() => setPremiumBilling("annual")}>Annual</button>
+                    <button type="button" aria-pressed={premiumBilling === "monthly"} className={premiumBilling === "monthly" ? "active" : ""} onClick={() => setPremiumBilling("monthly")}>{t.pricing.monthly}</button>
+                    <button type="button" aria-pressed={premiumBilling === "annual"} className={premiumBilling === "annual" ? "active" : ""} onClick={() => setPremiumBilling("annual")}>{t.pricing.annual}</button>
                   </div>
                 </div>
                 {SHOW_DISCOUNTED_PRICING ? (
-                  <div className="price"><s>{premiumPlan.regular} · 35% savings</s><strong>{premiumPlan.prelaunch}</strong><span>{premiumPlan.cadence}</span><em className="prelaunch-label">Limited Time prelaunch price</em><small className="limited-spots">Limited spots remain</small></div>
+                  <div className="price"><s>{price(premiumPlan.regular)} · {t.pricing.savings}</s><strong>{price(premiumPlan.prelaunch)}</strong><span>{currency} {cadence(premiumBilling)}</span><em className="prelaunch-label">{t.pricing.prelaunchLabel}</em><small className="limited-spots">{t.pricing.limitedSpots}</small></div>
                 ) : (
-                  <div className="price"><strong>{premiumPlan.regular}</strong><span>{premiumPlan.cadence}</span>{premiumPlan.savings && <em className="price-saving">{premiumPlan.savings}</em>}</div>
+                  <div className="price"><strong>{price(premiumPlan.regular)}</strong><span>{currency} {cadence(premiumBilling)}</span>{premiumPlan.savings && <em className="price-saving">{t.pricing.savings}</em>}</div>
                 )}
-                <ul><li><Check /> Everything in Pro</li><li><Check /> Living resume + LinkedIn system</li><li><Check /> Warm-path networking engine</li><li><Check /> Graduation-timeline roadmap</li></ul>
+                <ul>{t.pricing.premium.features.map((f) => <li key={f}><Check /> {f}</li>)}</ul>
                 {CHECKOUT_OPEN ? (
-                  <a className="primary-cta full-cta" href={premiumPaymentLink || "#stripe-payment-link"} onClick={handlePremiumCheckout} target={premiumPaymentLink ? "_blank" : undefined} rel={premiumPaymentLink ? "noreferrer" : undefined}>Continue to secure checkout <ArrowRight /></a>
+                  <a className="primary-cta full-cta" href={premiumPaymentLink || "#stripe-payment-link"} onClick={handlePremiumCheckout} target={premiumPaymentLink ? "_blank" : undefined} rel={premiumPaymentLink ? "noreferrer" : undefined}>{t.pricing.checkout} <ArrowRight /></a>
                 ) : (
-                  <button type="button" className="primary-cta full-cta" disabled>Checkout opens at launch</button>
+                  <button type="button" className="primary-cta full-cta" disabled>{t.pricing.checkoutClosed}</button>
                 )}
                 {CHECKOUT_OPEN && !premiumPaymentLink && (
                   // Build-time hint only. Both links are configured, so this does not
@@ -826,21 +665,22 @@ export default function Home() {
               </article>
               {/* Last in the grid on purpose: the card styles above count
                   children (nth-child), and the running line must not shift them. */}
-              {!SHOW_DISCOUNTED_PRICING && <BetaTicker text="Beta users free until launch!" />}
+              {!SHOW_DISCOUNTED_PRICING && <BetaTicker text={t.pricing.ticker} />}
             </div>
 
-            <p className="pricing-note">Group pricing and enterprise pricing are available - contact for more information: <a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a></p>
+            <p className="pricing-note">{t.pricing.groupNote} <a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a></p>
+            {currency !== "USD" && <p className="pricing-approx">{t.pricing.approx.replace("{currency}", currency)}</p>}
           </div>
         </section>
 
         <section id="about" className="about-section">
           <div className="container about-grid">
             <div>
-              <SectionLabel number="05">Why this exists</SectionLabel>
-              <h2>A guide should be honest about what it knows.</h2>
+              <SectionLabel number="05">{t.about.label}</SectionLabel>
+              <h2>{t.about.title}</h2>
               <article className="founder-card">
-                <img src={ASSETS.founder} alt="Brooke Houck, PhD, founder of CairnCareers" width="300" height="300" loading="lazy" decoding="async" />
-                <div><span className="slot-badge">Built by a PhD research scientist</span><h3><a href="https://www.linkedin.com/in/brookehouck" target="_blank" rel="noreferrer">Brooke Houck, PhD · Founder</a></h3><p>“Everyone has an opinion about AI. And a lot of people want to give you good advice. But work isn't the same anymore. Work has changed and is changing. Cairn Careers uses research standards you can read about openly. We give you data, not vibes, about what work looks like now and will look like 3 years from now.”</p></div>
+                <img src={ASSETS.founder} alt={t.about.imageAlt} width="300" height="300" loading="lazy" decoding="async" />
+                <div><span className="slot-badge">{t.about.badge}</span><h3><a href="https://www.linkedin.com/in/brookehouck" target="_blank" rel="noreferrer">{t.about.founder}</a></h3><p>{t.about.quote}</p></div>
               </article>
             </div>
           </div>
@@ -848,13 +688,13 @@ export default function Home() {
 
         <section id="faq" className="paper-section faq-section">
           <div className="container">
-            <SectionLabel number="06">FAQs</SectionLabel>
-            <h2>Questions people actually ask.</h2>
+            <SectionLabel number="06">{t.faq.label}</SectionLabel>
+            <h2>{t.faq.title}</h2>
             <div className="faq-list">
-              {FAQS.map((item) => (
+              {t.faq.items.map((item) => (
                 <article className="faq-item" key={item.q}>
                   <h3>{item.q}</h3>
-                  <p>{item.a}</p>
+                  <p>{rich(item.a)}</p>
                 </article>
               ))}
             </div>
@@ -863,37 +703,37 @@ export default function Home() {
 
         <section className="closing-section">
           <div className="container closing-inner">
-            <span className="hero-eyebrow">The next marker is yours</span>
-            <h2>Find my first move.</h2>
-            <a className="primary-cta" href="#beta-access">Show me my career paths <ArrowRight /></a>
-            <p>Launches October 31 · 30-day money-back guarantee</p>
+            <span className="hero-eyebrow">{t.closing.eyebrow}</span>
+            <h2>{t.closing.title}</h2>
+            <a className="primary-cta" href="#beta-access">{t.nav.cta} <ArrowRight /></a>
+            <p>{t.closing.line}</p>
           </div>
         </section>
       </main>
 
       <footer className="site-footer">
         <div className="container footer-grid">
-          <div className="footer-brand-block"><div className="wordmark footer-mark"><CairnMark /><span><strong>Cairn</strong><small>Careers</small></span></div><p>Career context for college students and recent graduates.</p><p className="footer-product-line">Cairn Careers is a product of <a href="https://phronesislabs.net" target="_blank" rel="noreferrer">Phronesis Labs, LLC</a>.</p></div>
-          <div className="footer-links"><a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a><span><a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/refunds">Refunds</a> · <a href="/contact">Contact</a></span></div>
+          <div className="footer-brand-block"><div className="wordmark footer-mark"><CairnMark /><span><strong>Cairn</strong><small>Careers</small></span></div><p>{t.footer.tagline}</p><p className="footer-product-line">{rich(t.footer.productLine)}</p></div>
+          <div className="footer-links"><a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a><span><a href="/privacy">{t.footer.privacy}</a> · <a href="/terms">{t.footer.terms}</a> · <a href="/refunds">{t.footer.refunds}</a> · <a href="/contact">{t.footer.contact}</a></span></div>
         </div>
       </footer>
 
       {showTopButton && (
-        <button className="site-top" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Back to top"><ArrowUp /></button>
+        <button className="site-top" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label={t.legal.backToTop}><ArrowUp /></button>
       )}
 
       {showLeadModal && (
         <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) dismissLead(); }}>
           <div className="lead-modal" role="dialog" aria-modal="true" aria-labelledby="lead-modal-title">
-            <button className="modal-close" onClick={dismissLead} aria-label="Close checklist offer"><X /></button>
-            <span className="slot-badge">Launch notification</span>
-            <h2 id="lead-modal-title">Want to know when Cairn Careers is live?</h2>
-            <p>Leave your email and we will let you know when the product is ready to use.</p>
+            <button className="modal-close" onClick={dismissLead} aria-label={t.modal.close}><X /></button>
+            <span className="slot-badge">{t.modal.badge}</span>
+            <h2 id="lead-modal-title">{t.modal.title}</h2>
+            <p>{t.modal.lead}</p>
             <form className="email-form modal-form" onSubmit={submitLead}>
-              <label htmlFor="modal-email">Email address</label>
-              <div><Mail /><input id="modal-email" type="email" required placeholder="you@school.edu" value={email} onChange={(event) => setEmail(event.target.value)} /></div>
-              <button type="submit" className="primary-cta" disabled={isLeadSubmitting}>{isLeadSubmitting ? "Saving…" : "Notify me at launch"} <ArrowRight /></button>
-              <small>{leadCaptureEndpoint ? "Your email is saved to the launch-notification list." : "Preview mode: connect the database endpoint before collecting emails."}</small>
+              <label htmlFor="modal-email">{t.modal.emailLabel}</label>
+              <div><Mail /><input id="modal-email" type="email" required placeholder={t.beta.placeholder} value={email} onChange={(event) => setEmail(event.target.value)} /></div>
+              <button type="submit" className="primary-cta" disabled={isLeadSubmitting}>{isLeadSubmitting ? t.modal.saving : t.modal.submit} <ArrowRight /></button>
+              <small>{t.modal.small}</small>
             </form>
           </div>
         </div>

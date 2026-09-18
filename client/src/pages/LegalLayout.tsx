@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { PageFooter, PageHeader, PageHero } from "@/components/PageChrome";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { useI18n } from "@/lib/i18n";
 
 type LegalSection = {
   title: string;
@@ -32,8 +33,10 @@ export default function LegalLayout({
   sections,
 }: LegalLayoutProps) {
   usePageMeta({ title: documentTitle, description });
-  const sectionId = (sectionTitle: string) => sectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  const breadcrumb = [{ name: "Home", href: "/" }, { name: title, href: path }];
+  const { t } = useI18n();
+  const sectionId = (sectionTitle: string) =>
+    sectionTitle.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  const breadcrumb = [{ name: t.legal.home, href: "/" }, { name: title, href: path }];
 
   return (
     <div className="site-shell">
@@ -41,15 +44,15 @@ export default function LegalLayout({
       <PageHeader />
       <PageHero eyebrow={eyebrow} title={title} breadcrumb={breadcrumb}>
         <div className="legal-updated">
-          <b>Last updated</b>
+          <b>{t.legal.updated}</b>
           <time dateTime={updatedDateTime}>{updated}</time>
         </div>
       </PageHero>
 
       <div className="container legal-body">
         <div className="legal-grid">
-          <aside className="legal-toc" aria-label="Table of contents">
-            <p>On this page</p>
+          <aside className="legal-toc" aria-label={t.legal.toc}>
+            <p>{t.legal.onThisPage}</p>
             <nav>
               {sections.map((section) => (
                 <a key={section.title} href={`#${sectionId(section.title)}`}>{section.title}</a>

@@ -61,6 +61,10 @@ function setOrCreateMeta(html, attr, name, content) {
 function applyPerRouteHead(html, route) {
   const url = route.path === "/" ? `${ORIGIN}/` : `${ORIGIN}${route.path}`;
 
+  // The Worker writes the visitor's country into the HTML on the production
+  // host only, but strip it here too so a crawl can never bake one in.
+  html = html.replace(/<script id="cairn-geo">[^<]*<\/script>/g, "").replace(/<style id="cairn-lang-veil">[^<]*<\/style>/g, "");
+
   html = /<link\s+rel="canonical"[^>]*>/i.test(html)
     ? html.replace(/<link\s+rel="canonical"[^>]*>/i, `<link rel="canonical" href="${url}" />`)
     : html.replace("</head>", `    <link rel="canonical" href="${url}" />\n  </head>`);

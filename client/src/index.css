@@ -347,6 +347,7 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .pricing-section { padding:105px 0; background:var(--paper-light); }
 .pricing-note { margin:52px 0 0; padding:18px 22px; background:var(--ink); color:white; border:2px solid var(--ink); box-shadow:6px 6px 0 var(--cyan); text-align:center; font-size:15px; }
 .pricing-note a { color:var(--lime); text-decoration:underline; text-underline-offset:3px; }
+.pricing-approx { margin:14px 0 0; text-align:center; font-size:13px; color:#5c635d; }
 .pricing-grid { position:relative; display:grid; grid-template-columns:.8fr .8fr 1.25fr; gap:20px; align-items:stretch; }
 .pricing-grid:before { content:""; position:absolute; left:-18px; right:24%; top:34px; height:2px; background:linear-gradient(90deg,var(--cyan),var(--pink)); transform:rotate(-1.5deg); }
 .price-card { padding:26px; background:white; border:2px solid var(--ink); box-shadow:6px 6px 0 var(--ink); }

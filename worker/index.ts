@@ -14,6 +14,8 @@
  * there is no Edge Function to keep deployed.
  */
 
+import { geoForCountry } from "../client/src/lib/geo";
+
 /** Minimal shape of the Workers rate-limit binding; @cloudflare/workers-types
  * is not a dependency here, and this is the whole surface we use. */
 interface RateLimiter {
@@ -400,6 +402,39 @@ function withHeaders(response: Response, pathname: string): Response {
   return out;
 }
 
+/**
+ * LANGUAGE AND CURRENCY BY LOCATION
+ * Cloudflare resolves every visitor's country at the edge (CF-IPCountry), so
+ * the page can open in the visitor's language with no third-party lookup and
+ * no reliance on the browser's language setting. The country → language and
+ * country → currency tables live in client/src/lib/geo.ts, shared with the
+ * page. Only the resolved country, language and currency are written into
+ * the HTML; the visitor's IP is never stored or passed on.
+ *
+ * The prerendered HTML is English. For a non-English visitor a tiny style
+ * hides the page until the client has rendered in their language, so they
+ * never see English flash by; the style also removes itself after 2.5 s, so a
+ * visitor whose JavaScript fails still gets the English page. Applied only on
+ * the production host: the prerender crawl (scripts/prerender.mjs) fetches
+ * the same Worker on a preview URL, and must not bake the crawler's country
+ * into the static files.
+ */
+function localizeHtml(response: Response, request: Request, url: URL): Response {
+  if (url.hostname !== "cairncareers.com") return response;
+  if (!(response.headers.get("Content-Type") || "").includes("text/html")) return response;
+  const geo = geoForCountry(request.headers.get("CF-IPCountry"));
+  const veil =
+    geo.lang === "en"
+      ? ""
+      : `<style id="cairn-lang-veil">#root{visibility:hidden;animation:cairn-unveil 0s 2.5s forwards}@keyframes cairn-unveil{to{visibility:visible}}</style>`;
+  const out = new HTMLRewriter()
+    .on("html", { element: (el) => el.setAttribute("lang", geo.lang === "en" ? "en-US" : geo.lang) })
+    .on("head", { element: (el) => el.append(`<script id="cairn-geo">window.__cairnGeo=${JSON.stringify(geo)}</script>${veil}`, { html: true }) })
+    .transform(response);
+  out.headers.append("Vary", "CF-IPCountry");
+  return out;
+}
+
 /** Security headers belong on API JSON too, but never its cache policy. */
 function secured(response: Response): Response {
   const out = new Response(response.body, response);
@@ -478,6 +513,6 @@ export default {
 
     // Any other /api/* path (or a non-POST on this one) falls through to assets,
     // which will 404 it via not_found_handling. There's nothing else to serve here.
-    return withHeaders(await env.ASSETS.fetch(request), url.pathname);
+    return localizeHtml(withHeaders(await env.ASSETS.fetch(request), url.pathname), request, url);
   }
 } satisfies ExportedHandler<Env>;

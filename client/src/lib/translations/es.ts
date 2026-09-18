@@ -1,0 +1,304 @@
+/**
+ * Spanish. Same shape as en.ts; TypeScript fails the build if a key is
+ * missing. Written by Claude on 2026-09-18 and not yet reviewed by a native
+ * speaker; have one read it before Spanish-speaking markets are promoted.
+ * Register: tú, as is usual for copy aimed at students.
+ */
+import type { en } from "./en";
+
+export const es: typeof en = {
+  meta: {
+    homeTitle: "Encuentra un primer empleo que resista a la IA | CairnCareers",
+    homeDescription: "Compara trayectorias profesionales realistas con datos de salario, crecimiento del empleo y exposición a la IA, y sal con un siguiente paso que puedas explicar.",
+  },
+  languageSwitch: "Idioma",
+  bar: {
+    launch: "Lanzamiento: 31 de octubre",
+    beta: "Gratis para usuarios beta hasta el lanzamiento",
+    guarantee: "Garantía de devolución de 30 días",
+  },
+  nav: {
+    how: "Cómo funciona",
+    dashboard: "Panel de muestra",
+    roadmap: "Hoja de ruta",
+    pricing: "Precios",
+    about: "Quiénes somos",
+    faq: "Preguntas frecuentes",
+    methodology: "Metodología",
+    cta: "Muéstrame mis trayectorias",
+    home: "Inicio de CairnCareers",
+    toggle: "Abrir o cerrar el menú",
+    primary: "Navegación principal",
+    mobile: "Navegación móvil",
+  },
+  hero: {
+    title: "Encuentra un primer empleo que resista a la IA.",
+    campaigns: {
+      default: {
+        eyebrow: "Para estudiantes universitarios y recién graduados",
+        body: "Compara trayectorias profesionales realistas con datos de salario, crecimiento del empleo y exposición a la IA, y sal con un siguiente paso que puedas explicar.",
+      },
+      campus: {
+        eyebrow: "Del campus a un primer puesto que encaje contigo",
+        body: "Convierte tus asignaturas, experiencias e intereses en una ruta profesional que puedas comentar con un orientador, un profesor o un reclutador.",
+      },
+      social: {
+        eyebrow: "¿Te preocupa que la IA cambie tus opciones de primer empleo?",
+        body: "Descubre qué tareas están expuestas, qué habilidades siguen siendo duraderas y qué hacer a continuación, sin pedirle a un chatbot genérico que adivine.",
+      },
+    },
+    launches: "Lanzamiento: 31 de oct.",
+    guarantee: "Garantía de devolución de 30 días",
+    visualLabel: "Ruta profesional desde el autoconocimiento hasta un siguiente paso respaldado por evidencia",
+    imageAlt: "Mapa de ruta abstracto con tres hitos de planificación profesional",
+    routeKicker: "Un camino más firme",
+    routeTitle: "Tres señales. Un siguiente paso.",
+    routeSteps: ["Lo que sabes", "Contexto del mercado", "Una ruta que probar"],
+  },
+  trust: {
+    label: "Confianza y garantía",
+    guarantee: "Garantía de devolución de 30 días",
+    guaranteeDetail: "· antes del lanzamiento: desde el lanzamiento · después: desde la compra",
+    secure: "Pago seguro",
+    secureDetail: "gestionado por Stripe",
+  },
+  route: {
+    label: "La ruta",
+    title: "Planificación profesional que termina en un primer paso.",
+    lead: "Tu mapa debería hacer que la siguiente decisión sea más pequeña, más concreta y más fácil de poner a prueba en el mundo real.",
+    steps: [
+      ["Trae lo que sabes", "Tus intereses, tus asignaturas, tu experiencia y el trabajo que capta tu atención."],
+      ["Mira el cuadro completo", "Salario, crecimiento del empleo y exposición a la IA en un solo lugar, no cifras aisladas."],
+      ["Sal con una ruta", "Una dirección práctica para LinkedIn, tu red de contactos y tu primera conversación."],
+    ],
+  },
+  dashboard: {
+    label: "Panel de muestra",
+    titleLine1: "Te presentamos a Maya.",
+    titleLine2: "Mira el panel de muestra de Maya antes de decidir.",
+    frameLabel: "Vista ilustrativa del panel de muestra",
+    kicker: "Panel Premium",
+    stand: "Dónde estás, Maya.",
+    sample: "Datos de muestra",
+    coverage: "Cobertura",
+    coverageSub: "de 100 · +12 este semestre",
+    ai: "Lo que la IA ya hace",
+    aiSub: "Exposición moderada",
+    readiness: "Preparación",
+    readinessSub: "Un aviso privado de limpieza",
+    modulesLabel: "Páginas del panel de muestra",
+    open: "Abrir",
+    areas: [
+      { title: "Evidencia", body: "Convierte trabajo real en pruebas que refuercen una línea del currículum, una frase de LinkedIn y una respuesta de entrevista." },
+      { title: "Portafolio", body: "Guarda el trabajo junto a la afirmación que respalda: casos de estudio, informes, prototipos y presentaciones." },
+      { title: "Currículum", body: "Mira cómo una sola actualización se refleja en un currículum limpio y estándar construido con evidencia real." },
+      { title: "LinkedIn", body: "Previsualiza bloques de perfil listos para copiar, sin extracción de datos, sin pedir contraseñas y sin automatizaciones opacas." },
+      { title: "Red de contactos", body: "Sigue caminos cercanos y usa el mensaje exacto que hace más fácil enviar un primer contacto." },
+      { title: "Entrevista", body: "Practica respuestas claras, generales y específicas del puesto, basadas en evidencia que puedes explicar." },
+      { title: "Carreras", body: "Compara salario, crecimiento, lugar de trabajo y exposición a la IA sin fingir que el dinero cambia la puntuación." },
+      { title: "Hoja de ruta", body: "Mira una ruta semestre a semestre que cierra primero las mayores lagunas de evidencia." },
+      { title: "Limpieza", body: "Entiende la vía que prioriza la privacidad para el contexto sensible que nunca debería describirse a un modelo." },
+    ],
+  },
+  beta: {
+    eyebrow: "Acceso beta",
+    title: "Usa CairnCareers gratis hasta el lanzamiento.",
+    lead: "Déjanos tu correo y crearemos tu cuenta.",
+    emailLabel: "Correo electrónico",
+    placeholder: "tu@universidad.edu",
+    submit: "Solicitar acceso beta",
+    saving: "Guardando…",
+    small: "Un solo correo cuando tu cuenta esté lista. Sin boletines.",
+    confirmation: "Seguimos construyendo, pero estamos deseando que uses CairnCareers. Recibirás un correo cuando tu cuenta esté completamente activada.",
+    error: "No pudimos guardar tu solicitud. Inténtalo de nuevo.",
+  },
+  pricing: {
+    label: "Precios",
+    title: "Conoce el precio antes de pagar.",
+    chooseBilling: "Elige la facturación",
+    monthly: "Mensual",
+    annual: "Anual",
+    perMonth: "/ mes",
+    perYear: "/ año",
+    savings: "35% de ahorro",
+    proGroup: "Frecuencia de facturación de Pro",
+    premiumGroup: "Frecuencia de facturación de Premium",
+    free: { for: "¿Dónde estoy?", name: "Gratis", price: "$0", cadence: "para siempre", features: ["Puntuación de exposición a la IA", "Mapa de tareas duraderas frente a expuestas", "Contexto de salario mediano"] },
+    pro: { for: "¿Cómo llego allí?", name: "Pro", features: ["Todo lo del plan Gratis", "Reformulaciones del currículum", "Actualizaciones mensuales"] },
+    premium: { for: "Conocer mi primer paso", name: "Premium", features: ["Todo lo del plan Pro", "Currículum vivo + sistema de LinkedIn", "Motor de contactos cercanos", "Hoja de ruta hasta la graduación"] },
+    ribbon: "Precio de prelanzamiento por tiempo limitado",
+    prelaunchLabel: "Precio de prelanzamiento por tiempo limitado",
+    limitedSpots: "Quedan pocas plazas",
+    checkout: "Continuar al pago seguro",
+    checkoutClosed: "El pago se abre en el lanzamiento",
+    ticker: "¡Usuarios beta gratis hasta el lanzamiento!",
+    groupNote: "Hay precios para grupos y empresas - escríbenos para más información:",
+    approx: "Los precios marcados con ≈ se muestran en {currency} como referencia. El cobro se realiza en dólares estadounidenses.",
+  },
+  about: {
+    label: "Por qué existe esto",
+    title: "Una guía debería ser honesta sobre lo que sabe.",
+    badge: "Creado por una científica investigadora con doctorado",
+    founder: "Brooke Houck, PhD · Fundadora",
+    imageAlt: "Brooke Houck, PhD, fundadora de CairnCareers",
+    quote: "“Todo el mundo tiene una opinión sobre la IA. Y mucha gente quiere darte buenos consejos. Pero el trabajo ya no es el mismo. El trabajo ha cambiado y sigue cambiando. Cairn Careers usa estándares de investigación que puedes consultar abiertamente. Te damos datos, no sensaciones, sobre cómo es el trabajo hoy y cómo será dentro de 3 años.”",
+  },
+  faq: {
+    label: "Preguntas frecuentes",
+    title: "Las preguntas que la gente hace de verdad.",
+    items: [
+      {
+        q: "¿Qué es Cairn Careers?",
+        a: "Cairn Careers es una herramienta de planificación profesional para estudiantes universitarios y recién graduados. Convierte tus intereses, tus asignaturas y tu experiencia en una puntuación de exposición a la IA para cada trayectoria que estés sopesando, junto con un plan por etapas hacia un primer empleo. Es un producto de Phronesis Labs LLC y no está afiliado a Cairn University ni a Cairn Group.",
+      },
+      {
+        q: "¿Cómo se calcula la puntuación de exposición a la IA?",
+        a: "Cada tarea de una ocupación se pondera según la parte del trabajo que representa, se multiplica por el valor de exposición a la IA de esa tarea y el resultado se sitúa en una escala de 0 a 100. Los datos de tareas provienen de O*NET, los valores de exposición de Eloundou et al. (2024) en Science, y la perspectiva de la tendencia a largo plazo de METR. El cálculo completo está en la [página de metodología](/methodology).",
+      },
+      {
+        q: "¿La puntuación predice si perderé mi empleo?",
+        a: "No. La puntuación mide la exposición de las tareas, es decir, lo que la IA actual ya puede hacer, no si un empleo concreto desaparecerá. No puede ver a tu empleador, tu habilidad, tu criterio ni las relaciones que construyes, y no es asesoramiento profesional, financiero ni legal.",
+      },
+      {
+        q: "¿Qué empleos de nivel inicial están más expuestos a la IA?",
+        a: "La exposición depende de la combinación de tareas dentro de un empleo, no del título del puesto, así que dos roles que suenan parecidos pueden puntuar de forma muy distinta. El trabajo que consiste sobre todo en redactar, resumir, hacer análisis rutinarios o documentación estandarizada tiende a puntuar más alto, mientras que el que depende de la presencia física, la negociación o la responsabilidad por una decisión de criterio tiende a puntuar más bajo. Cairn Careers puntúa las trayectorias concretas que estás sopesando en lugar de publicar un ranking general.",
+      },
+      {
+        q: "¿Necesito un currículum o experiencia laboral para usarlo?",
+        a: "No. Aportas tus intereses, tus asignaturas y la experiencia que ya tienes, incluidos proyectos de clase y trabajos a tiempo parcial. No hay que subir ningún currículum ni se exige experiencia laboral.",
+      },
+      {
+        q: "¿En qué se diferencia de preguntarle a un chatbot genérico sobre mi carrera?",
+        a: "Un chatbot genérico produce una respuesta a partir de patrones de sus datos de entrenamiento y no puede mostrarte de dónde salió una cifra. Cairn Careers puntúa tus trayectorias con datos federales de tareas ocupacionales e investigación publicada, nombra y enlaza cada fuente en su [página de metodología](/methodology), y mantiene los datos de salario y crecimiento separados estructuralmente de la puntuación de exposición, para que veas exactamente qué movió el resultado.",
+      },
+      {
+        q: "¿De dónde obtiene Cairn Careers sus datos?",
+        a: "Los datos de tareas ocupacionales provienen de O*NET, la base de datos ocupacional del Departamento de Trabajo de EE. UU. La exposición de las tareas a la IA proviene de Eloundou et al. (2024) en Science. La trayectoria de capacidades proviene de METR. Las cifras de salario y crecimiento provienen de la Oficina de Estadísticas Laborales de EE. UU., se muestran solo como contexto y nunca entran en la puntuación de exposición. Todas las fuentes están enlazadas en la [página de metodología](/methodology).",
+      },
+      {
+        q: "¿Para quién es Cairn Careers?",
+        a: "Para estudiantes universitarios y recién graduados que están decidiendo a qué aspirar y qué hacer a continuación. Es más útil si estás eligiendo entre varias trayectorias, o si ya has elegido una y quieres un plan mes a mes hacia un primer empleo. Puedes ver ese plan en la [hoja de ruta de muestra](/roadmap).",
+      },
+      {
+        q: "¿Cuánto cuesta Cairn Careers?",
+        a: "Premium cuesta 11 $ al mes u 86 $ al año. Pro cuesta 6 $ al mes o 46 $ al año. Hasta el lanzamiento, el 31 de octubre de 2026, los usuarios beta pueden usar Cairn Careers gratis. Toda compra está cubierta por una garantía de devolución de 30 días, descrita en la [página de la política de reembolsos](/refunds).",
+      },
+    ],
+  },
+  closing: {
+    eyebrow: "El siguiente hito es tuyo",
+    title: "Encontrar mi primer paso.",
+    line: "Lanzamiento: 31 de octubre · Garantía de devolución de 30 días",
+  },
+  footer: {
+    tagline: "Contexto profesional para estudiantes universitarios y recién graduados.",
+    productLine: "Cairn Careers es un producto de [Phronesis Labs, LLC](https://phronesislabs.net).",
+    privacy: "Privacidad",
+    terms: "Términos",
+    refunds: "Reembolsos",
+    contact: "Contacto",
+    methodology: "Metodología",
+  },
+  modal: {
+    badge: "Aviso de lanzamiento",
+    title: "¿Quieres saber cuándo estará disponible Cairn Careers?",
+    lead: "Déjanos tu correo y te avisaremos cuando el producto esté listo para usar.",
+    emailLabel: "Correo electrónico",
+    submit: "Avisadme en el lanzamiento",
+    saving: "Guardando…",
+    small: "Tu correo se guarda en la lista de avisos de lanzamiento.",
+    close: "Cerrar",
+    successTitle: "Estás en la lista de avisos de lanzamiento.",
+    successBody: "Usaremos este correo para avisarte cuando CairnCareers esté disponible.",
+    errorTitle: "No pudimos guardar tu correo",
+    errorBody: "Inténtalo de nuevo en un momento.",
+  },
+  legal: {
+    home: "Inicio",
+    updated: "Última actualización",
+    onThisPage: "En esta página",
+    toc: "Índice",
+    breadcrumb: "Ruta de navegación",
+    backToTop: "Volver arriba",
+  },
+  methodology: {
+    eyebrow: "Cómo se construyen las cifras",
+    title: "Metodología",
+    documentTitle: "Cómo se calcula la puntuación de exposición a la IA | CairnCareers",
+    description: "Cómo se construye la puntuación de exposición a la IA de CairnCareers: datos de tareas de O*NET, el marco de Eloundou et al. (2024) en Science y la tendencia de METR, con todas las fuentes enlazadas.",
+    updated: "31 de agosto de 2026",
+    intro: "**La cifra de exposición no es nuestra opinión.** Se construye a partir de datos federales de tareas ocupacionales e investigación revisada por pares, y esta página nombra cada fuente, la enlaza y explica exactamente qué mide la cifra y qué no.",
+    sections: [
+      {
+        title: "Las tres fuentes detrás de la puntuación",
+        body: [
+          "La puntuación de exposición a la IA se construye a partir de tres fuentes, y de nada más.",
+          "**Datos de tareas ocupacionales.** Las ocupaciones y las descripciones concretas de las tareas provienen de O*NET, la base de datos ocupacional del Departamento de Trabajo de EE. UU. Consúltala en [O*NET OnLine](https://www.onetonline.org/) o lee la documentación de la base de datos en el [O*NET Resource Center](https://www.onetcenter.org/database.html).",
+          "**El marco de exposición de tareas a la IA.** La exposición de cada tarea a la IA actual proviene del marco revisado por pares de \"GPTs are GPTs\". Léelo gratis como [preprint en arXiv](https://arxiv.org/abs/2303.10130) o consulta la [versión publicada en Science](https://www.science.org/doi/10.1126/science.adj0998). Cita completa: Eloundou, T., Manning, S., Mishkin, P. y Rock, D. (2024). GPTs are GPTs: Labor market impact potential of LLMs. *Science*, 384(6702), 1306 a 1308.",
+          "**La trayectoria de capacidades de la IA.** La perspectiva se ancla en el hallazgo de METR de que la duración de las tareas que una IA puede completar con un 50 por ciento de fiabilidad se ha venido duplicando aproximadamente cada siete meses. Consulta el [artículo de METR](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/) y el [estudio subyacente](https://arxiv.org/abs/2503.14499).",
+        ],
+      },
+      {
+        title: "Emparejar una trayectoria con una ocupación real",
+        body: [
+          "Empezamos emparejando cada trayectoria profesional que estás considerando con una ocupación estandarizada, porque la IA no sustituye títulos de puesto. Afecta a las tareas concretas dentro de un empleo, y las ocupaciones estandarizadas son la forma en que esas tareas se definen.",
+          "Esto importa más para un estudiante que para alguien que ya trabaja. No estás evaluando un empleo que tienes. Estás comparando trayectorias que podrías tomar, así que cada una tiene que corresponder a una ocupación real antes de que sus tareas puedan puntuarse siquiera.",
+          "En todo momento ves el nombre llano de la ocupación y lo cercano que es el emparejamiento. Los códigos federales de ocupación se quedan entre bastidores.",
+        ],
+      },
+      {
+        title: "Ponderar el trabajo",
+        body: [
+          "Una ocupación es un conjunto de tareas, y esas tareas no pesan lo mismo. La puntuación refleja el énfasis relativo dentro del trabajo, así que las tareas que ocupan la mayor parte de la semana laboral son las que más mueven la cifra.",
+          "Por eso dos trayectorias que suenan parecidas pueden puntuar de forma muy distinta. La cifra sigue la combinación real de trabajo dentro de cada ocupación, no el título del puesto por fuera.",
+        ],
+      },
+      {
+        title: "Calcular la puntuación de exposición",
+        body: [
+          "Cada tarea lleva un valor de exposición tomado del marco de \"GPTs are GPTs\":",
+          "- **Mínima.** La IA actual no puede hacer la tarea de forma significativa. Valor de exposición 0.\n- **Parcial.** La IA puede hacerla con el software o las herramientas adecuadas. Valor de exposición 0,5.\n- **Total.** La IA ya puede hacerla por sí sola. Valor de exposición 1,0.",
+          "El valor de exposición de cada tarea se pondera según la parte del trabajo que representa. Esos valores ponderados se promedian y se sitúan en una escala de 0 a 100. En términos sencillos: multiplica la exposición de cada tarea por su parte del trabajo, suma los resultados, divide entre el total y escala a 100.",
+          "Un ejemplo resuelto. Supongamos que la mitad del trabajo de una ocupación corresponde a una tarea que la IA ya puede hacer sola, un cuarto a una tarea que la IA puede resolver con las herramientas adecuadas y el último cuarto a una tarea que la IA no puede tocar. Eso da (0,5 x 1,0) + (0,25 x 0,5) + (0,25 x 0), que es 0,625, o unos 63 en la escala de 0 a 100.",
+        ],
+      },
+      {
+        title: "Por qué el salario y el crecimiento nunca tocan la puntuación",
+        body: [
+          "El salario, el crecimiento del empleo, la ubicación, tu red de contactos y tu portafolio se muestran junto a la cifra de exposición. Ninguno de ellos puede moverla ni un solo punto. Esa separación es la razón por la que la cifra significa algo: si los salarios pudieran subir o bajar una puntuación de exposición, la puntuación ya no te estaría hablando de la IA.",
+          "Las cifras de salario y crecimiento se muestran como contexto, tomadas de la Oficina de Estadísticas Laborales de EE. UU.: el [Occupational Outlook Handbook](https://www.bls.gov/ooh/) para las proyecciones de crecimiento y [Occupational Employment and Wage Statistics](https://www.bls.gov/oes/) para el salario. Son solo informativas y, por diseño, no pueden alterar la cifra de exposición.",
+        ],
+      },
+      {
+        title: "La perspectiva, y por qué no hay una única cifra futura",
+        body: [
+          "Junto a la cifra actual, damos una dirección: en aumento, estable o ya en el techo. Usa la tendencia consolidada a largo plazo de METR.",
+          "Deliberadamente no publicamos un porcentaje para un año concreto del futuro. Fijar una única cifra futura implicaría una precisión que nadie tiene honestamente. La lectura útil y veraz es la trayectoria, no un decimal falso.",
+          "También usamos la tendencia consolidada a largo plazo en lugar de las estimaciones más rápidas de 2026. Esas cifras más recientes provienen de un conjunto de tareas cercano a la saturación, tienen intervalos de confianza muy amplios y miden específicamente tareas de software, como deja claro el título del [estudio de METR](https://arxiv.org/abs/2503.14499). Extrapolarlas a todas las ocupaciones no está justificado, así que no lo hacemos.",
+        ],
+      },
+      {
+        title: "Qué es esto, y qué no es",
+        body: [
+          "Esta puntuación mide la exposición de las tareas, es decir, lo que la IA actual puede hacer. No es una predicción de que un empleo concreto vaya a desaparecer, ni una predicción sobre ti.",
+          "Es direccional por diseño. Se construye sobre los modelos de hoy y la investigación pública que hay detrás, y se moverá a medida que se muevan los modelos y la investigación.",
+          "Tampoco puede ver lo que a menudo más importa: tu empleador, tu habilidad, tu criterio y las relaciones que construyes. Tómala como un punto de partida informado para pensar en una carrera, no como asesoramiento profesional, financiero ni legal.",
+          "Producirla te pide muy poco. Ni currículum ni historial laboral, solo las trayectorias que estás sopesando y el trabajo que ya has hecho. Recogemos únicamente lo necesario para generar tu resultado. Consulta la [Política de privacidad](/privacy) para los detalles.",
+        ],
+      },
+      {
+        title: "Fuentes y atribución",
+        body: [
+          "- Datos ocupacionales y de tareas: [O*NET OnLine](https://www.onetonline.org/) y el [O*NET Resource Center](https://www.onetcenter.org/database.html), Departamento de Trabajo de EE. UU.\n- Marco de exposición de tareas: Eloundou et al. (2024), [Science 384(6702), 1306 a 1308](https://www.science.org/doi/10.1126/science.adj0998), también disponible como [preprint en arXiv](https://arxiv.org/abs/2303.10130).\n- Trayectoria de capacidades: [METR](https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/) y su [estudio en arXiv](https://arxiv.org/abs/2503.14499).\n- Contexto de salario y crecimiento: Oficina de Estadísticas Laborales de EE. UU., [Occupational Outlook Handbook](https://www.bls.gov/ooh/) y [Occupational Employment and Wage Statistics](https://www.bls.gov/oes/).",
+          "Este producto incluye información de la base de datos O*NET del Departamento de Trabajo de EE. UU., Employment and Training Administration (USDOL/ETA). Se usa bajo la [licencia CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). O*NET es una marca registrada de USDOL/ETA. Phronesis Labs LLC ha modificado parte de esta información. USDOL/ETA no ha aprobado, respaldado ni probado estas modificaciones.",
+        ],
+      },
+      {
+        title: "Preguntas sobre el método",
+        body: [
+          "Si algo aquí no está claro, o crees que tenemos una fuente equivocada, dínoslo en la [página de contacto](/contact). Las correcciones a esta página son bienvenidas y preferimos corregir un error antes que defenderlo.",
+        ],
+      },
+    ],
+  },
+};

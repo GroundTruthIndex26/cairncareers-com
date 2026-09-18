@@ -36,8 +36,17 @@ function initialLang(): Lang {
   } catch {
     /* storage blocked: fall through */
   }
+  // A ?lang= link counts as a choice: remember it, so leaving for a page
+  // without the query (the sample dashboard) and coming back keeps it.
   const fromQuery = new URLSearchParams(window.location.search).get("lang");
-  if (isLang(fromQuery)) return fromQuery;
+  if (isLang(fromQuery)) {
+    try {
+      localStorage.setItem(STORAGE_KEY, fromQuery);
+    } catch {
+      /* storage blocked */
+    }
+    return fromQuery;
+  }
   const geo = readGeo();
   return geo && isLang(geo.lang) ? geo.lang : "en";
 }

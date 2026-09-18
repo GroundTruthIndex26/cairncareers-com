@@ -21,7 +21,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const BASE_URL = import.meta.env.BASE_URL;
@@ -47,10 +47,28 @@ const proPricing: Record<BillingCycle, { price: string; cadence: string; savings
   annual: { price: "US$46", cadence: "USD / year", savings: "35% savings" },
 };
 
-const premiumPricing: Record<BillingCycle, { regular: string; prelaunch: string; cadence: string }> = {
+const premiumPricing: Record<BillingCycle, { regular: string; prelaunch: string; cadence: string; savings?: string }> = {
   monthly: { regular: "US$11", prelaunch: "US$8", cadence: "USD / month" },
-  annual: { regular: "US$86", prelaunch: "US$61", cadence: "USD / year" },
+  annual: { regular: "US$86", prelaunch: "US$61", cadence: "USD / year", savings: "35% savings" },
 };
+
+/**
+ * The discounted pricing cards, saved on September 18, 2026 to bring back on
+ * November 1: Premium at US$8/month or US$61/year with the regular price struck
+ * through, "Limited Time prelaunch price" labels, and both billing toggles
+ * starting on annual. Set this to true to restore them. That also drops the
+ * "Beta users free until launch!" running line, which stops being true at launch.
+ */
+const SHOW_DISCOUNTED_PRICING = false;
+const DEFAULT_BILLING: BillingCycle = SHOW_DISCOUNTED_PRICING ? "annual" : "monthly";
+
+/**
+ * Nothing is sold before launch. While this is false the Premium card shows a
+ * disabled "Checkout opens at launch" button in place of the Stripe link, and
+ * no payment URL is shipped in the page. Set it to true to turn checkout back
+ * on; check premiumPaymentLinks still point at the right Stripe products first.
+ */
+const CHECKOUT_OPEN = false;
 
 // Add the two Stripe Payment Link URLs in the preview/deployment environment.
 // The CTAs become live checkout links as soon as these values are supplied.
@@ -59,28 +77,15 @@ const premiumPaymentLinks: Record<BillingCycle, string> = {
   annual: import.meta.env.VITE_STRIPE_PREMIUM_ANNUAL_PAYMENT_LINK || "https://buy.stripe.com/dRm14n6ttfEX2E60A12VG0e",
 };
 
-const localeOptions: Record<
-  LocaleKey,
-  { label: string; short: string; price: string; note: string }
-> = {
-  "en-US": {
-    label: "United States · English",
-    short: "US · USD",
-    price: "US$30 USD",
-    note: "Final charge: US$30 USD",
-  },
-  "en-CA": {
-    label: "Canada · English (pilot)",
-    short: "CA · CAD",
-    price: "Approx. CA$41 CAD",
-    note: "Final charge: US$30 USD · card issuer sets conversion",
-  },
-  "en-GB": {
-    label: "United Kingdom · English (pilot)",
-    short: "UK · GBP",
-    price: "Approx. £23 GBP",
-    note: "Final charge: US$30 USD · card issuer sets conversion",
-  },
+/**
+ * The header's country picker. It is meant to switch the page's language and
+ * the currency prices are shown in; neither is built yet, so for now it only
+ * sets the document language and the ?locale= query.
+ */
+const localeOptions: Record<LocaleKey, { label: string; short: string }> = {
+  "en-US": { label: "United States · English", short: "US · USD" },
+  "en-CA": { label: "Canada · English (pilot)", short: "CA · CAD" },
+  "en-GB": { label: "United Kingdom · English (pilot)", short: "UK · GBP" },
 };
 
 /**
@@ -241,8 +246,8 @@ const FAQS: { q: string; a: React.ReactNode; plain: string }[] = [
   },
   {
     q: "What does Cairn Careers cost?",
-    a: <>Premium is $61 a year at the pre-order rate, rising to $86 a year after launch on October 31, 2026. Pro is $46 a year. Every purchase is covered by a 30-day money-back guarantee, described on the <a href="/refunds">refund policy page</a>.</>,
-    plain: "Premium is $61 a year at the pre-order rate, rising to $86 a year after launch on October 31, 2026. Pro is $46 a year. Every purchase is covered by a 30-day money-back guarantee.",
+    a: <>Premium is $11 a month or $86 a year. Pro is $6 a month or $46 a year. Until launch on October 31, 2026, beta users can use Cairn Careers free. Every purchase is covered by a 30-day money-back guarantee, described on the <a href="/refunds">refund policy page</a>.</>,
+    plain: "Premium is $11 a month or $86 a year. Pro is $6 a month or $46 a year. Until launch on October 31, 2026, beta users can use Cairn Careers free. Every purchase is covered by a 30-day money-back guarantee.",
   },
 ];
 
@@ -271,6 +276,51 @@ function SectionLabel({ number, children }: { number: string; children: React.Re
 function CairnMark() {
   return (
     <img className="cairn-mark" src={BRAND_ASSETS.icon} alt="" aria-hidden="true" />
+  );
+}
+
+/**
+ * A running line for the pricing section. Screen readers and crawlers get the
+ * sentence once; the scrolling copies are drawn by CSS from --ticker-text, so
+ * the prerendered HTML does not repeat it eight times.
+ */
+function BetaTicker({ text }: { text: string }) {
+  const group = <div className="beta-ticker-group"><span /><span /><span /><span /></div>;
+  return (
+    <div className="beta-ticker" style={{ "--ticker-text": `"${text}"` } as React.CSSProperties}>
+      <p className="sr-only">{text}</p>
+      <div className="beta-ticker-track" aria-hidden="true">{group}{group}</div>
+    </div>
+  );
+}
+
+/**
+ * Covers for the hero map that lift one at a time, so cairn 1, 2 and 3 appear
+ * in order (timing lives with .hero-route-veil in index.css). The viewBox is
+ * the image's own 1600x900 pixel grid and "slice" matches its object-fit:
+ * cover, so each cover stays on its cairn at every crop. Covers 2 and 3 are
+ * turned to run across the route, with their soft edges in the gaps between
+ * cairns. Without the animation they sit at opacity 0.
+ */
+function RouteVeil() {
+  return (
+    <svg className="hero-route-veil" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="route-veil-edge-2" gradientUnits="userSpaceOnUse" x1="730" x2="850" y1="0" y2="0">
+          <stop offset="0" stopColor="currentColor" stopOpacity="0" />
+          <stop offset="1" stopColor="currentColor" />
+        </linearGradient>
+        <linearGradient id="route-veil-edge-3" gradientUnits="userSpaceOnUse" x1="1135" x2="1225" y1="0" y2="0">
+          <stop offset="0" stopColor="currentColor" stopOpacity="0" />
+          <stop offset="1" stopColor="currentColor" />
+        </linearGradient>
+      </defs>
+      <rect className="route-veil-1" width="1600" height="900" fill="currentColor" opacity="0" />
+      <g transform="rotate(-33.3 800 450)">
+        <rect className="route-veil-2" x="730" y="-1000" width="3000" height="3000" fill="url(#route-veil-edge-2)" opacity="0" />
+        <rect className="route-veil-3" x="1135" y="-1000" width="3000" height="3000" fill="url(#route-veil-edge-3)" opacity="0" />
+      </g>
+    </svg>
   );
 }
 
@@ -308,14 +358,16 @@ function MetricSlot({ label }: { label: string }) {
 export default function Home() {
   const [locale, setLocale] = useState<LocaleKey>("en-US");
   const [campaign, setCampaign] = useState<CampaignKey>("default");
-  const [proBilling, setProBilling] = useState<BillingCycle>("annual");
-  const [premiumBilling, setPremiumBilling] = useState<BillingCycle>("annual");
+  const [proBilling, setProBilling] = useState<BillingCycle>(DEFAULT_BILLING);
+  const [premiumBilling, setPremiumBilling] = useState<BillingCycle>(DEFAULT_BILLING);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLeadModal, setShowLeadModal] = useState(false);
   const [showTopButton, setShowTopButton] = useState(false);
   const [email, setEmail] = useState("");
   const [isLeadSubmitting, setIsLeadSubmitting] = useState(false);
-  const localized = localeOptions[locale];
+  const [betaEmail, setBetaEmail] = useState("");
+  const [betaStatus, setBetaStatus] = useState<"idle" | "submitting" | "done">("idle");
+  const [betaError, setBetaError] = useState("");
   const message = campaignVariants[campaign];
 
   useEffect(() => {
@@ -391,7 +443,6 @@ export default function Home() {
     };
   }, []);
 
-  const visiblePrice = useMemo(() => localized.price, [localized.price]);
   const proPlan = proPricing[proBilling];
   const premiumPlan = premiumPricing[premiumBilling];
   const premiumPaymentLink = premiumPaymentLinks[premiumBilling];
@@ -442,12 +493,46 @@ export default function Home() {
     sessionStorage.setItem("cairn-checklist-dismissed", "1");
   };
 
+  /**
+   * Beta access. Same Worker route as the launch list, tagged source
+   * "beta-request" so the owner's alert says what it is. On success the form
+   * is replaced by the confirmation, and the launch-notification modal is
+   * kept from asking this visitor for the same email again.
+   */
+  const submitBetaRequest = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const address = betaEmail.trim();
+    if (!address) return;
+    setBetaStatus("submitting");
+    setBetaError("");
+    try {
+      const response = await fetch(leadCaptureEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: address, source: "beta-request" }),
+      });
+      if (!response.ok) {
+        const data = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(data?.error || "We could not save your request. Please try again.");
+      }
+      setBetaStatus("done");
+      sessionStorage.setItem("cairn-checklist-dismissed", "1");
+    } catch (error) {
+      setBetaStatus("idle");
+      setBetaError(error instanceof Error ? error.message : "We could not save your request. Please try again.");
+    }
+  };
+
   return (
     <div className="site-shell">
       <div className="deadline-bar">
         <div className="container deadline-inner">
-          <span><CalendarDays /> Pre-order price ends October 31</span>
-          <span className="deadline-detail">Launches October 31 · 30-day money-back guarantee</span>
+          <span className="deadline-main">
+            <span><CalendarDays /> Launch Oct. 31</span>
+            <span className="deadline-sep" aria-hidden="true">|</span>
+            <span>Free for beta users until launch</span>
+          </span>
+          <span className="deadline-detail">30-day money-back guarantee</span>
         </div>
       </div>
 
@@ -465,7 +550,7 @@ export default function Home() {
             <a href="#about">About</a>
           </nav>
           <div className="header-controls">
-            <a className="header-cta" href="#premium-checkout">Show me my career paths <ArrowRight /></a>
+            <a className="header-cta" href="#beta-access">Show me my career paths <ArrowRight /></a>
             <label className="compact-select">
               <Globe2 aria-hidden="true" />
               <span className="sr-only">Country and currency</span>
@@ -498,7 +583,7 @@ export default function Home() {
             <a onClick={() => setMobileOpen(false)} href="/methodology">Methodology</a>
             {/* The call to action lives here on small screens. Kept in the
                 header row it pushed the bar 175px past a 375px viewport. */}
-            <a className="mobile-nav-cta" onClick={() => setMobileOpen(false)} href="#premium-checkout">Show me my career paths <ArrowRight /></a>
+            <a className="mobile-nav-cta" onClick={() => setMobileOpen(false)} href="#beta-access">Show me my career paths <ArrowRight /></a>
           </nav>
         )}
       </header>
@@ -512,15 +597,17 @@ export default function Home() {
               <h1>Find an entry-level path that holds up to AI.</h1>
               <p>{message.body}</p>
               <div className="hero-actions">
-                <a className="primary-cta" href="#premium-checkout">Show me my career paths <ArrowRight /></a>
+                <a className="primary-cta" href="#beta-access">Show me my career paths <ArrowRight /></a>
               </div>
               <div className="purchase-context">
-                <div><strong>{visiblePrice}</strong><span>{localized.note}</span></div>
                 <div><strong>Launches Oct. 31</strong><span>30-day money-back guarantee</span></div>
               </div>
             </div>
             <div className="hero-visual" aria-label="Career route from self-knowledge to an evidence-supported next move">
-              <img src={ASSETS.hero} alt="Abstract route map with three career-planning waypoints" width="1200" height="675" fetchPriority="high" />
+              <div className="hero-map">
+                <img src={ASSETS.hero} alt="Abstract route map with three career-planning waypoints" width="1200" height="675" fetchPriority="high" />
+                <RouteVeil />
+              </div>
               <div className="hero-route-card">
                 <span className="route-card-kicker">A steadier way forward</span>
                 <strong>Three signals. One next move.</strong>
@@ -538,7 +625,6 @@ export default function Home() {
           <div className="container trust-strip-grid">
             <div><ShieldCheck /><span><strong>30-day money-back guarantee</strong> · pre-launch: from launch · after launch: from purchase</span></div>
             <div><LockKeyhole /><span><strong>Secure checkout</strong> handled by Stripe</span></div>
-            <div><Globe2 /><span><strong>USD labeled</strong> before checkout in every locale</span></div>
           </div>
         </section>
 
@@ -567,7 +653,7 @@ export default function Home() {
           <div className="container">
             <div className="sample-dashboard-heading">
               <SectionLabel number="03">Sample Dashboard</SectionLabel>
-              <h2>See the Sample Dashboard before you decide.</h2>
+              <h2>Meet Maya.<br /> See Maya's sample dashboard before you decide.</h2>
             </div>
 
             <div className="sample-dashboard-frame" aria-label="Illustrative Sample Dashboard preview">
@@ -651,6 +737,35 @@ export default function Home() {
           </section>
         )}
 
+        <section id="beta-access" className="beta-section">
+          <div className="container">
+            <div className="beta-panel">
+              <span className="hero-eyebrow">Beta access</span>
+              <h2>Use CairnCareers free until launch.</h2>
+              {betaStatus === "done" ? (
+                <div className="beta-confirmation" role="status">
+                  <Check aria-hidden="true" />
+                  <p>We are still building, but can't wait for you to use CairnCareers. You will receive an email when your account is fully activated.</p>
+                </div>
+              ) : (
+                <>
+                  <p>Leave your email and we will set up your account.</p>
+                  <form className="email-form beta-form" onSubmit={submitBetaRequest}>
+                    <label htmlFor="beta-email">Email address</label>
+                    <div>
+                      <Mail />
+                      <input id="beta-email" type="email" required autoComplete="email" placeholder="you@school.edu" value={betaEmail} onChange={(event) => setBetaEmail(event.target.value)} />
+                      <button type="submit" disabled={betaStatus === "submitting"}>{betaStatus === "submitting" ? "Saving…" : "Request beta access"} <ArrowRight /></button>
+                    </div>
+                    {betaError && <p className="form-error" role="alert">{betaError}</p>}
+                    <small>One email when your account is ready. No newsletter.</small>
+                  </form>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+
         <section id="pricing" className="pricing-section">
           <div className="container">
             <div className="section-heading split-heading">
@@ -658,12 +773,12 @@ export default function Home() {
                 <SectionLabel number="04">Pricing</SectionLabel>
                 <h2>See the price before checkout.</h2>
               </div>
-              <div className="locale-disclosure">
-                <Globe2 />
-                <div><strong>{localized.label}</strong><span>{localized.note}</span></div>
-              </div>
             </div>
+          </div>
 
+          {!SHOW_DISCOUNTED_PRICING && <BetaTicker text="Beta users free until launch!" />}
+
+          <div className="container">
             <div className="pricing-grid">
               <article className="price-card">
                 <span className="price-for">Where do I stand?</span>
@@ -685,7 +800,7 @@ export default function Home() {
                 <ul><li><Check /> Everything in Free</li><li><Check /> Resume reframes</li><li><Check /> Monthly re-runs</li></ul>
               </article>
               <article id="premium-checkout" className="price-card featured-price">
-                <div className="price-ribbon">Limited Time prelaunch price</div>
+                {SHOW_DISCOUNTED_PRICING && <div className="price-ribbon">Limited Time prelaunch price</div>}
                 <span className="price-for">Know my first move</span>
                 <h3>Premium</h3>
                 <div className="price-toggle premium-toggle" role="group" aria-label="Premium billing frequency">
@@ -695,10 +810,18 @@ export default function Home() {
                     <button type="button" aria-pressed={premiumBilling === "annual"} className={premiumBilling === "annual" ? "active" : ""} onClick={() => setPremiumBilling("annual")}>Annual</button>
                   </div>
                 </div>
-                <div className="price"><s>{premiumPlan.regular} · 35% savings</s><strong>{premiumPlan.prelaunch}</strong><span>{premiumPlan.cadence}</span><em className="prelaunch-label">Limited Time prelaunch price</em><small className="limited-spots">Limited spots remain</small></div>
+                {SHOW_DISCOUNTED_PRICING ? (
+                  <div className="price"><s>{premiumPlan.regular} · 35% savings</s><strong>{premiumPlan.prelaunch}</strong><span>{premiumPlan.cadence}</span><em className="prelaunch-label">Limited Time prelaunch price</em><small className="limited-spots">Limited spots remain</small></div>
+                ) : (
+                  <div className="price"><strong>{premiumPlan.regular}</strong><span>{premiumPlan.cadence}</span>{premiumPlan.savings && <em className="price-saving">{premiumPlan.savings}</em>}</div>
+                )}
                 <ul><li><Check /> Everything in Pro</li><li><Check /> Living resume + LinkedIn system</li><li><Check /> Warm-path networking engine</li><li><Check /> Graduation-timeline roadmap</li></ul>
-                <a className="primary-cta full-cta" href={premiumPaymentLink || "#stripe-payment-link"} onClick={handlePremiumCheckout} target={premiumPaymentLink ? "_blank" : undefined} rel={premiumPaymentLink ? "noreferrer" : undefined}>Continue to secure checkout <ArrowRight /></a>
-                {!premiumPaymentLink && (
+                {CHECKOUT_OPEN ? (
+                  <a className="primary-cta full-cta" href={premiumPaymentLink || "#stripe-payment-link"} onClick={handlePremiumCheckout} target={premiumPaymentLink ? "_blank" : undefined} rel={premiumPaymentLink ? "noreferrer" : undefined}>Continue to secure checkout <ArrowRight /></a>
+                ) : (
+                  <button type="button" className="primary-cta full-cta" disabled>Checkout opens at launch</button>
+                )}
+                {CHECKOUT_OPEN && !premiumPaymentLink && (
                   // Build-time hint only. Both links are configured, so this does not
                   // render in production; it used to, telling buyers at the checkout
                   // button that checkout was not set up.
@@ -740,9 +863,9 @@ export default function Home() {
         <section className="closing-section">
           <div className="container closing-inner">
             <span className="hero-eyebrow">The next marker is yours</span>
-            <h2>Find my first move before pre-order pricing ends.</h2>
-            <a className="primary-cta" href="#premium-checkout">Show me my career paths <ArrowRight /></a>
-            <p>Launches October 31 · {localized.note} · 30-day money-back guarantee: pre-launch from launch; after launch from purchase</p>
+            <h2>Find my first move.</h2>
+            <a className="primary-cta" href="#beta-access">Show me my career paths <ArrowRight /></a>
+            <p>Launches October 31 · 30-day money-back guarantee: pre-launch from launch; after launch from purchase</p>
           </div>
         </section>
       </main>

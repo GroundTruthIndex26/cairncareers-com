@@ -171,6 +171,7 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .primary-cta { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:54px; padding:0 20px; background:var(--lime); color:var(--ink); border:2px solid var(--ink); box-shadow:5px 5px 0 var(--cyan); font:800 12px "IBM Plex Mono",monospace; letter-spacing:.06em; text-transform:uppercase; transition:transform 160ms var(--ease-out),box-shadow 160ms var(--ease-out); }
 .primary-cta:hover { transform:translate(-2px,-2px); box-shadow:7px 7px 0 var(--cyan); }
 .primary-cta:active { transform:scale(.97); }
+.primary-cta:disabled { background:#dfe3dc; color:#5c635d; box-shadow:5px 5px 0 #8b928d; cursor:not-allowed; transform:none; }
 .primary-cta svg,.tour-link svg,.outline-link svg,.source-placeholder svg { width:17px; height:17px; }
 .tour-link { display:inline-flex; align-items:center; gap:7px; color:white; border-bottom:1px solid #7d8780; padding:9px 0; font:700 12px "IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.05em; }
 .tour-link:hover { color:var(--lime); border-color:var(--lime); }
@@ -180,7 +181,9 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .purchase-context strong { font:800 13px "IBM Plex Mono",monospace; color:white; }
 .purchase-context span { margin-top:4px; color:#aeb5b0; font-size:12px; }
 .hero-visual { position:relative; align-self:stretch; display:flex; align-items:center; }
-.hero-visual > img { width:100%; min-height:520px; object-fit:cover; border:2px solid #56605a; box-shadow:10px 10px 0 var(--pink); }
+.hero-map { position:relative; width:100%; }
+.hero-map > img { display:block; width:100%; min-height:520px; object-fit:cover; border:2px solid #56605a; box-shadow:10px 10px 0 var(--pink); }
+.hero-route-veil { position:absolute; top:2px; left:2px; width:calc(100% - 4px); height:calc(100% - 4px); color:var(--ink); pointer-events:none; }
 .hero-route-card { position:absolute; right:-12px; bottom:56px; width:min(330px,82%); padding:20px; background:var(--paper-light); color:var(--ink); border:2px solid var(--ink); box-shadow:7px 7px 0 var(--lime); }
 .route-card-kicker { font:700 10px "IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.09em; }
 .hero-route-card > strong { display:block; margin:8px 0 15px; font-size:22px; line-height:1.1; }
@@ -189,7 +192,7 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .hero-route-card li span { display:grid; place-items:center; width:22px; height:22px; background:var(--lime); border:1px solid var(--ink); font:800 11px "IBM Plex Mono",monospace; }
 
 .trust-strip { background:#171a18; color:white; border-top:1px solid #383d39; border-bottom:2px solid var(--ink); }
-.trust-strip-grid { display:grid; grid-template-columns:repeat(3,1fr); }
+.trust-strip-grid { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; }
 .trust-strip-grid > div { min-height:82px; display:flex; align-items:center; gap:12px; padding:18px 24px; border-right:1px solid #383d39; }
 .trust-strip-grid > div:last-child { border-right:0; }
 .trust-strip-grid svg { flex:0 0 auto; width:24px; height:24px; color:var(--lime); }
@@ -332,12 +335,16 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .checklist-preview-link { display:inline-flex; align-items:center; gap:7px; margin-top:16px; padding-bottom:3px; border-bottom:2px solid var(--cyan); font:800 10px "IBM Plex Mono",monospace; letter-spacing:.04em; text-transform:uppercase; }
 .checklist-preview-link svg { width:14px; height:14px; }
 
+.beta-section { padding:96px 0; background:var(--paper); border-top:2px solid var(--ink); }
+.beta-panel { max-width:860px; padding:40px; background:var(--paper-light); border:2px solid var(--ink); box-shadow:10px 10px 0 var(--pink); }
+.beta-panel h2 { margin:18px 0 0; font:400 clamp(36px,4.6vw,58px)/.98 "Archivo Black",Impact,sans-serif; letter-spacing:-.04em; }
+.beta-panel > p { margin:18px 0 0; max-width:560px; font-size:18px; color:#484e49; }
+.beta-form small { color:#5c635d; }
+.form-error { margin:12px 0 0; font-size:14px; font-weight:600; color:#b3123a; }
+.beta-confirmation { display:flex; gap:16px; align-items:flex-start; margin-top:26px; padding:22px 24px; background:var(--lime); border:2px solid var(--ink); box-shadow:6px 6px 0 var(--ink); }
+.beta-confirmation svg { flex:0 0 auto; width:26px; height:26px; margin-top:3px; }
+.beta-confirmation p { margin:0; font-size:19px; font-weight:600; line-height:1.4; }
 .pricing-section { padding:105px 0; background:var(--paper-light); }
-.locale-disclosure { display:flex; align-items:center; gap:13px; padding:14px; border:2px solid var(--ink); background:white; box-shadow:5px 5px 0 var(--cyan); }
-.locale-disclosure svg { flex:0 0 auto; }
-.locale-disclosure strong,.locale-disclosure span { display:block; }
-.locale-disclosure strong { font-size:13px; }
-.locale-disclosure span { margin-top:3px; font-size:11px; color:#5e655f; }
 .pricing-grid { position:relative; display:grid; grid-template-columns:.8fr .8fr 1.25fr; gap:20px; align-items:stretch; }
 .pricing-grid:before { content:""; position:absolute; left:-18px; right:24%; top:34px; height:2px; background:linear-gradient(90deg,var(--cyan),var(--pink)); transform:rotate(-1.5deg); }
 .price-card { padding:26px; background:white; border:2px solid var(--ink); box-shadow:6px 6px 0 var(--ink); }
@@ -362,7 +369,8 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .price-card ul { display:grid; gap:12px; list-style:none; padding:20px 0 0; margin:0; }
 .price-card li { display:flex; align-items:flex-start; gap:8px; font-size:13px; }
 .price-card li svg { flex:0 0 auto; width:17px; height:17px; color:#5c9500; }
-.featured-price { position:relative; padding-top:68px; background:var(--ink); color:white; box-shadow:8px 8px 0 var(--lime); }
+.featured-price { position:relative; background:var(--ink); color:white; box-shadow:8px 8px 0 var(--lime); }
+.featured-price:has(.price-ribbon) { padding-top:68px; }
 .featured-price:after { content:"Marker 03 · move"; color:#aeb6b0; }
 .price-ribbon { position:absolute; left:0; right:0; top:0; padding:13px 20px; background:var(--lime); color:var(--ink); border-bottom:2px solid var(--ink); font:800 10px "IBM Plex Mono",monospace; text-transform:uppercase; }
 .featured-price .price-for,.featured-price .price span { color:#aeb6b0; }
@@ -375,6 +383,12 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .premium-toggle button { color:#f5f8f2; }
 .premium-toggle button.active { color:var(--ink); background:var(--lime); }
 .prelaunch-label { background:var(--pink); color:white; }
+.beta-ticker { overflow:hidden; margin-bottom:48px; background:var(--lime); color:var(--ink); border-block:2px solid var(--ink); }
+.beta-ticker-track { display:flex; }
+.beta-ticker-group { flex:0 0 auto; min-width:100%; display:flex; justify-content:space-around; }
+.beta-ticker-group span { display:flex; align-items:center; gap:22px; padding:14px 22px; font:700 14px/1 "IBM Plex Mono",ui-monospace,monospace; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
+.beta-ticker-group span:before { content:""; width:8px; height:8px; background:var(--ink); transform:rotate(45deg); }
+.beta-ticker-group span:after { content:var(--ticker-text); }
 .limited-spots { display:inline-flex; align-self:flex-start; margin-top:8px; color:var(--lime)!important; font:800 9px "IBM Plex Mono",monospace!important; letter-spacing:.06em; text-transform:uppercase; }
 .featured-price li svg { color:var(--lime); }
 .full-cta { width:100%; margin-top:24px; }
@@ -429,7 +443,7 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
   .desktop-nav { display:none; }
   .hero-grid { grid-template-columns:1fr; min-height:auto; padding-top:46px; }
   .hero-visual { min-height:520px; }
-  .hero-visual > img { height:520px; }
+  .hero-map > img { height:520px; }
   .sample-dashboard-overview,.checklist-grid,.about-grid { grid-template-columns:1fr; }
   .video-rating-grid { grid-template-columns:1fr; }
   .pricing-grid { grid-template-columns:1fr 1fr; }
@@ -438,7 +452,9 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 
 @media (max-width:760px) {
   .deadline-detail { display:none!important; }
-  .deadline-inner { justify-content:center; }
+  .deadline-main { flex-direction:column; gap:2px!important; }
+  .deadline-sep { display:none!important; }
+  .deadline-inner { justify-content:center; padding-block:6px; }
   .header-inner { min-height:64px; }
   .wordmark strong { font-size:22px; }
   .brand-logo { width:190px; height:48px; }
@@ -455,11 +471,13 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
   .hero-actions { align-items:flex-start; flex-direction:column; gap:12px; }
   .purchase-context { grid-template-columns:1fr; }
   .hero-visual { min-height:420px; }
-  .hero-visual > img { height:420px; min-height:0; }
+  .hero-map > img { height:420px; min-height:0; }
   .hero-route-card { right:8px; bottom:22px; }
-  .trust-strip-grid { grid-template-columns:1fr; }
+  .trust-strip-grid { grid-auto-flow:row; }
   .trust-strip-grid > div { min-height:64px; border-right:0; border-bottom:1px solid #383d39; }
   .paper-section,.pricing-section { padding:76px 0; }
+  .beta-section { padding:64px 0; }
+  .beta-panel { padding:26px 20px; box-shadow:6px 6px 0 var(--pink); }
   .split-heading { grid-template-columns:1fr; gap:18px; }
   .section-heading h2,.sample-dashboard-heading h2,.checklist-copy h2,.about-grid h2,.closing-section h2 { font-size:42px; }
   .steps-grid,.metrics-grid,.story-grid { grid-template-columns:1fr; }
@@ -495,6 +513,20 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
   .step-card:nth-child(2) { animation-delay:80ms; }
   .step-card:nth-child(3) { animation-delay:140ms; }
   @keyframes reveal { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+  /* Hero route: cairn 1, 2 and 3 appear one at a time, then the route card.
+     Each step takes 900ms: a 420ms fade, then about half a second to look at
+     the new spot (a saccade is ~200ms) and read its one-word label (average
+     silent reading is ~238 words a minute, ~250ms a word). The card's 18
+     words take ~4.5s to read, so it comes last and stays. */
+  .hero-route-veil rect { animation:veil-lift 420ms var(--ease-out) both; }
+  .hero-route-veil .route-veil-1 { animation-delay:600ms; }
+  .hero-route-veil .route-veil-2 { animation-delay:1500ms; }
+  .hero-route-veil .route-veil-3 { animation-delay:2400ms; }
+  .hero-route-card { animation:reveal 520ms var(--ease-out) 3300ms both; }
+  @keyframes veil-lift { from { opacity:1; } to { opacity:0; } }
+  .beta-ticker-group { animation:ticker 32s linear infinite; }
+  .beta-ticker:hover .beta-ticker-group { animation-play-state:paused; }
+  @keyframes ticker { to { transform:translateX(-100%); } }
 }
 
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }

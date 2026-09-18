@@ -25,8 +25,10 @@ interface Env {
   SUPABASE_SERVICE_ROLE_KEY?: string;
   /** Resend API key (Worker secret). When unset, signups are still saved; only the emails are skipped. */
   RESEND_API_KEY?: string;
-  /** Where the daily new-signup digest goes (wrangler.jsonc vars). */
+  /** Reply-to on the subscriber welcome email (wrangler.jsonc vars). */
   NOTIFY_EMAIL?: string;
+  /** Where the instant new-signup alert goes (wrangler.jsonc vars). */
+  OWNER_EMAIL?: string;
   /** Sender for both emails. Must be on a domain verified in Resend (wrangler.jsonc vars). */
   FROM_EMAIL?: string;
   ASSETS: Fetcher;
@@ -138,13 +140,13 @@ interface SignupRow {
 
 /**
  * EMAIL
- * Two messages leave this Worker, both through Resend:
+ * Two messages leave this Worker on a new signup, both through Resend:
  *   1. an immediate thank-you to the subscriber the first time an address signs up;
- *   2. a once-a-day digest to NOTIFY_EMAIL listing signups not yet reported
- *      (see `scheduled` below and the cron in wrangler.jsonc).
+ *   2. an immediate alert to OWNER_EMAIL naming the address that just joined.
  * Neither may ever break a signup. Every send runs after the row is saved,
- * inside ctx.waitUntil, and a failure is logged, not surfaced. Each row records
- * welcomed_at / digested_at so a retry or an overlapping cron cannot double-send.
+ * inside ctx.waitUntil, and a failure is logged, not surfaced. The thank-you
+ * stamps welcomed_at, so a retry cannot send it twice; the owner alert fires
+ * only on the insert that actually created a row, so it cannot duplicate either.
  */
 async function sendEmail(
   env: Env,
@@ -175,7 +177,7 @@ function welcomeEmail(env: Env) {
     "",
     "What happens next:",
     "  - We launch on October 31, 2026. You will get one email from us the day it goes live.",
-    "  - Until then, pre-order pricing is open: Premium is US$61 for the first year (US$86 after launch) and Pro is US$46 a year. Every purchase carries a 30-day money-back guarantee.",
+    "  - Until then, beta access is free. Request it at https://cairncareers.com/#beta-access and we will email you when your account is ready.",
     "  - We will not send you anything else in between. No drip sequence, no weekly newsletter.",
     "",
     "Have a question, or want to tell us which career paths you are weighing? Reply to this email. A person reads every message.",
@@ -194,7 +196,7 @@ function welcomeEmail(env: Env) {
 <p style="margin:0 0 8px;font-weight:700">What happens next</p>
 <ul style="margin:0 0 16px;padding-left:20px">
 <li style="margin-bottom:6px">We launch on <strong>October 31, 2026</strong>. You will get one email from us the day it goes live.</li>
-<li style="margin-bottom:6px">Until then, pre-order pricing is open: Premium is <strong>US$61</strong> for the first year (US$86 after launch) and Pro is US$46 a year. Every purchase carries a 30-day money-back guarantee.</li>
+<li style="margin-bottom:6px">Until then, beta access is free. <a href="https://cairncareers.com/#beta-access" style="color:#1b1b1b">Request it here</a> and we will email you when your account is ready.</li>
 <li>We will not send you anything else in between. No drip sequence, no weekly newsletter.</li>
 </ul>
 <p style="margin:0 0 16px">Have a question, or want to tell us which career paths you are weighing? Reply to this email. A person reads every message.</p>
@@ -228,12 +230,14 @@ async function handleLaunchNotifications(request: Request, env: Env, ctx: Execut
     return Response.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const email = typeof (body as { email?: unknown })?.email === "string"
-    ? (body as { email: string }).email.trim().toLowerCase()
-    : "";
+  const email = str(body, "email").toLowerCase();
   if (!EMAIL_RE.test(email) || email.length > 320) {
     return Response.json({ error: "Enter a valid email address." }, { status: 400 });
   }
+  // Two forms post here: the launch-notification modal and the beta-access
+  // form on the home page. Anything else claimed as a source is ignored.
+  const isBeta = str(body, "source") === "beta-request";
+  const source = isBeta ? "beta-request" : "launch-notification";
 
   if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
     return Response.json({ error: "Launch notifications are not configured yet." }, { status: 503 });
@@ -244,10 +248,15 @@ async function handleLaunchNotifications(request: Request, env: Env, ctx: Execut
     // as [row]; an address already on the list comes back as []. That is how we
     // know whether to send the thank-you without a second round trip, and it
     // keeps a repeat signup from overwriting the original created_at.
+    //
+    // A beta request merges instead: an address already on the launch list is
+    // moved to the beta list (only `source` changes; created_at is kept) and the
+    // row always comes back, so the owner hears about every request.
+    const resolution = isBeta ? "merge-duplicates" : "ignore-duplicates";
     const response = await fetch(`${env.SUPABASE_URL}/rest/v1/launch_notifications?on_conflict=email`, {
       method: "POST",
-      headers: sbHeaders(env, "resolution=ignore-duplicates,return=representation"),
-      body: JSON.stringify({ email, source: "launch-notification" }),
+      headers: sbHeaders(env, `resolution=${resolution},return=representation`),
+      body: JSON.stringify({ email, source }),
     });
 
     if (!response.ok) {
@@ -256,7 +265,12 @@ async function handleLaunchNotifications(request: Request, env: Env, ctx: Execut
     }
 
     const rows = (await response.json().catch(() => [])) as SignupRow[];
-    if (rows.length === 1) ctx.waitUntil(welcomeNewSignup(env, rows[0]));
+    if (rows.length === 1) {
+      // The beta form confirms on the page, and the next email a beta requester
+      // gets is the one that activates their account, so no thank-you for them.
+      if (!isBeta) ctx.waitUntil(welcomeNewSignup(env, rows[0]));
+      ctx.waitUntil(alertOwnerOfSignup(env, rows[0]));
+    }
 
     return Response.json({ saved: true }, { status: 201 });
   } catch (error) {
@@ -266,68 +280,51 @@ async function handleLaunchNotifications(request: Request, env: Env, ctx: Execut
 }
 
 /**
- * DAILY DIGEST (cron in wrangler.jsonc)
- * Collects every signup not yet reported, emails the list to NOTIFY_EMAIL, and
- * stamps digested_at on exactly those rows. Selecting on the stamp rather than
- * on "the last 24 hours" means a missed or late run reports everything it
- * skipped instead of losing it, and nothing is ever reported twice. On a day
- * with no new signups it sends nothing at all.
+ * INSTANT OWNER ALERT
+ * Fires on the insert that actually created a row, so one address joining twice
+ * never alerts twice. Runs inside ctx.waitUntil after the row is saved: a send
+ * failure is logged and never reaches the person signing up.
  */
-async function sendDailyDigest(env: Env): Promise<void> {
-  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
-    console.warn("digest skipped: Supabase is not configured");
+async function alertOwnerOfSignup(env: Env, row: SignupRow): Promise<void> {
+  if (!env.OWNER_EMAIL) {
+    console.warn("owner alert skipped: OWNER_EMAIL is not set");
     return;
   }
-  if (!env.NOTIFY_EMAIL) {
-    console.warn("digest skipped: NOTIFY_EMAIL is not set");
-    return;
-  }
-
-  const res = await fetch(
-    `${env.SUPABASE_URL}/rest/v1/launch_notifications?select=id,email,source,created_at&digested_at=is.null&order=created_at.asc&limit=500`,
-    { headers: sbHeaders(env) },
-  );
-  if (!res.ok) {
-    console.error("digest query failed", res.status);
-    return;
-  }
-  const rows = (await res.json()) as SignupRow[];
-  if (rows.length === 0) {
-    console.log("digest: no new signups");
-    return;
-  }
-
-  const fmt = (iso: string) =>
-    new Date(iso).toLocaleString("en-US", { timeZone: "America/New_York", dateStyle: "medium", timeStyle: "short" });
-  const n = rows.length;
-  const subject = `CairnCareers: ${n} new launch-list signup${n === 1 ? "" : "s"}`;
-  const text = [
-    `${n} new signup${n === 1 ? "" : "s"} since the last digest.`,
-    "",
-    ...rows.map((r) => `${fmt(r.created_at)} ET   ${r.email}`),
-    "",
-    "Times are US Eastern. Full table: Supabase → Cairn Careers → launch_notifications.",
-  ].join("\n");
-  const html = `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1b1b1b;line-height:1.5;padding:16px">
-<p style="margin:0 0 12px;font-size:16px"><strong>${n} new signup${n === 1 ? "" : "s"}</strong> since the last digest.</p>
+  try {
+    const when = new Date(row.created_at).toLocaleString("en-US", {
+      timeZone: "America/New_York",
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+    const isBeta = row.source === "beta-request";
+    const what = isBeta ? "just requested beta access to CairnCareers." : "just joined the CairnCareers launch list.";
+    const text = [
+      `${row.email} ${what}`,
+      "",
+      `Signed up: ${when} ET`,
+      `Source:    ${row.source ?? "launch-notification"}`,
+      "",
+      "Full table: Supabase -> Cairn Careers -> launch_notifications.",
+    ].join("\n");
+    const html = `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1b1b1b;line-height:1.5;padding:16px">
+<p style="margin:0 0 12px;font-size:16px"><strong>${esc(row.email)}</strong> ${what}</p>
 <table style="border-collapse:collapse;font-size:14px">
-<tr><th style="text-align:left;padding:4px 12px 4px 0;border-bottom:1px solid #ddd">When (ET)</th><th style="text-align:left;padding:4px 0;border-bottom:1px solid #ddd">Email</th></tr>
-${rows.map((r) => `<tr><td style="padding:4px 12px 4px 0;white-space:nowrap">${esc(fmt(r.created_at))}</td><td style="padding:4px 0">${esc(r.email)}</td></tr>`).join("")}
+<tr><td style="padding:4px 12px 4px 0;color:#555">Signed up</td><td style="padding:4px 0">${esc(when)} ET</td></tr>
+<tr><td style="padding:4px 12px 4px 0;color:#555">Source</td><td style="padding:4px 0">${esc(row.source ?? "launch-notification")}</td></tr>
 </table>
-<p style="margin:16px 0 0;font-size:12px;color:#555">Full table: Supabase → Cairn Careers → launch_notifications.</p>
+<p style="margin:16px 0 0;font-size:12px;color:#555">Full table: Supabase &rarr; Cairn Careers &rarr; launch_notifications.</p>
 </body></html>`;
-
-  const ok = await sendEmail(env, { to: [env.NOTIFY_EMAIL], subject, text, html });
-  if (!ok) return;
-
-  const ids = rows.map((r) => r.id).join(",");
-  const stamp = await fetch(`${env.SUPABASE_URL}/rest/v1/launch_notifications?id=in.(${ids})`, {
-    method: "PATCH",
-    headers: sbHeaders(env, "return=minimal"),
-    body: JSON.stringify({ digested_at: new Date().toISOString() }),
-  });
-  if (!stamp.ok) console.error("digested_at stamp failed", stamp.status);
-  else console.log(`digest: reported ${n} signup(s)`);
+    const ok = await sendEmail(env, {
+      to: [env.OWNER_EMAIL],
+      subject: isBeta ? `Beta access request: ${row.email}` : `New launch-list signup: ${row.email}`,
+      text,
+      html,
+      reply_to: row.email,
+    });
+    if (!ok) console.error("owner alert send failed", row.email);
+  } catch (error) {
+    console.error("owner alert failed", error);
+  }
 }
 
 /**
@@ -482,10 +479,5 @@ export default {
     // Any other /api/* path (or a non-POST on this one) falls through to assets,
     // which will 404 it via not_found_handling. There's nothing else to serve here.
     return withHeaders(await env.ASSETS.fetch(request), url.pathname);
-  },
-
-  /** Runs on the cron schedule in wrangler.jsonc. */
-  async scheduled(_event, env, ctx) {
-    ctx.waitUntil(sendDailyDigest(env));
-  },
+  }
 } satisfies ExportedHandler<Env>;

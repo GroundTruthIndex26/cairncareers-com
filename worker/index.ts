@@ -358,8 +358,8 @@ const CSP = [
   "img-src 'self' data: https:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
-  "script-src 'self' 'unsafe-inline' https://plausible.io https://www.googletagmanager.com https://*.google-analytics.com https://*.clarity.ms https://static.cloudflareinsights.com",
-  "connect-src 'self' https://plausible.io https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://cloudflareinsights.com",
+  "script-src 'self' 'unsafe-inline' https://plausible.io https://www.googletagmanager.com https://*.google-analytics.com https://*.clarity.ms https://static.cloudflareinsights.com https://in.heycatch.ai https://esm.sh",
+  "connect-src 'self' https://plausible.io https://*.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://cloudflareinsights.com https://in.heycatch.ai",
   "upgrade-insecure-requests",
 ].join("; ");
 
@@ -484,11 +484,25 @@ function apexRedirect(url: URL): Response | null {
   return Response.redirect(target.toString(), 301);
 }
 
+/**
+ * HEYCATCH SHORT LINKS
+ * Single-character paths (/a-/z, /0-/9) are reserved for HeyCatch channel
+ * attribution. Unknown paths here get a real 404 page rather than an SPA
+ * catch-all, so without this rule every short link would dead-end. The query
+ * IS the attribution; the SDK cleans it off the URL bar after landing. No real
+ * route is a single character, so nothing is excluded.
+ */
+function shortLinkRedirect(url: URL): Response | null {
+  const match = /^\/([a-z0-9])$/.exec(url.pathname);
+  if (!match) return null;
+  return Response.redirect(`${url.origin}/?utm_source=heycatch&utm_campaign=${match[1]}`, 302);
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    const redirect = apexRedirect(url);
+    const redirect = apexRedirect(url) ?? shortLinkRedirect(url);
     if (redirect) return redirect;
 
     const isWrite =

@@ -39,6 +39,12 @@ interface Env {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** Shape of a remove_token (a Postgres uuid). Anything else is rejected before Supabase sees it. */
+const TOKEN_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Public base URL used to build the remove link in the welcome email. */
+const SITE_URL = "https://cairncareers.com";
+
 /** Longest value accepted per field, so one request cannot fill the table. */
 const MAX = { email: 320, name: 200, subject: 300, message: 5000 };
 
@@ -138,6 +144,8 @@ interface SignupRow {
   email: string;
   source: string | null;
   created_at: string;
+  beta_requested_at: string | null;
+  remove_token: string;
 }
 
 /**
@@ -148,7 +156,8 @@ interface SignupRow {
  * Neither may ever break a signup. Every send runs after the row is saved,
  * inside ctx.waitUntil, and a failure is logged, not surfaced. The thank-you
  * stamps welcomed_at, so a retry cannot send it twice; the owner alert fires
- * only on the insert that actually created a row, so it cannot duplicate either.
+ * only on the write that actually created a row or a beta request, so it
+ * cannot duplicate either.
  */
 async function sendEmail(
   env: Env,
@@ -169,9 +178,13 @@ async function sendEmail(
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
 
+/** The link that lets someone who never signed up take their address off the list. */
+const removeUrl = (token: string) => `${SITE_URL}/api/remove?token=${encodeURIComponent(token)}`;
+
 /** The thank-you note a new subscriber receives right after signing up. */
-function welcomeEmail(env: Env) {
+function welcomeEmail(env: Env, removeToken: string) {
   const replyTo = env.NOTIFY_EMAIL;
+  const remove = removeUrl(removeToken);
   const lines = [
     "Thanks for joining the CairnCareers launch list.",
     "",
@@ -184,7 +197,7 @@ function welcomeEmail(env: Env) {
     "",
     "Have a question, or want to tell us which career paths you are weighing? Reply to this email. A person reads every message.",
     "",
-    "If you did not sign up for this, reply with the word REMOVE and we will delete your address.",
+    `Not you? If you did not sign up for this, remove your address here: ${remove}`,
     "",
     "Brooke Houck",
     "CairnCareers, a Phronesis Labs LLC product",
@@ -202,7 +215,7 @@ function welcomeEmail(env: Env) {
 <li>We will not send you anything else in between. No drip sequence, no weekly newsletter.</li>
 </ul>
 <p style="margin:0 0 16px">Have a question, or want to tell us which career paths you are weighing? Reply to this email. A person reads every message.</p>
-<p style="margin:0 0 24px;font-size:13px;color:#555">If you did not sign up for this, reply with the word REMOVE and we will delete your address.</p>
+<p style="margin:0 0 24px;font-size:13px;color:#555">Not you? If you did not sign up for this, <a href="${esc(remove)}" style="color:#555">remove your address here</a>.</p>
 <p style="margin:0;font-size:14px">Brooke Houck<br>CairnCareers, a Phronesis Labs LLC product<br><a href="https://cairncareers.com" style="color:#1b1b1b">cairncareers.com</a></p>
 </div></body></html>`;
   return { subject: "You are on the CairnCareers launch list", text, html, reply_to: replyTo };
@@ -211,7 +224,7 @@ function welcomeEmail(env: Env) {
 /** Send the welcome email for one new row, then stamp welcomed_at so it is never sent twice. */
 async function welcomeNewSignup(env: Env, row: SignupRow): Promise<void> {
   try {
-    const ok = await sendEmail(env, { to: [row.email], ...welcomeEmail(env) });
+    const ok = await sendEmail(env, { to: [row.email], ...welcomeEmail(env, row.remove_token) });
     if (!ok) return;
     const res = await fetch(`${env.SUPABASE_URL}/rest/v1/launch_notifications?id=eq.${row.id}`, {
       method: "PATCH",
@@ -245,25 +258,25 @@ async function handleLaunchNotifications(request: Request, env: Env, ctx: Execut
     return Response.json({ error: "Launch notifications are not configured yet." }, { status: 503 });
   }
 
+  const failed = () =>
+    Response.json({ error: "We could not save your notification request. Please try again." }, { status: 502 });
+
   try {
     // ignore-duplicates + return=representation: a brand-new address comes back
     // as [row]; an address already on the list comes back as []. That is how we
     // know whether to send the thank-you without a second round trip, and it
-    // keeps a repeat signup from overwriting the original created_at.
-    //
-    // A beta request merges instead: an address already on the launch list is
-    // moved to the beta list (only `source` changes; created_at is kept) and the
-    // row always comes back, so the owner hears about every request.
-    const resolution = isBeta ? "merge-duplicates" : "ignore-duplicates";
+    // means a repeat signup never overwrites the original row.
+    const now = new Date().toISOString();
+    const insert = isBeta ? { email, source, beta_requested_at: now } : { email, source };
     const response = await fetch(`${env.SUPABASE_URL}/rest/v1/launch_notifications?on_conflict=email`, {
       method: "POST",
-      headers: sbHeaders(env, `resolution=${resolution},return=representation`),
-      body: JSON.stringify({ email, source }),
+      headers: sbHeaders(env, "resolution=ignore-duplicates,return=representation"),
+      body: JSON.stringify(insert),
     });
 
     if (!response.ok) {
       console.error("Supabase launch-notification insert failed", response.status);
-      return Response.json({ error: "We could not save your notification request. Please try again." }, { status: 502 });
+      return failed();
     }
 
     const rows = (await response.json().catch(() => [])) as SignupRow[];
@@ -271,48 +284,70 @@ async function handleLaunchNotifications(request: Request, env: Env, ctx: Execut
       // The beta form confirms on the page, and the next email a beta requester
       // gets is the one that activates their account, so no thank-you for them.
       if (!isBeta) ctx.waitUntil(welcomeNewSignup(env, rows[0]));
-      ctx.waitUntil(alertOwnerOfSignup(env, rows[0]));
+      ctx.waitUntil(alertOwnerOfSignup(env, rows[0], isBeta));
+    } else if (isBeta) {
+      // The address is already on the list. A beta request only stamps
+      // beta_requested_at, and only the first time, so someone typing another
+      // person's address cannot rewrite their original signup, and repeat
+      // requests cannot flood the owner with alerts.
+      const patch = await fetch(
+        `${env.SUPABASE_URL}/rest/v1/launch_notifications?email=eq.${encodeURIComponent(email)}&beta_requested_at=is.null`,
+        {
+          method: "PATCH",
+          headers: sbHeaders(env, "return=representation"),
+          body: JSON.stringify({ beta_requested_at: now }),
+        },
+      );
+      if (!patch.ok) {
+        console.error("Supabase beta-request stamp failed", patch.status);
+        return failed();
+      }
+      const stamped = (await patch.json().catch(() => [])) as SignupRow[];
+      if (stamped.length === 1) ctx.waitUntil(alertOwnerOfSignup(env, stamped[0], true));
     }
 
+    // Same answer whether the address was new, already listed, or already a
+    // beta requester, so the form cannot be used to test who has signed up.
     return Response.json({ saved: true }, { status: 201 });
   } catch (error) {
     console.error("Supabase launch-notification request failed", error);
-    return Response.json({ error: "We could not save your notification request. Please try again." }, { status: 502 });
+    return failed();
   }
 }
 
 /**
  * INSTANT OWNER ALERT
- * Fires on the insert that actually created a row, so one address joining twice
- * never alerts twice. Runs inside ctx.waitUntil after the row is saved: a send
- * failure is logged and never reaches the person signing up.
+ * Fires on the write that actually created a row or first recorded a beta
+ * request, so one address joining twice never alerts twice. Runs inside
+ * ctx.waitUntil after the row is saved: a send failure is logged and never
+ * reaches the person signing up.
  */
-async function alertOwnerOfSignup(env: Env, row: SignupRow): Promise<void> {
+async function alertOwnerOfSignup(env: Env, row: SignupRow, isBeta: boolean): Promise<void> {
   if (!env.OWNER_EMAIL) {
     console.warn("owner alert skipped: OWNER_EMAIL is not set");
     return;
   }
   try {
-    const when = new Date(row.created_at).toLocaleString("en-US", {
+    const when = new Date((isBeta && row.beta_requested_at) || row.created_at).toLocaleString("en-US", {
       timeZone: "America/New_York",
       dateStyle: "medium",
       timeStyle: "short",
     });
-    const isBeta = row.source === "beta-request";
+    const kind = isBeta ? "beta-request" : "launch-notification";
     const what = isBeta ? "just requested beta access to CairnCareers." : "just joined the CairnCareers launch list.";
     const text = [
       `${row.email} ${what}`,
       "",
-      `Signed up: ${when} ET`,
-      `Source:    ${row.source ?? "launch-notification"}`,
+      `${isBeta ? "Requested" : "Signed up"}: ${when} ET`,
+      `Source:    ${kind}`,
       "",
       "Full table: Supabase -> Cairn Careers -> launch_notifications.",
     ].join("\n");
     const html = `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1b1b1b;line-height:1.5;padding:16px">
 <p style="margin:0 0 12px;font-size:16px"><strong>${esc(row.email)}</strong> ${what}</p>
 <table style="border-collapse:collapse;font-size:14px">
-<tr><td style="padding:4px 12px 4px 0;color:#555">Signed up</td><td style="padding:4px 0">${esc(when)} ET</td></tr>
-<tr><td style="padding:4px 12px 4px 0;color:#555">Source</td><td style="padding:4px 0">${esc(row.source ?? "launch-notification")}</td></tr>
+<tr><td style="padding:4px 12px 4px 0;color:#555">${isBeta ? "Requested" : "Signed up"}</td><td style="padding:4px 0">${esc(when)} ET</td></tr>
+<tr><td style="padding:4px 12px 4px 0;color:#555">Source</td><td style="padding:4px 0">${esc(kind)}</td></tr>
 </table>
 <p style="margin:16px 0 0;font-size:12px;color:#555">Full table: Supabase &rarr; Cairn Careers &rarr; launch_notifications.</p>
 </body></html>`;
@@ -327,6 +362,79 @@ async function alertOwnerOfSignup(env: Env, row: SignupRow): Promise<void> {
   } catch (error) {
     console.error("owner alert failed", error);
   }
+}
+
+/**
+ * REMOVE LINK
+ * The welcome email carries /api/remove?token=<remove_token>. Opening it (GET)
+ * only shows a page with a button; the delete happens on the POST that button
+ * sends. That split matters because corporate mail scanners and link
+ * previewers open every link in an email, and a GET that deleted would quietly
+ * remove real subscribers. The page never shows the email address, so a
+ * forwarded link reveals nothing about who it belongs to.
+ */
+function removePage(title: string, message: string, token?: string): Response {
+  const button = token
+    ? `<form method="post" action="/api/remove" style="margin:24px 0 0">
+<input type="hidden" name="token" value="${esc(token)}">
+<button type="submit" style="font:inherit;font-weight:700;padding:12px 20px;border:3px solid #0b0b0b;background:#c7f94b;color:#0b0b0b;cursor:pointer">Remove my address</button>
+</form>`
+    : "";
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(title)} | CairnCareers</title></head>
+<body style="margin:0;background:#ece7d8;color:#0b0b0b;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.55">
+<main style="max-width:560px;margin:80px auto;padding:0 24px">
+<p style="margin:0 0 8px;font-size:12px;letter-spacing:.15em;text-transform:uppercase;font-weight:700">CairnCareers</p>
+<h1 style="margin:0 0 16px;font-size:30px;line-height:1.15">${esc(title)}</h1>
+<p style="margin:0">${esc(message)}</p>
+${button}
+<p style="margin:32px 0 0"><a href="/" style="color:#0b0b0b">Back to CairnCareers</a></p>
+</main></body></html>`;
+  return new Response(html, { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } });
+}
+
+function handleRemoveGet(url: URL): Response {
+  const token = url.searchParams.get("token") ?? "";
+  if (!TOKEN_RE.test(token)) {
+    return removePage("Link not recognized", "This removal link is incomplete. Please use the link from your email.");
+  }
+  return removePage(
+    "Remove this address?",
+    "This takes the address that received the email off the CairnCareers launch list. Nothing else will be sent to it.",
+    token,
+  );
+}
+
+async function handleRemovePost(request: Request, env: Env): Promise<Response> {
+  let token = "";
+  try {
+    const form = await request.formData();
+    const value = form.get("token");
+    token = typeof value === "string" ? value.trim() : "";
+  } catch {
+    token = "";
+  }
+  if (!TOKEN_RE.test(token)) {
+    return removePage("Link not recognized", "This removal link is incomplete. Please use the link from your email.");
+  }
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    return removePage("Something went wrong", "We could not process this right now. Reply to the email and we will remove the address by hand.");
+  }
+  try {
+    const res = await fetch(`${env.SUPABASE_URL}/rest/v1/launch_notifications?remove_token=eq.${token}`, {
+      method: "DELETE",
+      headers: sbHeaders(env, "return=minimal"),
+    });
+    if (!res.ok) {
+      console.error("Supabase remove failed", res.status);
+      return removePage("Something went wrong", "We could not process this right now. Reply to the email and we will remove the address by hand.");
+    }
+  } catch (error) {
+    console.error("Supabase remove request failed", error);
+    return removePage("Something went wrong", "We could not process this right now. Reply to the email and we will remove the address by hand.");
+  }
+  // Same page whether the row existed or was already gone, so a token cannot
+  // be used to probe the list.
+  return removePage("Address removed", "This address is no longer on the CairnCareers launch list. You will not hear from us again.");
 }
 
 /**
@@ -435,7 +543,7 @@ function localizeHtml(response: Response, request: Request, url: URL): Response 
   return out;
 }
 
-/** Security headers belong on API JSON too, but never its cache policy. */
+/** Security headers belong on API responses too, but never its cache policy. */
 function secured(response: Response): Response {
   const out = new Response(response.body, response);
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
@@ -445,10 +553,10 @@ function secured(response: Response): Response {
 
 /**
  * ABUSE LIMIT
- * Both endpoints write to Supabase, and neither had any limit, so a single
- * client could insert rows as fast as it could open connections. The honeypot
- * only catches bots that fill hidden fields. Keyed on the client IP that
- * Cloudflare resolves, which the client cannot forge at the edge.
+ * Every endpoint that writes to Supabase is limited, so a single client
+ * cannot insert or delete rows as fast as it could open connections. The
+ * honeypot only catches bots that fill hidden fields. Keyed on the client IP
+ * that Cloudflare resolves, which the client cannot forge at the edge.
  */
 async function rateLimited(request: Request, env: Env): Promise<boolean> {
   if (!env.API_RATE_LIMITER) return false;
@@ -491,9 +599,13 @@ export default {
     const redirect = apexRedirect(url);
     if (redirect) return redirect;
 
+    if (url.pathname === "/api/remove" && request.method === "GET") {
+      return secured(handleRemoveGet(url));
+    }
+
     const isWrite =
       request.method === "POST" &&
-      (url.pathname === "/api/launch-notifications" || url.pathname === "/api/contact");
+      (url.pathname === "/api/launch-notifications" || url.pathname === "/api/contact" || url.pathname === "/api/remove");
 
     if (isWrite) {
       if (tooLarge(request)) {
@@ -507,11 +619,13 @@ export default {
       const response =
         url.pathname === "/api/contact"
           ? await handleContact(request, env)
-          : await handleLaunchNotifications(request, env, ctx);
+          : url.pathname === "/api/remove"
+            ? await handleRemovePost(request, env)
+            : await handleLaunchNotifications(request, env, ctx);
       return secured(response);
     }
 
-    // Any other /api/* path (or a non-POST on this one) falls through to assets,
+    // Any other /api/* path (or a non-POST on these) falls through to assets,
     // which will 404 it via not_found_handling. There's nothing else to serve here.
     return localizeHtml(withHeaders(await env.ASSETS.fetch(request), url.pathname), request, url);
   }

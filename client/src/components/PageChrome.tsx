@@ -95,6 +95,7 @@ export function PageFooter() {
           <span>
             <a href="/methodology">{t.footer.methodology}</a> · <a href="/privacy">{t.footer.privacy}</a> · <a href="/terms">{t.footer.terms}</a> · <a href="/refunds">{t.footer.refunds}</a> · <a href="/contact">{t.footer.contact}</a>
           </span>
+          <span className="footer-compare">{t.footer.compare} <a href="/vs/chatgpt">ChatGPT</a> · <a href="/vs/careerwing">CareerWing</a> · <a href="/vs/career-mirror">Career Mirror</a></span>
         </div>
       </div>
     </footer>

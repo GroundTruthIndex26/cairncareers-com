@@ -491,6 +491,32 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="compare" className="paper-section compare-section">
+          <div className="container">
+            <div className="section-heading split-heading">
+              <div>
+                <SectionLabel number="02">{t.compare.label}</SectionLabel>
+                <h2>{t.compare.title}</h2>
+              </div>
+              <p>{t.compare.lead}</p>
+            </div>
+            <div className="compare-grid">
+              <article className="compare-card">
+                <h3>{t.compare.chatbot.title}</h3>
+                <ul>{t.compare.chatbot.points.map((point) => <li key={point}>{point}</li>)}</ul>
+              </article>
+              <article className="compare-card compare-ours">
+                <h3>{t.compare.cairn.title}</h3>
+                <ul>{t.compare.cairn.points.map((point) => <li key={point}>{point}</li>)}</ul>
+              </article>
+            </div>
+            <p className="compare-links">
+              <a href="/methodology">{t.compare.methodLink} <ArrowRight /></a>
+              <a href="/vs/chatgpt">{t.compare.fullLink} <ArrowRight /></a>
+            </p>
+          </div>
+        </section>
+
         <section id="dashboard-preview" className="ink-section sample-dashboard-section">
           <div className="container">
             <div className="sample-dashboard-heading">
@@ -719,7 +745,7 @@ export default function Home() {
       <footer className="site-footer">
         <div className="container footer-grid">
           <div className="footer-brand-block"><div className="wordmark footer-mark"><CairnMark /><span><strong>Cairn</strong><small>Careers</small></span></div><p>{t.footer.tagline}</p><p className="footer-product-line">{rich(t.footer.productLine)}</p></div>
-          <div className="footer-links"><a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a><span><a href="/methodology">{t.footer.methodology}</a> · <a href="/privacy">{t.footer.privacy}</a> · <a href="/terms">{t.footer.terms}</a> · <a href="/refunds">{t.footer.refunds}</a> · <a href="/contact">{t.footer.contact}</a></span></div>
+          <div className="footer-links"><a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a><span><a href="/methodology">{t.footer.methodology}</a> · <a href="/privacy">{t.footer.privacy}</a> · <a href="/terms">{t.footer.terms}</a> · <a href="/refunds">{t.footer.refunds}</a> · <a href="/contact">{t.footer.contact}</a></span><span className="footer-compare">{t.footer.compare} <a href="/vs/chatgpt">ChatGPT</a> · <a href="/vs/careerwing">CareerWing</a> · <a href="/vs/career-mirror">Career Mirror</a></span></div>
         </div>
       </footer>
 

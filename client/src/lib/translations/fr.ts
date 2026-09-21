@@ -200,6 +200,16 @@ export const fr: typeof en = {
     refunds: "Remboursements",
     contact: "Contact",
     methodology: "Méthodologie",
+    compare: "Comparer :",
+  },
+  compare: {
+    label: "Comparé à un chatbot",
+    title: "Ce que ça change par rapport à ChatGPT.",
+    lead: "La plupart des étudiants essaient d'abord le chatbot. Voici ce que chacun vous donne.",
+    chatbot: { title: "Demander à ChatGPT", points: ["Répond à partir des motifs de ses données d'entraînement.", "Ne peut pas montrer d'où vient un chiffre.", "Salaire, croissance et risque IA mélangés dans une seule réponse.", "Invente souvent un chiffre quand vous n'en avez pas."] },
+    cairn: { title: "CairnCareers", points: ["Note chaque parcours à partir des données fédérales sur les tâches professionnelles.", "Nomme et lie chaque source sur la page de méthodologie.", "Garde salaire et croissance séparés du score d'exposition, pour voir ce qui a fait bouger le résultat.", "N'invente jamais un chiffre. Il pose la question qui le produit."] },
+    methodLink: "Lire la méthodologie",
+    fullLink: "Voir la comparaison complète",
   },
   modal: {
     badge: "Alerte de lancement",

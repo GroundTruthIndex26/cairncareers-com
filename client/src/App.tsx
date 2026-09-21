@@ -8,6 +8,7 @@ import { Route, Switch } from "wouter";
 import CanonicalUrl from "./components/CanonicalUrl";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import Compare from "./pages/Compare";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import Methodology from "./pages/Methodology";
@@ -26,6 +27,9 @@ function AppRoutes() {
       <Route path="/" component={Home} />
       <Route path="/roadmap" component={Roadmap} />
       <Route path="/methodology" component={Methodology} />
+      <Route path="/vs/chatgpt">{() => <Compare slug="chatgpt" />}</Route>
+      <Route path="/vs/careerwing">{() => <Compare slug="careerwing" />}</Route>
+      <Route path="/vs/career-mirror">{() => <Compare slug="career-mirror" />}</Route>
       <Route path="/contact" component={Contact} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />

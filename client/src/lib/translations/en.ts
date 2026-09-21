@@ -201,6 +201,16 @@ export const en = {
     refunds: "Refunds",
     contact: "Contact",
     methodology: "Methodology",
+    compare: "Compare:",
+  },
+  compare: {
+    label: "Compared with a chatbot",
+    title: "How this compares to asking ChatGPT.",
+    lead: "Most students try the chatbot first. Here is what each one gives you.",
+    chatbot: { title: "Asking ChatGPT", points: ["Answers from patterns in its training data.", "Cannot show you where a number came from.", "Pay, growth, and AI risk mixed into one reply.", "Will often write a number for you when you do not have one."] },
+    cairn: { title: "CairnCareers", points: ["Scores each path against federal occupational task data.", "Names and links every source on the methodology page.", "Keeps pay and growth separate from the exposure score, so you can see what moved the result.", "Never invents a number. It asks the question that produces one."] },
+    methodLink: "Read the methodology",
+    fullLink: "See the full comparison",
   },
   modal: {
     badge: "Launch notification",

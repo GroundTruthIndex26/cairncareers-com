@@ -742,12 +742,6 @@ export default function Home() {
                 <img src={ASSETS.founder} alt={t.about.imageAlt} width="300" height="300" loading="lazy" decoding="async" />
                 <div><span className="slot-badge">{t.about.badge}</span><h3><a href="https://www.linkedin.com/in/brookehouck" target="_blank" rel="noreferrer">{t.about.founder}</a></h3><p>{t.about.quote}</p></div>
               </article>
-              {t.about.story && (
-                <div className="founder-story">
-                  <h3>{t.about.storyTitle}</h3>
-                  {t.about.story.split("\n\n").map((paragraph) => <p key={paragraph.slice(0, 40)}>{rich(paragraph)}</p>)}
-                </div>
-              )}
             </div>
           </div>
         </section>

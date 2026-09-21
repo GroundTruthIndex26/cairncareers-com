@@ -146,9 +146,7 @@ export const es: typeof en = {
     badge: "Creado por una científica investigadora con doctorado",
     founder: "Brooke Houck, PhD · Fundadora",
     imageAlt: "Brooke Houck, PhD, fundadora de CairnCareers",
-    quote: "“Todo el mundo tiene una opinión sobre la IA. Y mucha gente quiere darte buenos consejos. Pero el trabajo ya no es el mismo. El trabajo ha cambiado y sigue cambiando. Cairn Careers usa estándares de investigación que puedes consultar abiertamente. Te damos datos, no sensaciones, sobre cómo es el trabajo hoy y cómo será dentro de 3 años.”",
-    storyTitle: "Por qué creé CairnCareers",
-    story: "",
+    quote: "“Creé CairnCareers porque no dejaba de molestarme. Cada semana salía un titular nuevo sobre los empleos que la IA iba a eliminar, y casi ninguno explicaba cómo lo sabía. Cuando rastreé esas afirmaciones, la mayoría se apoyaba en el nombre de un puesto y una suposición. En mi campo no se publica una cifra sin mostrar de dónde viene. Los estudiantes están tomando una de las decisiones más caras de su vida con afirmaciones que no superarían una revisión por pares, y merecen el mismo estándar que se me exige a mí. Por eso CairnCareers puntúa las tareas reales de cada empleo, nombra todas sus fuentes y deja los datos salariales fuera de la puntuación, para que veas exactamente qué movió el resultado.”",
   },
   testimonials: {
     label: "Usuarios de la beta",

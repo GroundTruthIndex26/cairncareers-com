@@ -9,7 +9,7 @@
  */
 export const en = {
   meta: {
-    homeTitle: "Find an Entry-Level Job That Holds Up to AI | CairnCareers",
+    homeTitle: "Find an Entry-Level Path That Holds Up to AI | CairnCareers",
     homeDescription: "Compare realistic career paths using salary, job growth, and AI context, then leave with a next move you can explain.",
   },
   languageSwitch: "Language",
@@ -54,6 +54,7 @@ export const en = {
     imageAlt: "Abstract route map with three career-planning waypoints",
     routeKicker: "A steadier way forward",
     routeTitle: "Three signals. One next move.",
+    secondaryCta: "See a sample dashboard first",
     routeSteps: ["What you know", "Market context", "A route to test"],
   },
   trust: {
@@ -62,6 +63,8 @@ export const en = {
     guaranteeDetail: "· pre-launch: from launch · after launch: from purchase",
     secure: "Secure checkout",
     secureDetail: "handled by Stripe",
+    sources: "Every score is sourced",
+    sourcesDetail: "O*NET, Science, and METR, each linked on the [methodology page](/methodology)",
   },
   route: {
     label: "The route",

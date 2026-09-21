@@ -53,6 +53,7 @@ export const es: typeof en = {
     imageAlt: "Mapa de ruta abstracto con tres hitos de planificación profesional",
     routeKicker: "Un camino más firme",
     routeTitle: "Tres señales. Un siguiente paso.",
+    secondaryCta: "Ver primero un panel de muestra",
     routeSteps: ["Lo que sabes", "Contexto del mercado", "Una ruta que probar"],
   },
   trust: {
@@ -61,6 +62,8 @@ export const es: typeof en = {
     guaranteeDetail: "· antes del lanzamiento: desde el lanzamiento · después: desde la compra",
     secure: "Pago seguro",
     secureDetail: "gestionado por Stripe",
+    sources: "Cada puntuación tiene fuentes",
+    sourcesDetail: "O*NET, Science y METR, cada una enlazada en la [página de metodología](/methodology)",
   },
   route: {
     label: "La ruta",

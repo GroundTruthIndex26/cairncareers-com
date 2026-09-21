@@ -403,6 +403,7 @@ export default function Home() {
             <a href="#dashboard-preview">{t.nav.dashboard}</a>
             <a href="/roadmap">{t.nav.roadmap}</a>
             <a href="#pricing">{t.nav.pricing}</a>
+            <a href="/methodology">{t.nav.methodology}</a>
             <a href="#about">{t.nav.about}</a>
           </nav>
           <div className="header-controls">
@@ -439,6 +440,7 @@ export default function Home() {
               <p>{message.body}</p>
               <div className="hero-actions">
                 <a className="primary-cta" href="#beta-access">{t.nav.cta} <ArrowRight /></a>
+                <a className="secondary-cta" href="#dashboard-preview">{t.hero.secondaryCta} <ArrowRight /></a>
               </div>
               <div className="purchase-context">
                 <div><strong>{t.hero.launches}</strong><span>{t.hero.guarantee}</span></div>
@@ -464,6 +466,7 @@ export default function Home() {
           <div className="container trust-strip-grid">
             <div><ShieldCheck /><span><strong>{t.trust.guarantee}</strong> {t.trust.guaranteeDetail}</span></div>
             <div><LockKeyhole /><span><strong>{t.trust.secure}</strong> {t.trust.secureDetail}</span></div>
+            <div><BarChart3 /><span><strong>{t.trust.sources}</strong> {rich(t.trust.sourcesDetail)}</span></div>
           </div>
         </section>
 
@@ -704,7 +707,10 @@ export default function Home() {
           <div className="container closing-inner">
             <span className="hero-eyebrow">{t.closing.eyebrow}</span>
             <h2>{t.closing.title}</h2>
-            <a className="primary-cta" href="#beta-access">{t.nav.cta} <ArrowRight /></a>
+            <div className="closing-actions">
+              <a className="primary-cta" href="#beta-access">{t.nav.cta} <ArrowRight /></a>
+              <a className="secondary-cta closing-secondary" href="#dashboard-preview">{t.hero.secondaryCta} <ArrowRight /></a>
+            </div>
             <p>{t.closing.line}</p>
           </div>
         </section>
@@ -713,7 +719,7 @@ export default function Home() {
       <footer className="site-footer">
         <div className="container footer-grid">
           <div className="footer-brand-block"><div className="wordmark footer-mark"><CairnMark /><span><strong>Cairn</strong><small>Careers</small></span></div><p>{t.footer.tagline}</p><p className="footer-product-line">{rich(t.footer.productLine)}</p></div>
-          <div className="footer-links"><a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a><span><a href="/privacy">{t.footer.privacy}</a> · <a href="/terms">{t.footer.terms}</a> · <a href="/refunds">{t.footer.refunds}</a> · <a href="/contact">{t.footer.contact}</a></span></div>
+          <div className="footer-links"><a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a><span><a href="/methodology">{t.footer.methodology}</a> · <a href="/privacy">{t.footer.privacy}</a> · <a href="/terms">{t.footer.terms}</a> · <a href="/refunds">{t.footer.refunds}</a> · <a href="/contact">{t.footer.contact}</a></span></div>
         </div>
       </footer>
 

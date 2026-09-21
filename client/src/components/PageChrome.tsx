@@ -47,6 +47,7 @@ export function PageHeader() {
     { href: "/#dashboard-preview", label: t.nav.dashboard },
     { href: "/roadmap", label: t.nav.roadmap },
     { href: "/#pricing", label: t.nav.pricing },
+    { href: "/methodology", label: t.nav.methodology },
     { href: "/#about", label: t.nav.about },
   ];
 

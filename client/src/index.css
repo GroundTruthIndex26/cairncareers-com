@@ -178,6 +178,9 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .primary-cta:active { transform:scale(.97); }
 .primary-cta:disabled { background:#dfe3dc; color:#5c635d; box-shadow:5px 5px 0 #8b928d; cursor:not-allowed; transform:none; }
 .primary-cta svg,.tour-link svg,.outline-link svg,.source-placeholder svg { width:17px; height:17px; }
+.secondary-cta { display:inline-flex; align-items:center; gap:8px; min-height:54px; padding:0 4px; color:white; border-bottom:2px solid #7d8780; font:700 12px "IBM Plex Mono",monospace; letter-spacing:.06em; text-transform:uppercase; transition:color 160ms var(--ease-out),border-color 160ms var(--ease-out); }
+.secondary-cta:hover { color:var(--lime); border-color:var(--lime); }
+.secondary-cta svg { width:17px; height:17px; }
 .tour-link { display:inline-flex; align-items:center; gap:7px; color:white; border-bottom:1px solid #7d8780; padding:9px 0; font:700 12px "IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.05em; }
 .tour-link:hover { color:var(--lime); border-color:var(--lime); }
 .purchase-context { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:28px; }
@@ -203,6 +206,7 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .trust-strip-grid svg { flex:0 0 auto; width:24px; height:24px; color:var(--lime); }
 .trust-strip-grid span { font-size:13px; color:#cbd1cd; }
 .trust-strip-grid strong { display:block; color:white; }
+.trust-strip-grid a { color:var(--lime); text-decoration:underline; text-underline-offset:2px; }
 
 .paper-section { padding:105px 0; background:var(--paper); }
 .section-heading { margin-bottom:42px; }
@@ -421,6 +425,10 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .closing-inner { display:flex; flex-direction:column; align-items:center; }
 .closing-section h2 { max-width:880px; }
 .closing-section .primary-cta { position:relative; z-index:1; margin:28px 0 26px; background:var(--paper-light); }
+.closing-actions { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:22px; margin:28px 0 26px; }
+.closing-section .closing-actions .primary-cta { margin:0; }
+.closing-secondary { color:var(--ink); border-color:var(--ink); }
+.closing-secondary:hover { color:var(--ink); border-color:var(--cyan); }
 .closing-section p { max-width:100%; margin:0; padding:0 12px; font:700 11px/1.6 "IBM Plex Mono",monospace; text-transform:uppercase; }
 .founder-card h3 a { text-decoration:none; border-bottom:2px solid var(--pink); }
 .founder-card h3 a:hover { color:#2a726f; border-bottom-color:var(--cyan); }

@@ -53,6 +53,7 @@ export const fr: typeof en = {
     imageAlt: "Carte d'itinéraire abstraite avec trois jalons de planification de carrière",
     routeKicker: "Une voie plus sûre",
     routeTitle: "Trois signaux. Une prochaine étape.",
+    secondaryCta: "Voir d'abord un tableau de bord d'exemple",
     routeSteps: ["Ce que vous savez", "Le contexte du marché", "Un parcours à tester"],
   },
   trust: {
@@ -61,6 +62,8 @@ export const fr: typeof en = {
     guaranteeDetail: "· avant le lancement : à partir du lancement · après : à partir de l'achat",
     secure: "Paiement sécurisé",
     secureDetail: "géré par Stripe",
+    sources: "Chaque score a ses sources",
+    sourcesDetail: "O*NET, Science et METR, chacune liée sur la [page de méthodologie](/methodology)",
   },
   route: {
     label: "Le parcours",

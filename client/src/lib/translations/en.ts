@@ -9,7 +9,7 @@
  */
 export const en = {
   meta: {
-    homeTitle: "Find an Entry-Level Job That Holds Up to AI | CairnCareers",
+    homeTitle: "Find an Entry-Level Path That Holds Up to AI | CairnCareers",
     homeDescription: "Compare realistic career paths using salary, job growth, and AI context, then leave with a next move you can explain.",
   },
   languageSwitch: "Language",
@@ -54,6 +54,7 @@ export const en = {
     imageAlt: "Abstract route map with three career-planning waypoints",
     routeKicker: "A steadier way forward",
     routeTitle: "Three signals. One next move.",
+    secondaryCta: "See a sample dashboard first",
     routeSteps: ["What you know", "Market context", "A route to test"],
   },
   trust: {
@@ -62,6 +63,8 @@ export const en = {
     guaranteeDetail: "· pre-launch: from launch · after launch: from purchase",
     secure: "Secure checkout",
     secureDetail: "handled by Stripe",
+    sources: "Every score is sourced",
+    sourcesDetail: "O*NET, Science, and METR, each linked on the [methodology page](/methodology)",
   },
   route: {
     label: "The route",
@@ -114,7 +117,7 @@ export const en = {
   },
   pricing: {
     label: "Pricing",
-    title: "See the price before checkout.",
+    title: "Simple pricing.",
     chooseBilling: "Choose billing",
     monthly: "Monthly",
     annual: "Annual",
@@ -198,6 +201,16 @@ export const en = {
     refunds: "Refunds",
     contact: "Contact",
     methodology: "Methodology",
+    compare: "Compare:",
+  },
+  compare: {
+    label: "Compared with a chatbot",
+    title: "How this compares to asking ChatGPT.",
+    lead: "Most students try the chatbot first. Here is what each one gives you.",
+    chatbot: { title: "Asking ChatGPT", points: ["Answers from patterns in its training data.", "Cannot show you where a number came from.", "Pay, growth, and AI risk mixed into one reply.", "Will often write a number for you when you do not have one."] },
+    cairn: { title: "CairnCareers", points: ["Scores each path against federal occupational task data.", "Names and links every source on the methodology page.", "Keeps pay and growth separate from the exposure score, so you can see what moved the result.", "Never invents a number. It asks the question that produces one."] },
+    methodLink: "Read the methodology",
+    fullLink: "See the full comparison",
   },
   modal: {
     badge: "Launch notification",

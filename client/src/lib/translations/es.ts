@@ -53,6 +53,7 @@ export const es: typeof en = {
     imageAlt: "Mapa de ruta abstracto con tres hitos de planificación profesional",
     routeKicker: "Un camino más firme",
     routeTitle: "Tres señales. Un siguiente paso.",
+    secondaryCta: "Ver primero un panel de muestra",
     routeSteps: ["Lo que sabes", "Contexto del mercado", "Una ruta que probar"],
   },
   trust: {
@@ -61,6 +62,8 @@ export const es: typeof en = {
     guaranteeDetail: "· antes del lanzamiento: desde el lanzamiento · después: desde la compra",
     secure: "Pago seguro",
     secureDetail: "gestionado por Stripe",
+    sources: "Cada puntuación tiene fuentes",
+    sourcesDetail: "O*NET, Science y METR, cada una enlazada en la [página de metodología](/methodology)",
   },
   route: {
     label: "La ruta",
@@ -113,7 +116,7 @@ export const es: typeof en = {
   },
   pricing: {
     label: "Precios",
-    title: "Conoce el precio antes de pagar.",
+    title: "Precios simples.",
     chooseBilling: "Elige la facturación",
     monthly: "Mensual",
     annual: "Anual",
@@ -197,6 +200,16 @@ export const es: typeof en = {
     refunds: "Reembolsos",
     contact: "Contacto",
     methodology: "Metodología",
+    compare: "Comparar:",
+  },
+  compare: {
+    label: "Comparado con un chatbot",
+    title: "En qué se diferencia de preguntar a ChatGPT.",
+    lead: "La mayoría de los estudiantes prueban primero el chatbot. Esto es lo que te da cada uno.",
+    chatbot: { title: "Preguntar a ChatGPT", points: ["Responde con patrones de sus datos de entrenamiento.", "No puede mostrarte de dónde salió una cifra.", "Salario, crecimiento y riesgo de IA mezclados en una sola respuesta.", "A menudo inventa una cifra cuando no la tienes."] },
+    cairn: { title: "CairnCareers", points: ["Puntúa cada trayectoria con datos federales de tareas ocupacionales.", "Nombra y enlaza cada fuente en la página de metodología.", "Mantiene salario y crecimiento separados de la puntuación de exposición, para que veas qué movió el resultado.", "Nunca inventa una cifra. Hace la pregunta que la produce."] },
+    methodLink: "Leer la metodología",
+    fullLink: "Ver la comparación completa",
   },
   modal: {
     badge: "Aviso de lanzamiento",

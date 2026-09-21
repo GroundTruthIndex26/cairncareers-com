@@ -794,7 +794,7 @@ export default function Home() {
       <footer className="site-footer">
         <div className="container footer-grid">
           <div className="footer-brand-block"><div className="wordmark footer-mark"><CairnMark /><span><strong>Cairn</strong><small>Careers</small></span></div><p>{t.footer.tagline}</p><p className="footer-product-line">{rich(t.footer.productLine)}</p></div>
-          <div className="footer-links"><a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a><span><a href="/methodology">{t.footer.methodology}</a> · <a href="/privacy">{t.footer.privacy}</a> · <a href="/terms">{t.footer.terms}</a> · <a href="/refunds">{t.footer.refunds}</a> · <a href="/contact">{t.footer.contact}</a></span><span className="footer-compare">{t.footer.compare} <a href="/vs/chatgpt">ChatGPT</a> · <a href="/vs/careerwing">CareerWing</a> · <a href="/vs/career-mirror">Career Mirror</a></span></div>
+          <div className="footer-links"><a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a><span><a href="/methodology">{t.footer.methodology}</a> · <a href="/privacy">{t.footer.privacy}</a> · <a href="/terms">{t.footer.terms}</a> · <a href="/refunds">{t.footer.refunds}</a> · <a href="/contact">{t.footer.contact}</a></span><span className="footer-compare">{t.footer.compare} <a href="/vs/chatgpt">ChatGPT</a> · <a href="/vs/careerwing">CareerWing</a> · <a href="/vs/career-mirror">Career Mirror</a> · <a href="/vs/maketheleap">Make the Leap</a></span></div>
         </div>
       </footer>
 

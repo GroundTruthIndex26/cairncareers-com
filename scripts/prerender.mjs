@@ -80,6 +80,18 @@ function applyPerRouteHead(html, route) {
   // the flipped value, which would ship the blocking form to every visitor.
   html = html.replace(/(<link[^>]+fonts\.googleapis\.com[^>]+)media="all"/g, '$1media="print"');
 
+  // The crawl runs the page's scripts, so the captured DOM holds everything
+  // they injected at runtime: the gtag, Clarity and HeyCatch loaders, the
+  // modulepreload links for lazy chunks, and the toast library's stylesheet.
+  // Shipped as-is, every visitor downloads the tags in <head> before first
+  // paint (HeyCatch's as a render-blocking script), then index.html's idle
+  // loader adds gtag a second time. Strip them: the page loads each one
+  // itself, after load, when it is actually needed.
+  // Plausible stays: index.html declares it, async, on purpose.
+  html = html.replace(/<script\b[^>]*\bsrc="https?:\/\/(?!plausible\.io\/)[^"]*"[^>]*>\s*<\/script>\s*/gi, "");
+  html = html.replace(/<link\b[^>]*\brel="modulepreload"[^>]*>\s*/gi, "");
+  html = html.replace(/<style type="text\/css">[^<]*\[data-sonner-toaster\][^<]*<\/style>\s*/gi, "");
+
   // The hero image preload belongs to the homepage only.
   if (route.path !== "/") html = html.replace(/<link\s+rel="preload"\s+as="image"[^>]*>\s*/i, "");
 

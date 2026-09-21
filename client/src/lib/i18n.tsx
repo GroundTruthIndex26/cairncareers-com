@@ -10,12 +10,23 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { type Currency, type Geo, type Lang, LANGS, RATES, isLang } from "./geo";
 import { en } from "./translations/en";
-import { es } from "./translations/es";
-import { fr } from "./translations/fr";
 
 export type Strings = typeof en;
 
-const STRINGS: Record<Lang, Strings> = { en, es, fr };
+// English ships in the main bundle: it is the prerendered language and the
+// fallback. Spanish and French are a chunk each, fetched only by a visitor
+// who reads that language, so everyone else stops paying for both.
+const STRINGS: Partial<Record<Lang, Strings>> = { en };
+const LOADERS: Record<Exclude<Lang, "en">, () => Promise<Strings>> = {
+  es: () => import("./translations/es").then((m) => m.es),
+  fr: () => import("./translations/fr").then((m) => m.fr),
+};
+
+/** Fetches a language's strings if they are not in memory yet. Never rejects: on failure the page stays in English. */
+export function loadStrings(lang: Lang): Promise<void> {
+  if (lang === "en" || STRINGS[lang]) return Promise.resolve();
+  return LOADERS[lang]().then((strings) => { STRINGS[lang] = strings; }).catch(() => {});
+}
 const STORAGE_KEY = "cairn-lang";
 
 declare global {
@@ -28,7 +39,7 @@ function readGeo(): Geo | undefined {
   return typeof window === "undefined" ? undefined : window.__cairnGeo;
 }
 
-function initialLang(): Lang {
+export function initialLang(): Lang {
   if (typeof window === "undefined") return "en";
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -73,7 +84,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setLang = useCallback((next: Lang) => {
-    setLangState(next);
+    // Switch only once the strings are here, so the page never renders a
+    // language it does not have.
+    loadStrings(next).then(() => setLangState(next));
     try {
       localStorage.setItem(STORAGE_KEY, next);
     } catch {
@@ -103,7 +116,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     [currency, lang],
   );
 
-  const value = useMemo<I18n>(() => ({ lang, setLang, t: STRINGS[lang], currency, price }), [lang, setLang, currency, price]);
+  const value = useMemo<I18n>(() => ({ lang, setLang, t: STRINGS[lang] ?? en, currency, price }), [lang, setLang, currency, price]);
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 

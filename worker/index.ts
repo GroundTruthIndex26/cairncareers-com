@@ -423,14 +423,17 @@ const SECURITY_HEADERS: Record<string, string> = {
  * revalidated the hashed JS and CSS bundles and the 242 KB hero image on every
  * navigation. Vite fingerprints everything under /assets/, so those filenames
  * change whenever their contents do and can be cached permanently. Files under
- * /media and /brand keep their names across edits, so they get a day of
- * freshness plus a week of stale-while-revalidate rather than immutability.
+ * /media and /brand keep their names across edits, so they are not immutable,
+ * but they change a few times a year at most: 30 days of freshness plus a
+ * week of stale-while-revalidate. A day was short enough that most returning
+ * visitors downloaded the hero image again. When you replace one of these
+ * files and need it seen at once, give it a new file name.
  * HTML keeps must-revalidate: prerendered pages change without changing URL.
  */
 function cacheControlFor(pathname: string): string | null {
   if (pathname.startsWith("/assets/")) return "public, max-age=31536000, immutable";
   if (pathname.startsWith("/media/") || pathname.startsWith("/brand/")) {
-    return "public, max-age=86400, stale-while-revalidate=604800";
+    return "public, max-age=2592000, stale-while-revalidate=604800";
   }
   if (/\.(txt|xml)$/.test(pathname)) return "public, max-age=3600";
   return null;

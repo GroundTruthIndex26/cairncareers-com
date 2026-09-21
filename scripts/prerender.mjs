@@ -82,6 +82,29 @@ function applyPerRouteHead(html, route) {
   // The hero image preload belongs to the homepage only.
   if (route.path !== "/") html = html.replace(/<link\s+rel="preload"\s+as="image"[^>]*>\s*/i, "");
 
+  // The capture waits for network idle, so by then the tag loaders have run
+  // and the HeyCatch SDK has appended its own <script src> to <head>. Serialised
+  // into the HTML, those become ordinary synchronous scripts that block the
+  // first paint of every visitor (PageSpeed flagged in.heycatch.ai's
+  // tracing-headers.js at 770 ms). Strip every injected third-party script;
+  // the loaders in index.html and lib/analytics.ts add them again at runtime,
+  // after load. Cloudflare's own beacon is re-injected at the edge.
+  html = html.replace(
+    /<script\b[^>]*\bsrc="https?:\/\/[^"]*(?:heycatch\.ai|googletagmanager\.com|google-analytics\.com|clarity\.ms|cloudflareinsights\.com)[^"]*"[^>]*>\s*<\/script>\s*/gi,
+    "",
+  );
+
+  // Inline the stylesheet. It is the one render-blocking request left (17 KB
+  // over the wire, a full round trip on a phone before anything paints), and
+  // every route is its own prerendered document, so a shared cached file buys
+  // nothing on the first visit. The hashed file stays in /assets for the SPA
+  // fallback.
+  html = html.replace(/<link\s+rel="stylesheet"\s+crossorigin\s+href="(\/assets\/index-[^"]+\.css)">/i, (tag, href) => {
+    const file = path.join(DIST, href.replace(/^\//, ""));
+    if (!fs.existsSync(file)) return tag;
+    return `<style>${fs.readFileSync(file, "utf8").replace(/<\/style/gi, "<\\/style")}</style>`;
+  });
+
   if (route.noindex) {
     html = setOrCreateMeta(html, "name", "robots", "noindex,follow");
   }

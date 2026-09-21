@@ -74,6 +74,14 @@ function applyPerRouteHead(html, route) {
 
   html = html.replace(/<meta\s+property="og:url"[^>]*>/i, `<meta property="og:url" content="${url}" />`);
 
+  // index.html loads Google Fonts with media="print" and flips it to "all"
+  // onload, so the stylesheet never blocks first paint. The captured DOM has
+  // the flipped value, which would ship the blocking form to every visitor.
+  html = html.replace(/(<link[^>]+fonts\.googleapis\.com[^>]+)media="all"/g, '$1media="print"');
+
+  // The hero image preload belongs to the homepage only.
+  if (route.path !== "/") html = html.replace(/<link\s+rel="preload"\s+as="image"[^>]*>\s*/i, "");
+
   if (route.noindex) {
     html = setOrCreateMeta(html, "name", "robots", "noindex,follow");
   }

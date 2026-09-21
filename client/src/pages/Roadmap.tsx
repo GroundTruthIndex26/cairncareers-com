@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
-import { analytics } from "@heycatch/sdk";
 import Breadcrumbs, { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { KEY_EVENTS, trackKeyEvent } from "@/lib/analytics";
 import "./Roadmap.css";
 
 const BASE_URL = import.meta.env.BASE_URL;
@@ -82,9 +82,20 @@ export default function Roadmap() {
 
   const roadRef = useRef<HTMLDivElement>(null);
 
-  // Funnel step "Viewed roadmap" in heycatch matches this custom event.
+  // Funnel step "Viewed roadmap". Fires once per visit to this page.
   useEffect(() => {
-    analytics.trackEvent("viewed_roadmap");
+    trackKeyEvent(KEY_EVENTS.viewedRoadmap);
+  }, []);
+
+  // Space Grotesk and Space Mono are this page's own type system. They used
+  // to load from index.html on every page, blocking first paint sitewide.
+  useEffect(() => {
+    if (document.getElementById("roadmap-fonts")) return;
+    const link = document.createElement("link");
+    link.id = "roadmap-fonts";
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap";
+    document.head.appendChild(link);
   }, []);
 
   useEffect(() => {

@@ -2,8 +2,7 @@
  * CairnCareers revision style note: preserve the brand's editorial utility look,
  * with a light document surface and a decisive near-black hero.
  */
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { lazy, Suspense } from "react";
 import { Route, Switch } from "wouter";
 import CanonicalUrl from "./components/CanonicalUrl";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -17,6 +16,11 @@ import Privacy from "./pages/Privacy";
 import Refunds from "./pages/Refunds";
 import Roadmap from "./pages/Roadmap";
 import Terms from "./pages/Terms";
+
+// The toast library only matters once a form is submitted, so it loads in its
+// own chunk instead of sitting in the bundle every visitor parses before the
+// page is interactive. lib/toast.ts loads the same chunk when a toast fires.
+const Toaster = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
 
 // NOTE: every path below must also appear in the ROUTES list in
 // scripts/prerender.mjs. wrangler serves real 404s, so a route that is not
@@ -50,11 +54,11 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
+        <Suspense fallback={null}>
           <Toaster position="bottom-right" richColors />
-          <CanonicalUrl />
-          <AppRoutes />
-        </TooltipProvider>
+        </Suspense>
+        <CanonicalUrl />
+        <AppRoutes />
       </ThemeProvider>
     </ErrorBoundary>
   );

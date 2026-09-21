@@ -117,7 +117,7 @@ export const en = {
   },
   pricing: {
     label: "Pricing",
-    title: "See the price before checkout.",
+    title: "Simple pricing.",
     chooseBilling: "Choose billing",
     monthly: "Monthly",
     annual: "Annual",

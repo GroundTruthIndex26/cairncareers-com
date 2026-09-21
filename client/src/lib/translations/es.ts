@@ -116,7 +116,7 @@ export const es: typeof en = {
   },
   pricing: {
     label: "Precios",
-    title: "Conoce el precio antes de pagar.",
+    title: "Precios simples.",
     chooseBilling: "Elige la facturación",
     monthly: "Mensual",
     annual: "Anual",

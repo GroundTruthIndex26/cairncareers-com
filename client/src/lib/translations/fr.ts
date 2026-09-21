@@ -116,7 +116,7 @@ export const fr: typeof en = {
   },
   pricing: {
     label: "Tarifs",
-    title: "Voyez le prix avant de payer.",
+    title: "Des prix simples.",
     chooseBilling: "Choisissez la facturation",
     monthly: "Mensuel",
     annual: "Annuel",

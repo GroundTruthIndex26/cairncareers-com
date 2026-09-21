@@ -31,14 +31,17 @@
     </script>
     <link rel="icon" href="/brand/cairn-favicon.svg" type="image/svg+xml" sizes="any" />
     <link rel="apple-touch-icon" href="/brand/cairn-icon.svg" />
-    <link rel="preload" as="image" href="/media/cairn-route-map-hero.webp" fetchpriority="high" />
+    <link rel="preload" as="image" imagesrcset="/media/cairn-route-map-hero-640.webp 640w, /media/cairn-route-map-hero-960.webp 960w, /media/cairn-route-map-hero-1280.webp 1280w, /media/cairn-route-map-hero.webp 1600w" imagesizes="(max-width: 1020px) calc(100vw - 32px), 46vw" fetchpriority="high" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@600;700&family=IBM+Plex+Sans:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@600;700&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet" /></noscript>
     <title>Find an Entry-Level Path That Holds Up to AI | CairnCareers</title>
 
     <script>
-      window.addEventListener("DOMContentLoaded", function () {
+      // Tag scripts start after the page has loaded and the main thread is
+      // idle, so they never compete with the first paint or hydration.
+      function cairnLoadTags() {
         const ga4Id = "G-ES1F56DT2X";
         const clarityId = "y7f34abyqv";
 
@@ -60,6 +63,10 @@
             y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
           })(window, document, "clarity", "script", clarityId);
         }
+      }
+      window.addEventListener("load", function () {
+        if ("requestIdleCallback" in window) requestIdleCallback(cairnLoadTags, { timeout: 3000 });
+        else setTimeout(cairnLoadTags, 1500);
       });
     </script>
     <script type="application/ld+json">

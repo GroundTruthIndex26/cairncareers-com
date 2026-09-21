@@ -5,6 +5,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* The shadcn scaffolding in components/ui is 50 files, of which the site
+   uses one (sonner). Tailwind scans every file it can see, so those files
+   were adding roughly 95 KB of utilities nobody rendered to the one
+   render-blocking stylesheet. Add a file back here if a page starts
+   importing it. */
+@source not "./components/ui";
+@source "./components/ui/sonner.tsx";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

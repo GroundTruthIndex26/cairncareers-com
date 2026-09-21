@@ -43,7 +43,11 @@ public, so they live here instead.
   `msvalidate.01` meta tag next to it is Bing's, which does need one.
 - The **Plausible** snippet is account-specific; it is not the generic one from
   their docs, so do not swap it for a copy-paste from elsewhere.
-- **Space Grotesk and Space Mono** in the Google Fonts URL are there for
-  `/roadmap` and the `dashboard-preview` sample pages, which keep their own
-  "product demo" type system. Removing them because the marketing pages do not
-  use them would break the sample dashboard.
+- **Google Fonts** load with `media="print"` and flip to `all` on load, so the
+  stylesheet never blocks first paint; `scripts/prerender.mjs` restores that
+  form in the captured HTML. **Space Grotesk and Space Mono** are the
+  "product demo" type system: `/roadmap` adds them itself in `Roadmap.tsx`,
+  and the `dashboard-preview` sample pages carry their own font link.
+- **Tag scripts** (GA4, Clarity) and the HeyCatch SDK start after the `load`
+  event on an idle callback (`index.html`, `client/src/lib/analytics.ts`), so
+  they do not compete with the first paint or hydration.

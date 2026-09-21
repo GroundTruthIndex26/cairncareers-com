@@ -20,7 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/toast";
 import { LanguageSwitch } from "@/components/PageChrome";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { plain, rich, useI18n } from "@/lib/i18n";
@@ -28,6 +28,9 @@ import { plain, rich, useI18n } from "@/lib/i18n";
 const BASE_URL = import.meta.env.BASE_URL;
 const ASSETS = {
   hero: `${BASE_URL}media/cairn-route-map-hero.webp`,
+  hero640: `${BASE_URL}media/cairn-route-map-hero-640.webp`,
+  hero960: `${BASE_URL}media/cairn-route-map-hero-960.webp`,
+  hero1280: `${BASE_URL}media/cairn-route-map-hero-1280.webp`,
   founder: `${BASE_URL}media/cairn-founder.webp`,
 };
 
@@ -448,7 +451,7 @@ export default function Home() {
             </div>
             <div className="hero-visual" aria-label={t.hero.visualLabel}>
               <div className="hero-map">
-                <img src={ASSETS.hero} alt={t.hero.imageAlt} width="1200" height="675" fetchPriority="high" />
+                <img src={ASSETS.hero} srcSet={`${ASSETS.hero640} 640w, ${ASSETS.hero960} 960w, ${ASSETS.hero1280} 1280w, ${ASSETS.hero} 1600w`} sizes="(max-width: 1020px) calc(100vw - 32px), 46vw" alt={t.hero.imageAlt} width="1200" height="675" fetchPriority="high" />
                 <RouteVeil />
               </div>
               <div className="hero-route-card">

@@ -87,6 +87,17 @@ export default function Roadmap() {
     trackKeyEvent(KEY_EVENTS.viewedRoadmap);
   }, []);
 
+  // Space Grotesk and Space Mono are this page's own type system. They used
+  // to load from index.html on every page, blocking first paint sitewide.
+  useEffect(() => {
+    if (document.getElementById("roadmap-fonts")) return;
+    const link = document.createElement("link");
+    link.id = "roadmap-fonts";
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap";
+    document.head.appendChild(link);
+  }, []);
+
   useEffect(() => {
     const road = roadRef.current;
     if (!road || !("IntersectionObserver" in window)) return;

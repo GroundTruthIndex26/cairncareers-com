@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import Breadcrumbs, { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { KEY_EVENTS, trackKeyEvent } from "@/lib/analytics";
 import "./Roadmap.css";
 
 const BASE_URL = import.meta.env.BASE_URL;
@@ -80,6 +81,11 @@ export default function Roadmap() {
   });
 
   const roadRef = useRef<HTMLDivElement>(null);
+
+  // Funnel step "Viewed roadmap". Fires once per visit to this page.
+  useEffect(() => {
+    trackKeyEvent(KEY_EVENTS.viewedRoadmap);
+  }, []);
 
   useEffect(() => {
     const road = roadRef.current;

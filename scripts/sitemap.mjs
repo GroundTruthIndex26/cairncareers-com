@@ -35,6 +35,7 @@ const ROUTES = [
   { path: "/vs/chatgpt", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
   { path: "/vs/careerwing", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
   { path: "/vs/career-mirror", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
+  { path: "/vs/maketheleap", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
   { path: "/contact", priority: "0.5", changefreq: "monthly", source: "client/src/pages/Contact.tsx" },
   { path: "/privacy", priority: "0.3", changefreq: "monthly", source: "client/src/pages/Privacy.tsx" },
   { path: "/terms",   priority: "0.3", changefreq: "monthly", source: "client/src/pages/Terms.tsx" },

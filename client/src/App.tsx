@@ -34,6 +34,7 @@ function AppRoutes() {
       <Route path="/vs/chatgpt">{() => <Compare slug="chatgpt" />}</Route>
       <Route path="/vs/careerwing">{() => <Compare slug="careerwing" />}</Route>
       <Route path="/vs/career-mirror">{() => <Compare slug="career-mirror" />}</Route>
+      <Route path="/vs/maketheleap">{() => <Compare slug="maketheleap" />}</Route>
       <Route path="/contact" component={Contact} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />

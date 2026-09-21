@@ -12,6 +12,7 @@ Students input their interests, coursework, and experience to receive a nine-pag
 - [CairnCareers vs asking ChatGPT](https://cairncareers.com/vs/chatgpt): Sourced federal task data and a term-by-term plan, compared with answers from a chatbot's training data.
 - [CairnCareers vs CareerWing](https://cairncareers.com/vs/careerwing): A term-by-term roadmap for students built on linked sources, compared with CareerWing's 30/90/365-day plan and chat coach.
 - [CairnCareers vs Career Mirror](https://cairncareers.com/vs/career-mirror): An AI-exposure score with every source linked, compared with Career Mirror's career intelligence tool.
+- [CairnCareers vs Make the Leap](https://cairncareers.com/vs/maketheleap): A subscription roadmap that updates each term, compared with Make the Leap's one-time career reports.
 
 ## Support
 

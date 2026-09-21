@@ -69,7 +69,7 @@ export const en = {
   route: {
     label: "The route",
     title: "Career planning that ends with a first move.",
-    lead: "Your map should make the next decision smaller, more specific, and easier to test in the real world.",
+    lead: "If you have been stuck for months and still do not have a concrete career plan, your map should make the next decision smaller, more specific, and easier to test in the real world.",
     steps: [
       ["Bring what you know", "Your interests, coursework, experience, and the work that holds your attention."],
       ["Read the whole picture", "Salary, job growth, and AI exposure in one place, not isolated numbers."],
@@ -114,6 +114,8 @@ export const en = {
     saving: "Saving…",
     confirmation: "We are still building, but can't wait for you to use CairnCareers. You will receive an email when your account is fully activated.",
     error: "We could not save your request. Please try again.",
+    counter: "{count} beta testers signed up so far",
+    counterNote: "Live count of beta requests sent through this form. How we handle your email is in the [Privacy Policy](/privacy).",
   },
   pricing: {
     label: "Pricing",
@@ -137,6 +139,7 @@ export const en = {
     ticker: "Beta users free until launch!",
     groupNote: "Group pricing and enterprise pricing are available - contact for more information:",
     approx: "Prices marked ≈ are shown in {currency} for reference. You are charged in US dollars.",
+    whySubscription: "**Why a subscription, not a one-time report?** Your roadmap re-sequences as evidence gaps close or your target career changes. A plan written once is wrong by next autumn. [See how the roadmap works](/roadmap).",
   },
   about: {
     label: "Why this exists",
@@ -145,6 +148,12 @@ export const en = {
     founder: "Brooke Houck, PhD · Founder",
     imageAlt: "Brooke Houck, PhD, founder of CairnCareers",
     quote: "“Everyone has an opinion about AI. And a lot of people want to give you good advice. But work isn't the same anymore. Work has changed and is changing. Cairn Careers uses research standards you can read about openly. We give you data, not vibes, about what work looks like now and will look like 3 years from now.”",
+    storyTitle: "Why I built CairnCareers",
+    story: "",
+  },
+  testimonials: {
+    label: "Beta testers",
+    title: "What beta testers are saying.",
   },
   faq: {
     label: "FAQs",

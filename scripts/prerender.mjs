@@ -97,6 +97,9 @@ function applyPerRouteHead(html, route) {
 
   if (route.noindex) {
     html = setOrCreateMeta(html, "name", "robots", "noindex,follow");
+    // 404.html is served for every unknown URL, so a canonical and og:url
+    // naming /404 would be wrong on all of them.
+    html = html.replace(/\s*<link\s+rel="canonical"[^>]*>/i, "").replace(/\s*<meta\s+property="og:url"[^>]*>/i, "");
   }
   return html;
 }

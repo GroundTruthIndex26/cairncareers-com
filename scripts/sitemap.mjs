@@ -27,11 +27,13 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const ORIGIN = "https://cairncareers.com";
 
-// `source` is the file whose git history dates the route.
+// `source` lists the files whose git history dates the route; the newest wins.
+// Home and Methodology keep their copy in the English translation file, so a
+// copy edit there has to move their lastmod too.
 const ROUTES = [
-  { path: "/",        priority: "1.0", changefreq: "weekly",  source: "client/src/pages/Home.tsx" },
+  { path: "/",        priority: "1.0", changefreq: "weekly",  source: ["client/src/pages/Home.tsx", "client/src/lib/translations/en.ts"] },
   { path: "/roadmap", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Roadmap.tsx" },
-  { path: "/methodology", priority: "0.8", changefreq: "monthly", source: "client/src/pages/Methodology.tsx" },
+  { path: "/methodology", priority: "0.8", changefreq: "monthly", source: ["client/src/pages/Methodology.tsx", "client/src/lib/translations/en.ts"] },
   { path: "/vs/chatgpt", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
   { path: "/vs/careerwing", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
   { path: "/vs/career-mirror", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
@@ -52,9 +54,9 @@ const git = (args) => {
   }
 };
 
-/** Committer date (YYYY-MM-DD) of the last commit touching `file`. */
-function lastModified(file, fallback) {
-  const d = git(["log", "-1", "--format=%cs", "--", file]);
+/** Committer date (YYYY-MM-DD) of the last commit touching any of `files`. */
+function lastModified(files, fallback) {
+  const d = git(["log", "-1", "--format=%cs", "--", ...[files].flat()]);
   return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : fallback;
 }
 

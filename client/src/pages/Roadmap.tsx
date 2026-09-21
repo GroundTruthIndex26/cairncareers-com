@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { analytics } from "@heycatch/sdk";
 import Breadcrumbs, { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import "./Roadmap.css";
@@ -80,6 +81,11 @@ export default function Roadmap() {
   });
 
   const roadRef = useRef<HTMLDivElement>(null);
+
+  // Funnel step "Viewed roadmap" in heycatch matches this custom event.
+  useEffect(() => {
+    analytics.trackEvent("viewed_roadmap");
+  }, []);
 
   useEffect(() => {
     const road = roadRef.current;

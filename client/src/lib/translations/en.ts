@@ -147,7 +147,7 @@ export const en = {
     badge: "Built by a PhD research scientist",
     founder: "Brooke Houck, PhD · Founder",
     imageAlt: "Brooke Houck, PhD, founder of CairnCareers",
-    quote: "“I built CairnCareers because I kept getting annoyed. Every week there was a new headline about which jobs AI would wipe out, and almost none of them said how they knew. When I traced the claims back, most rested on a job title and a guess. In my field you do not get to publish a number without showing where it came from. Students are making one of the most expensive decisions of their lives on claims that would not survive peer review, and they deserve the standard I am held to. So CairnCareers scores the actual tasks inside a job, names every source, and keeps pay data out of the score, so you can see exactly what moved the result.”",
+    quote: "“I built CairnCareers because I kept getting annoyed. Every week there was a new headline about which jobs AI would wipe out, and almost none of them said how they knew. When I traced the claims back, most rested on a job title and a guess. In my field you do not get to publish a number without showing where it came from. Students are making one of the most expensive decisions of their lives on claims that would not survive peer review, and they deserve the standard I am held to.”",
   },
   testimonials: {
     label: "Beta testers",

@@ -6,7 +6,7 @@ students and recent graduates, built by Phronesis Labs LLC.
 ## Stack
 
 - **Vite + React + wouter**: client-side app, all marketing/legal pages as real routes.
-- **Cloudflare Workers**: static assets plus one small Worker route (`/api/launch-notifications`, `worker/index.ts`), deployed via Workers Builds (git-integrated CI/CD).
+- **Cloudflare Workers**: static assets plus one small Worker route (`/api/launch-notifications`, `worker/index.ts`), deployed by the GitHub Actions workflow in `.github/workflows/deploy.yml` on every push to `main`.
 - **Cloudflare Browser Rendering**: `scripts/prerender.mjs` prerenders every indexable route to real static HTML during the build, so crawlers (search and AI) see full content instead of an empty SPA shell. See the comments in that file and in `wrangler.jsonc` for why.
 
 ## Local development
@@ -21,8 +21,9 @@ npm run check         # tsc --noEmit
 
 `npm run build`'s prerender step needs two env vars, `PRERENDER_CF_ACCOUNT_ID`
 and `PRERENDER_CF_BROWSER_TOKEN` (a Cloudflare API token scoped to Account →
-Browser Rendering → Edit), set as build-time environment variables on the
-Workers Builds triggers in production, or in your shell for a local test build.
+Browser Rendering → Edit). In production the deploy workflow supplies both from
+the `CLOUDFLARE_API_TOKEN` repository secret; set them in your shell for a local
+test build.
 
 ## Structure
 

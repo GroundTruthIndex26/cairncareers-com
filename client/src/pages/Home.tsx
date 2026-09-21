@@ -250,12 +250,23 @@ export default function Home() {
   useEffect(() => {
     // The Worker answers null until the count is worth showing (see
     // handleBetaCount in worker/index.ts), and no counter beats a broken one.
-    fetch("/api/beta-count")
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data: { count?: number | null } | null) => {
-        if (typeof data?.count === "number") setBetaCount(data.count);
-      })
-      .catch(() => {});
+    // The beta form sits far below the fold, so the request waits until the
+    // visitor scrolls near it. Fired on mount, it sat in the critical request
+    // chain of a page whose first job is to paint a headline.
+    const section = document.getElementById("beta-access");
+    if (!section || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer.disconnect();
+      fetch("/api/beta-count")
+        .then((response) => (response.ok ? response.json() : null))
+        .then((data: { count?: number | null } | null) => {
+          if (typeof data?.count === "number") setBetaCount(data.count);
+        })
+        .catch(() => {});
+    }, { rootMargin: "800px 0px" });
+    observer.observe(section);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {

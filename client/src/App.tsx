@@ -2,20 +2,11 @@
  * CairnCareers revision style note: preserve the brand's editorial utility look,
  * with a light document surface and a decisive near-black hero.
  */
-import { lazy, Suspense } from "react";
-import { Route, Switch } from "wouter";
+import { lazy, Suspense, type ComponentType } from "react";
 import CanonicalUrl from "./components/CanonicalUrl";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Compare from "./pages/Compare";
-import Contact from "./pages/Contact";
 import Home from "./pages/Home";
-import Methodology from "./pages/Methodology";
-import NotFound from "./pages/NotFound";
-import Privacy from "./pages/Privacy";
-import Refunds from "./pages/Refunds";
-import Roadmap from "./pages/Roadmap";
-import Terms from "./pages/Terms";
 
 // The toast library only matters once a form is submitted, so it loads in its
 // own chunk instead of sitting in the bundle every visitor parses before the
@@ -25,25 +16,38 @@ const Toaster = lazy(() => import("@/components/ui/sonner").then((m) => ({ defau
 // NOTE: every path below must also appear in the ROUTES list in
 // scripts/prerender.mjs. wrangler serves real 404s, so a route that is not
 // prerendered is a live 404 rather than a client-side render.
-function AppRoutes() {
-  return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/roadmap" component={Roadmap} />
-      <Route path="/methodology" component={Methodology} />
-      <Route path="/vs/chatgpt">{() => <Compare slug="chatgpt" />}</Route>
-      <Route path="/vs/careerwing">{() => <Compare slug="careerwing" />}</Route>
-      <Route path="/vs/career-mirror">{() => <Compare slug="career-mirror" />}</Route>
-      <Route path="/vs/maketheleap">{() => <Compare slug="maketheleap" />}</Route>
-      <Route path="/contact" component={Contact} />
-      <Route path="/privacy" component={Privacy} />
-      <Route path="/terms" component={Terms} />
-      <Route path="/refunds" component={Refunds} />
-      <Route path="/404" component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
-  );
+//
+// ONE PAGE PER VISIT
+// Every internal link is a plain <a href>, so each navigation is a full page
+// load and a visit only ever renders one of these. Importing all of them put
+// every page's code in the bundle the homepage parses before it is
+// interactive. Home stays in the main bundle because it is the landing page
+// and must not wait on a second request; every other page is its own chunk.
+//
+// main.tsx calls loadPage() and waits for it BEFORE the first render. That is
+// deliberate: React.lazy would render nothing while the chunk loads, which
+// wipes the prerendered HTML and paints it again a moment later.
+type Page = ComponentType;
+const compare = (slug: string) => () => import("./pages/Compare").then((m): Page => () => <m.default slug={slug} />);
+
+const PAGES: Record<string, () => Promise<Page>> = {
+  "/": () => Promise.resolve(Home),
+  "/roadmap": () => import("./pages/Roadmap").then((m) => m.default),
+  "/methodology": () => import("./pages/Methodology").then((m) => m.default),
+  "/vs/chatgpt": compare("chatgpt"),
+  "/vs/careerwing": compare("careerwing"),
+  "/vs/career-mirror": compare("career-mirror"),
+  "/vs/maketheleap": compare("maketheleap"),
+  "/contact": () => import("./pages/Contact").then((m) => m.default),
+  "/privacy": () => import("./pages/Privacy").then((m) => m.default),
+  "/terms": () => import("./pages/Terms").then((m) => m.default),
+  "/refunds": () => import("./pages/Refunds").then((m) => m.default),
+};
+
+export function loadPage(pathname: string): Promise<Page> {
+  const path = pathname === "/" ? "/" : pathname.replace(/\/+$/, "");
+  const load = PAGES[path] ?? (() => import("./pages/NotFound").then((m) => m.default));
+  return load();
 }
 
 // NOTE: About Theme
@@ -51,7 +55,7 @@ function AppRoutes() {
 //   to keep consistent foreground/background color across components
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
-function App() {
+function App({ Page }: { Page: ComponentType }) {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
@@ -59,7 +63,7 @@ function App() {
           <Toaster position="bottom-right" richColors />
         </Suspense>
         <CanonicalUrl />
-        <AppRoutes />
+        <Page />
       </ThemeProvider>
     </ErrorBoundary>
   );

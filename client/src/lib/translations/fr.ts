@@ -68,7 +68,7 @@ export const fr: typeof en = {
   route: {
     label: "Le parcours",
     title: "Une planification de carrière qui aboutit à une première étape.",
-    lead: "Votre carte doit rendre la prochaine décision plus petite, plus précise et plus facile à tester dans le monde réel.",
+    lead: "Si vous tournez en rond depuis des mois, toujours sans plan de carrière concret, votre carte doit rendre la prochaine décision plus petite, plus précise et plus facile à tester dans le monde réel.",
     steps: [
       ["Apportez ce que vous savez", "Vos centres d'intérêt, vos cours, votre expérience et le travail qui retient votre attention."],
       ["Voyez l'ensemble du tableau", "Salaire, croissance de l'emploi et exposition à l'IA au même endroit, pas des chiffres isolés."],
@@ -113,6 +113,8 @@ export const fr: typeof en = {
     saving: "Enregistrement…",
     confirmation: "Nous sommes encore en construction, mais nous avons hâte que vous utilisiez CairnCareers. Vous recevrez un e-mail quand votre compte sera entièrement activé.",
     error: "Nous n'avons pas pu enregistrer votre demande. Veuillez réessayer.",
+    counter: "{count} personnes se sont inscrites à la bêta jusqu'ici",
+    counterNote: "Décompte en direct des demandes de bêta envoyées par ce formulaire. Le traitement de votre e-mail est décrit dans la [Politique de confidentialité](/privacy).",
   },
   pricing: {
     label: "Tarifs",
@@ -136,6 +138,7 @@ export const fr: typeof en = {
     ticker: "Utilisateurs bêta : gratuit jusqu'au lancement !",
     groupNote: "Des tarifs de groupe et entreprise sont disponibles - contactez-nous pour en savoir plus :",
     approx: "Les prix marqués ≈ sont indiqués en {currency} à titre indicatif. Le paiement s'effectue en dollars américains.",
+    whySubscription: "**Pourquoi un abonnement plutôt qu'un rapport unique ?** Votre feuille de route se réorganise à mesure que vos lacunes de preuves se comblent ou que votre carrière cible change. Un plan écrit une seule fois est faux dès l'automne suivant. [Voir comment fonctionne la feuille de route](/roadmap).",
   },
   about: {
     label: "Pourquoi cela existe",
@@ -143,7 +146,11 @@ export const fr: typeof en = {
     badge: "Conçu par une chercheuse titulaire d'un doctorat",
     founder: "Brooke Houck, PhD · Fondatrice",
     imageAlt: "Brooke Houck, PhD, fondatrice de CairnCareers",
-    quote: "« Tout le monde a une opinion sur l'IA. Et beaucoup de gens veulent vous donner de bons conseils. Mais le travail n'est plus le même. Le travail a changé et continue de changer. Cairn Careers s'appuie sur des normes de recherche que vous pouvez consulter librement. Nous vous donnons des données, pas des impressions, sur ce à quoi ressemble le travail aujourd'hui et ce à quoi il ressemblera dans 3 ans. »",
+    quote: "« J'ai créé CairnCareers parce que je n'arrêtais pas de m'agacer. Chaque semaine, un nouveau titre annonçait quels métiers l'IA allait faire disparaître, et presque aucun ne disait comment il le savait. Quand j'ai remonté la piste de ces affirmations, la plupart reposaient sur un intitulé de poste et une supposition. Dans mon domaine, on ne publie pas un chiffre sans montrer d'où il vient. Les étudiants prennent l'une des décisions les plus coûteuses de leur vie sur la base d'affirmations qui ne résisteraient pas à une évaluation par les pairs, et ils méritent la norme qui s'applique à mon propre travail. »",
+  },
+  testimonials: {
+    label: "Bêta-testeurs",
+    title: "Ce que disent les bêta-testeurs.",
   },
   faq: {
     label: "FAQ",

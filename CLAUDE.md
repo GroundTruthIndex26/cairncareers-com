@@ -7,8 +7,8 @@ This repo is the ONLY live source for cairncareers.com. The older repo GroundTru
 ## Where things are
 
 - `README.md`: stack, build commands, prerender setup.
-- `worker/index.ts`: the only server-side code. Handles `/api/launch-notifications` and `/api/contact`, writes to Supabase, sends Resend email.
-- `client/src/pages/`: Home, legal pages, Contact, Roadmap.
+- `worker/index.ts`: the only server-side code. Handles `/api/launch-notifications` and `/api/contact`, writes to Supabase, sends Resend email. Also serves `GET /api/beta-count` (count of beta requests only, null below 10, cached 10 minutes).
+- `client/src/pages/`: Home, legal pages, Contact, Roadmap, and `Compare.tsx` (the four `/vs/*` pages; every competitor claim there carries a dated source note, so re-check the sources before editing a price).
 - `client/public/dashboard-preview/`: the ten-page sample Premium dashboard (noindex, illustrative data).
 - `client/public/brand/`: brand assets.
 - `docs/ideas/`: feature ideas that are NOT built yet. Each file says whether a decision has been made. Do not build anything in there without Brooke confirming the open decisions first.

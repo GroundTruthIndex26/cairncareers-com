@@ -129,6 +129,16 @@ function faqJsonLd(items: { q: string; a: string }[]) {
   });
 }
 
+/**
+ * Quotes from real beta testers, shown between About and the FAQ. Empty until
+ * there are real ones: the section renders nothing while this list is empty,
+ * so no placeholder ships. Add a quote only with the person's written
+ * permission. Each one should name a specific thing the person learned from
+ * their score or roadmap, in their own words and their own language.
+ * `who` is a first name plus year and field, for example "Senior, Computer Science".
+ */
+const BETA_QUOTES: { quote: string; name: string; who: string }[] = [];
+
 function SectionLabel({ number, children }: { number: string; children: React.ReactNode }) {
   return (
     <div className="section-label">
@@ -233,8 +243,20 @@ export default function Home() {
   const [betaEmail, setBetaEmail] = useState("");
   const [betaStatus, setBetaStatus] = useState<"idle" | "submitting" | "done">("idle");
   const [betaError, setBetaError] = useState("");
+  const [betaCount, setBetaCount] = useState<number | null>(null);
   const message = t.hero.campaigns[campaign];
   usePageMeta({ title: t.meta.homeTitle, description: t.meta.homeDescription });
+
+  useEffect(() => {
+    // The Worker answers null until the count is worth showing (see
+    // handleBetaCount in worker/index.ts), and no counter beats a broken one.
+    fetch("/api/beta-count")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { count?: number | null } | null) => {
+        if (typeof data?.count === "number") setBetaCount(data.count);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -621,6 +643,12 @@ export default function Home() {
               ) : (
                 <>
                   <p>{t.beta.lead}</p>
+                  {betaCount !== null && (
+                    <div className="beta-counter">
+                      <strong>{t.beta.counter.replace("{count}", betaCount.toLocaleString())}<sup><a href="#beta-count-note" aria-label="1">1</a></sup></strong>
+                      <small id="beta-count-note">1. {rich(t.beta.counterNote)}</small>
+                    </div>
+                  )}
                   <form className="email-form beta-form" onSubmit={submitBetaRequest}>
                     <label htmlFor="beta-email">{t.beta.emailLabel}</label>
                     <div>
@@ -699,6 +727,7 @@ export default function Home() {
               {!SHOW_DISCOUNTED_PRICING && <BetaTicker text={t.pricing.ticker} />}
             </div>
 
+            <p className="pricing-why">{rich(t.pricing.whySubscription)}</p>
             <p className="pricing-note">{t.pricing.groupNote} <a href="mailto:contact@cairncareers.com">contact@cairncareers.com</a></p>
             {currency !== "USD" && <p className="pricing-approx">{t.pricing.approx.replace("{currency}", currency)}</p>}
           </div>
@@ -717,9 +746,26 @@ export default function Home() {
           </div>
         </section>
 
+        {BETA_QUOTES.length > 0 && (
+          <section id="beta-testers" className="paper-section testimonials-section">
+            <div className="container">
+              <SectionLabel number="06">{t.testimonials.label}</SectionLabel>
+              <h2>{t.testimonials.title}</h2>
+              <div className="testimonials-grid">
+                {BETA_QUOTES.map((item) => (
+                  <figure className="testimonial-card" key={item.name + item.who}>
+                    <blockquote>{item.quote}</blockquote>
+                    <figcaption><strong>{item.name}</strong> {item.who}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         <section id="faq" className="paper-section faq-section">
           <div className="container">
-            <SectionLabel number="06">{t.faq.label}</SectionLabel>
+            <SectionLabel number={BETA_QUOTES.length > 0 ? "07" : "06"}>{t.faq.label}</SectionLabel>
             <h2>{t.faq.title}</h2>
             <div className="faq-list">
               {t.faq.items.map((item) => (

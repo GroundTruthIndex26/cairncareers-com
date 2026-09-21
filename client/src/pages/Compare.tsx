@@ -156,14 +156,50 @@ export const COMPARISONS: Comparison[] = [
     },
     notes: [METHOD_NOTE, PRICING_NOTE, ROADMAP_NOTE, { text: "Career Mirror homepage, as described there on the date checked. No methodology or data-source page was found on the site on that date.", href: "https://app.careermirror.ai/" }],
   },
+  {
+    slug: "maketheleap",
+    name: "Make the Leap",
+    shortName: "Make the Leap",
+    documentTitle: "CairnCareers vs Make the Leap | CairnCareers",
+    description: "CairnCareers compared with Make the Leap: a subscription roadmap that updates each term and is built on federal task data, versus one-time career reports built on a founder's coaching frameworks.",
+    eyebrow: "Comparison",
+    title: "CairnCareers vs Make the Leap.",
+    intro: "Make the Leap sells one-time reports. CairnCareers is a subscription that keeps your plan current. Both start free and neither needs a resume. The difference is what the result is built from, and what happens after you read it.",
+    checked: "September 21, 2026",
+    rows: [
+      { label: "Built for", theirs: "Several assessments for different situations. First Leap is the one its FAQ describes as built for students, recent graduates, and anyone early in their career.[6]", ours: "College students and recent graduates choosing a first path." },
+      { label: "Where the numbers come from", theirs: "AI configured around frameworks the founder developed through 9+ years of coaching and retreat facilitation, according to its FAQ.[6] We did not find an outside data source named there.", ours: "O*NET occupational task data, the Eloundou et al. (2024) exposure framework in Science, and METR's capability trend. Every source is named and linked on the methodology page.[1]" },
+      { label: "AI exposure", theirs: "First Leap results include what its FAQ calls AI-proof scores.[6] We did not find a published method for how they are measured.", ours: "A task-weighted 0 to 100 exposure score per path, with pay and growth data kept separate from it so you can see what moved the result.[1]" },
+      { label: "The plan", theirs: "A finished report, delivered as a PDF and on a web page. The Career Leap Roadmap adds a 90-day transition outline and a 4-week guided email program.[6]", ours: "A term-by-term roadmap that re-sequences as evidence gaps close or your target career changes, plus resume, LinkedIn, network, and interview modules built from the same records.[3]" },
+      { label: "What happens next term", theirs: "The report is yours as written. A new read means a new assessment.", ours: "The roadmap updates. A plan written once for a junior is out of date by the following autumn, after new courses, an internship, or a change of mind." },
+      { label: "How you start", theirs: "A free assessment of about 10 minutes.[6]", ours: "Leave an email for beta access. No resume or work history needed." },
+      { label: "Price", theirs: "Free assessment, then one-time purchases: First Leap Blueprint at US$19, Career Brief at US$29, Career Leap Roadmap at US$79.[6]", ours: "Free tier. Pro at US$6 a month. Premium at US$11 a month.[2]" },
+    ],
+    whenTheirs: {
+      title: "When Make the Leap is the better fit",
+      body: [
+        "You feel lost and want a one-time read on what is holding you back, more than a score for specific paths.",
+        "You would rather pay once and own a finished report than subscribe.",
+      ],
+    },
+    whenOurs: {
+      title: "When CairnCareers is the better fit",
+      body: [
+        "You are weighing specific career paths and want an AI-exposure score you can trace to its sources.",
+        "You want a plan that follows the academic calendar and changes as you do.",
+        "You want the number on your resume to be one you can back up.",
+      ],
+    },
+    notes: [METHOD_NOTE, PRICING_NOTE, ROADMAP_NOTE, { text: "Make the Leap FAQ: who First Leap is for, how results are generated, report contents and delivery, and prices, as described there on the date checked.", href: "https://www.maketheleap.co/faq" }],
+  },
 ];
 
 /**
- * Footnote numbers are stable across all three pages so the same fact always
+ * Footnote numbers are stable across all four pages so the same fact always
  * has the same number: [1] methodology, [2] pricing, [3] roadmap, [4]
- * CareerWing, [5] Career Mirror. Each page lists only the notes it cites.
+ * CareerWing, [5] Career Mirror, [6] Make the Leap. Each page lists only the notes it cites.
  */
-const NOTE_NUMBER: Record<string, number> = { "/methodology": 1, "/#pricing": 2, "/roadmap": 3, "https://careerwing.ai/": 4, "https://app.careermirror.ai/": 5 };
+const NOTE_NUMBER: Record<string, number> = { "/methodology": 1, "/#pricing": 2, "/roadmap": 3, "https://careerwing.ai/": 4, "https://app.careermirror.ai/": 5, "https://www.maketheleap.co/faq": 6 };
 
 /** Turns "[1]" markers in a cell into superscript links to the footnotes. */
 function withNotes(text: string) {

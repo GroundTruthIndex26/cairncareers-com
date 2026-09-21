@@ -46,6 +46,7 @@ const ROUTES = [
   { path: "/vs/chatgpt", minBytes: 8000 },
   { path: "/vs/careerwing", minBytes: 8000 },
   { path: "/vs/career-mirror", minBytes: 8000 },
+  { path: "/vs/maketheleap", minBytes: 8000 },
   { path: "/contact", minBytes: 8000 },
   { path: "/privacy", minBytes: 8000 },
   { path: "/terms", minBytes: 8000 },

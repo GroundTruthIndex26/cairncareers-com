@@ -282,6 +282,50 @@ async function handleLaunchNotifications(request: Request, env: Env, ctx: Execut
 }
 
 /**
+ * BETA COUNT
+ * The number beside the beta form on the home page: how many addresses have
+ * asked for beta access. Read with a HEAD request and count=exact, so no row
+ * and no email address ever leaves Supabase, only the total.
+ *
+ * Below BETA_COUNT_FLOOR the answer is null and the page shows no counter. A
+ * single-digit count reads as an empty room, and it would also let anyone
+ * watch individual signups arrive one at a time.
+ *
+ * The edge cache holds the answer for ten minutes, so page views do not turn
+ * into Supabase queries one for one.
+ */
+const BETA_COUNT_FLOOR = 10;
+const BETA_COUNT_TTL_SECONDS = 600;
+
+async function handleBetaCount(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+  const cache = (caches as unknown as { default: Cache }).default;
+  const cacheKey = new Request(new URL("/api/beta-count", request.url).toString());
+  const cached = await cache.match(cacheKey);
+  if (cached) return cached;
+
+  let count: number | null = null;
+  if (env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const response = await fetch(
+        `${env.SUPABASE_URL}/rest/v1/launch_notifications?source=eq.beta-request&select=id`,
+        { method: "HEAD", headers: sbHeaders(env, "count=exact") },
+      );
+      // Content-Range looks like "0-24/57", or "*/0" for an empty table.
+      const total = Number(response.headers.get("Content-Range")?.split("/")[1]);
+      if (response.ok && Number.isFinite(total) && total >= BETA_COUNT_FLOOR) count = total;
+    } catch (error) {
+      console.error("Supabase beta count failed", error);
+    }
+  }
+
+  const out = Response.json({ count });
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
+  out.headers.set("Cache-Control", `public, max-age=${BETA_COUNT_TTL_SECONDS}`);
+  ctx.waitUntil(cache.put(cacheKey, out.clone()));
+  return out;
+}
+
+/**
  * INSTANT OWNER ALERT
  * Fires on the insert that actually created a row, so one address joining twice
  * never alerts twice. Runs inside ctx.waitUntil after the row is saved: a send
@@ -523,6 +567,10 @@ export default {
           ? await handleContact(request, env)
           : await handleLaunchNotifications(request, env, ctx);
       return secured(response);
+    }
+
+    if (request.method === "GET" && url.pathname === "/api/beta-count") {
+      return handleBetaCount(request, env, ctx);
     }
 
     // Any other /api/* path (or a non-POST on this one) falls through to assets,

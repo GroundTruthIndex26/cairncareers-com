@@ -68,7 +68,7 @@ export const es: typeof en = {
   route: {
     label: "La ruta",
     title: "Planificación profesional que termina en un primer paso.",
-    lead: "Tu mapa debería hacer que la siguiente decisión sea más pequeña, más concreta y más fácil de poner a prueba en el mundo real.",
+    lead: "Si llevas meses sin avanzar y todavía no tienes un plan profesional concreto, tu mapa debería hacer que la siguiente decisión sea más pequeña, más concreta y más fácil de poner a prueba en el mundo real.",
     steps: [
       ["Trae lo que sabes", "Tus intereses, tus asignaturas, tu experiencia y el trabajo que capta tu atención."],
       ["Mira el cuadro completo", "Salario, crecimiento del empleo y exposición a la IA en un solo lugar, no cifras aisladas."],
@@ -113,6 +113,8 @@ export const es: typeof en = {
     saving: "Guardando…",
     confirmation: "Seguimos construyendo, pero estamos deseando que uses CairnCareers. Recibirás un correo cuando tu cuenta esté completamente activada.",
     error: "No pudimos guardar tu solicitud. Inténtalo de nuevo.",
+    counter: "{count} personas se han apuntado a la beta hasta ahora",
+    counterNote: "Recuento en vivo de las solicitudes de beta enviadas con este formulario. Cómo tratamos tu correo está en la [Política de privacidad](/privacy).",
   },
   pricing: {
     label: "Precios",
@@ -136,6 +138,7 @@ export const es: typeof en = {
     ticker: "¡Usuarios beta gratis hasta el lanzamiento!",
     groupNote: "Hay precios para grupos y empresas - escríbenos para más información:",
     approx: "Los precios marcados con ≈ se muestran en {currency} como referencia. El cobro se realiza en dólares estadounidenses.",
+    whySubscription: "**¿Por qué una suscripción y no un informe único?** Tu hoja de ruta se reordena a medida que cierras brechas de evidencia o cambias de carrera objetivo. Un plan escrito una sola vez ya está mal al otoño siguiente. [Mira cómo funciona la hoja de ruta](/roadmap).",
   },
   about: {
     label: "Por qué existe esto",
@@ -143,7 +146,11 @@ export const es: typeof en = {
     badge: "Creado por una científica investigadora con doctorado",
     founder: "Brooke Houck, PhD · Fundadora",
     imageAlt: "Brooke Houck, PhD, fundadora de CairnCareers",
-    quote: "“Todo el mundo tiene una opinión sobre la IA. Y mucha gente quiere darte buenos consejos. Pero el trabajo ya no es el mismo. El trabajo ha cambiado y sigue cambiando. Cairn Careers usa estándares de investigación que puedes consultar abiertamente. Te damos datos, no sensaciones, sobre cómo es el trabajo hoy y cómo será dentro de 3 años.”",
+    quote: "“Creé CairnCareers porque no dejaba de molestarme. Cada semana salía un titular nuevo sobre los empleos que la IA iba a eliminar, y casi ninguno explicaba cómo lo sabía. Cuando rastreé esas afirmaciones, la mayoría se apoyaba en el nombre de un puesto y una suposición. En mi campo no se publica una cifra sin mostrar de dónde viene. Los estudiantes están tomando una de las decisiones más caras de su vida con afirmaciones que no superarían una revisión por pares, y merecen el mismo estándar que se me exige a mí.”",
+  },
+  testimonials: {
+    label: "Usuarios de la beta",
+    title: "Lo que dicen quienes prueban la beta.",
   },
   faq: {
     label: "Preguntas frecuentes",

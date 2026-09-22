@@ -66,9 +66,10 @@
     // One-line company mailing address printed under every subscriber email
     // (CAN-SPAM).
     "POSTAL_ADDRESS": "1710 East Franklin Street #1045, Chapel Hill, NC 27514, United States",
-    // Sign-in link in the "your account is ready" email. PLACEHOLDER: point this
-    // at the real beta app before the first account_ready_at is set.
-    "APP_URL": "https://cairncareers.com"
+    // Sign-in link in the "your account is ready" email. The beta app is not
+    // built yet; while this is empty that email never sends. Fill it in when the
+    // app exists (docs/ideas/beta-account-ready-email.md).
+    "APP_URL": ""
   },
   "routes": [
     { "pattern": "cairncareers.com", "custom_domain": true },

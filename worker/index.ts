@@ -36,7 +36,7 @@ interface Env {
   FROM_EMAIL?: string;
   /** One-line company mailing address, printed under every subscriber email (CAN-SPAM). wrangler.jsonc vars. */
   POSTAL_ADDRESS?: string;
-  /** Where a beta user signs in. Linked from the "your account is ready" email. wrangler.jsonc vars. */
+  /** Where a beta user signs in. Linked from the "your account is ready" email; while empty that email never sends. wrangler.jsonc vars. */
   APP_URL?: string;
   ASSETS: Fetcher;
   API_RATE_LIMITER?: RateLimiter;
@@ -332,7 +332,7 @@ function betaAckEmail(env: Env, unsubUrl: string) {
 /** The note a beta user receives once their account exists and they can sign in. */
 function accountReadyEmail(env: Env, unsubUrl: string) {
   const replyTo = env.NOTIFY_EMAIL;
-  const appUrl = env.APP_URL || "https://cairncareers.com";
+  const appUrl = env.APP_URL as string;
   const lines = [
     "Your CairnCareers beta account is ready.",
     "",
@@ -376,6 +376,9 @@ function accountReadyEmail(env: Env, unsubUrl: string) {
  */
 async function sendAccountReadyEmails(env: Env): Promise<void> {
   if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return;
+  // The beta app is not built yet. Until APP_URL points at it, nothing is
+  // sent, whatever account_ready_at says. See docs/ideas/beta-account-ready-email.md.
+  if (!env.APP_URL) return;
   let rows: SignupRow[] = [];
   try {
     const res = await fetch(

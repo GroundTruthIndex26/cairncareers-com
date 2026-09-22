@@ -30,7 +30,8 @@ export default function Breadcrumbs({ items, className }: { items: Crumb[]; clas
       {items.map((item, index) => (
         <span key={item.name} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
           {index > 0 && <span aria-hidden="true">/</span>}
-          {item.href ? <a href={item.href}>{item.name}</a> : <span aria-current="page">{item.name}</span>}
+          {/* The last crumb is the page you are on, so it is never a link to itself. */}
+          {item.href && index < items.length - 1 ? <a href={item.href}>{item.name}</a> : <span aria-current="page">{item.name}</span>}
         </span>
       ))}
     </nav>

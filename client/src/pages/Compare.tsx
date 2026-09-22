@@ -89,7 +89,7 @@ export const COMPARISONS: Comparison[] = [
     name: "CareerWing",
     shortName: "CareerWing",
     documentTitle: "CairnCareers vs CareerWing | CairnCareers",
-    description: "CairnCareers compared with CareerWing: a term-by-term roadmap for college students built on federal task data, versus a 30/90/365-day plan with a chat coach for working professionals.",
+    description: "CairnCareers vs CareerWing: a term-by-term roadmap for college students built on federal task data, versus a 30/90/365-day plan for working professionals.",
     eyebrow: "Comparison",
     title: "CairnCareers vs CareerWing.",
     intro: "CareerWing and CairnCareers both hand you a plan. The difference is who the plan is for and what the clock is. CareerWing counts in days from today. CairnCareers counts in academic terms, because that is the calendar a student actually lives on.",
@@ -125,7 +125,7 @@ export const COMPARISONS: Comparison[] = [
     name: "Career Mirror",
     shortName: "Career Mirror",
     documentTitle: "CairnCareers vs Career Mirror | CairnCareers",
-    description: "CairnCareers compared with Career Mirror: an AI-exposure score built from federal task data with every source linked, versus an AI career intelligence tool with no published methodology we could find.",
+    description: "CairnCareers vs Career Mirror: an AI-exposure score built from sourced federal task data, versus a tool with no published methodology we could find.",
     eyebrow: "Comparison",
     title: "CairnCareers vs Career Mirror.",
     intro: "Career Mirror describes itself as career intelligence for people who are growing, switching, or building. CairnCareers is narrower on purpose: students and recent graduates choosing a first path. The biggest difference is not the audience, though. It is whether you can see where the numbers came from.",
@@ -161,7 +161,7 @@ export const COMPARISONS: Comparison[] = [
     name: "Make the Leap",
     shortName: "Make the Leap",
     documentTitle: "CairnCareers vs Make the Leap | CairnCareers",
-    description: "CairnCareers compared with Make the Leap: a subscription roadmap that updates each term and is built on federal task data, versus one-time career reports built on a founder's coaching frameworks.",
+    description: "CairnCareers vs Make the Leap: a roadmap that updates each term, built on federal task data, versus one-time reports built on a founder's coaching frameworks.",
     eyebrow: "Comparison",
     title: "CairnCareers vs Make the Leap.",
     intro: "Make the Leap sells one-time reports. CairnCareers is a subscription that keeps your plan current. Both start free and neither needs a resume. The difference is what the result is built from, and what happens after you read it.",
@@ -215,7 +215,7 @@ export default function Compare({ slug }: { slug: string }) {
   const c = COMPARISONS.find((item) => item.slug === slug) ?? COMPARISONS[0];
   usePageMeta({ title: c.documentTitle, description: c.description });
   const path = `/vs/${c.slug}`;
-  const breadcrumb = [{ name: "Home", href: "/" }, { name: "Compare", href: path }, { name: `vs ${c.shortName}`, href: path }];
+  const breadcrumb = [{ name: "Home", href: "/" }, { name: "Compare", href: "/#compare" }, { name: `vs ${c.shortName}`, href: path }];
   const others = COMPARISONS.filter((item) => item.slug !== c.slug);
 
   return (

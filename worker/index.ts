@@ -160,7 +160,9 @@ interface SignupRow {
  *      seen: the launch-list welcome for a notify-me signup, or the beta
  *      acknowledgment for a beta-access request;
  *   2. an immediate alert to OWNER_EMAIL naming the address that just joined.
- * A third, the daily count (see sendDailyCounts), runs on the cron, not here.
+ * The daily count that used to run on the 13:00 UTC cron was removed on
+ * 2026-09-22: the 8am Eastern recap from the AI Job Risk Check project now
+ * covers Cairn signups in more detail, and two daily emails was one too many.
  * No per-signup send may ever break a signup. Every send runs after the row is
  * saved, inside ctx.waitUntil, and a failure is logged, not surfaced. The
  * acknowledgment stamps welcomed_at, so it is never sent to one address twice;
@@ -589,70 +591,6 @@ async function alertOwnerOfSignup(env: Env, row: SignupRow): Promise<void> {
 }
 
 /**
- * DAILY COUNT (cron in wrangler.jsonc)
- * One summary email a day to OWNER_EMAIL: how many beta-access requests and how
- * many launch-list signups arrived in the last 24 hours, plus the totals to
- * date. It always sends, even when both counts are zero, so a silent inbox
- * never has to be interpreted. Counts come from HEAD requests with count=exact,
- * so no address ever leaves Supabase, only the totals.
- */
-async function countRows(env: Env, source: string, sinceIso?: string): Promise<number | null> {
-  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return null;
-  const since = sinceIso ? `&created_at=gte.${sinceIso}` : "";
-  try {
-    const res = await fetch(
-      `${env.SUPABASE_URL}/rest/v1/launch_notifications?source=eq.${source}&select=id${since}`,
-      { method: "HEAD", headers: sbHeaders(env, "count=exact") },
-    );
-    const total = Number(res.headers.get("Content-Range")?.split("/")[1]);
-    return res.ok && Number.isFinite(total) ? total : null;
-  } catch (error) {
-    console.error("daily count query failed", source, error);
-    return null;
-  }
-}
-
-async function sendDailyCounts(env: Env): Promise<void> {
-  if (!env.OWNER_EMAIL) {
-    console.warn("daily count skipped: OWNER_EMAIL is not set");
-    return;
-  }
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const [beta24, launch24, betaTotal, launchTotal] = await Promise.all([
-    countRows(env, "beta-request", since),
-    countRows(env, "launch-notification", since),
-    countRows(env, "beta-request"),
-    countRows(env, "launch-notification"),
-  ]);
-  const show = (v: number | null) => (v === null ? "unavailable" : String(v));
-  const text = [
-    "CairnCareers signups in the last 24 hours:",
-    "",
-    `Beta access requests: ${show(beta24)}`,
-    `Launch-list signups:  ${show(launch24)}`,
-    "",
-    `Totals to date: ${show(betaTotal)} beta, ${show(launchTotal)} launch-list.`,
-    "",
-    "Full table: Supabase -> Cairn Careers -> launch_notifications.",
-  ].join("\n");
-  const html = `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1b1b1b;line-height:1.5;padding:16px">
-<p style="margin:0 0 12px;font-size:16px">CairnCareers signups in the last <strong>24 hours</strong>:</p>
-<table style="border-collapse:collapse;font-size:14px">
-<tr><td style="padding:4px 12px 4px 0;color:#555">Beta access requests</td><td style="padding:4px 0"><strong>${show(beta24)}</strong></td></tr>
-<tr><td style="padding:4px 12px 4px 0;color:#555">Launch-list signups</td><td style="padding:4px 0"><strong>${show(launch24)}</strong></td></tr>
-</table>
-<p style="margin:12px 0 0;font-size:13px;color:#555">Totals to date: ${show(betaTotal)} beta, ${show(launchTotal)} launch-list.</p>
-<p style="margin:12px 0 0;font-size:12px;color:#555">Full table: Supabase &rarr; Cairn Careers &rarr; launch_notifications.</p>
-</body></html>`;
-  await sendEmail(env, {
-    to: [env.OWNER_EMAIL],
-    subject: `CairnCareers daily: ${show(beta24)} beta, ${show(launch24)} launch (last 24h)`,
-    text,
-    html,
-  });
-}
-
-/**
  * SECURITY HEADERS
  * The site previously sent none of these, so a browser had no instruction to
  * refuse framing, to stop sniffing declared content types, or to limit where
@@ -927,7 +865,6 @@ export default {
    * emails.
    */
   async scheduled(event, env, ctx) {
-    if (event.cron === "0 13 * * *") ctx.waitUntil(sendDailyCounts(env));
     ctx.waitUntil(sendAccountReadyEmails(env));
   },
 } satisfies ExportedHandler<Env>;

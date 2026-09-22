@@ -7,7 +7,7 @@ This repo is the ONLY live source for cairncareers.com. The older repo GroundTru
 ## Where things are
 
 - `README.md`: stack, build commands, prerender setup.
-- `worker/index.ts`: the only server-side code. Handles `/api/launch-notifications` and `/api/contact`, writes to Supabase, sends Resend email. Also serves `GET /api/beta-count` (count of beta requests only, null below 10, cached 10 minutes).
+- `worker/index.ts`: the only server-side code. Handles `/api/launch-notifications` and `/api/contact`, writes to Supabase, sends Resend email. Also serves `GET /api/beta-count` (count of beta requests only, null below 10, cached 10 minutes), `/api/unsubscribe` (signed link in every subscriber email; stamps `unsubscribed_at`), and a daily cron that emails signup counts to OWNER_EMAIL. Subscriber emails carry the company mailing address from the `POSTAL_ADDRESS` var in `wrangler.jsonc`.
 - `client/src/pages/`: Home, legal pages, Contact, Roadmap, and `Compare.tsx` (the four `/vs/*` pages; every competitor claim there carries a dated source note, so re-check the sources before editing a price).
 - `client/public/dashboard-preview/`: the ten-page sample Premium dashboard (noindex, illustrative data).
 - `client/public/brand/`: brand assets.
@@ -16,7 +16,7 @@ This repo is the ONLY live source for cairncareers.com. The older repo GroundTru
 ## Supabase
 
 - Project: "Cairn Careers", ref `kxeqihuvmiurtksftfuj`, us-east-1, Phronesis Labs org.
-- Tables (public schema, RLS on): `launch_notifications` (email, source = launch-notification or beta-request, welcomed_at), `contact_messages`.
+- Tables (public schema, RLS on): `launch_notifications` (email, source = launch-notification or beta-request, welcomed_at, unsubscribed_at), `contact_messages`. Migrations live in `supabase/migrations/`.
 - No Edge Functions. The browser never talks to Supabase; the Worker writes with the service-role key (Worker secrets SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY).
 - No preorders, waitlist, or chat tables exist in this project. Anything that refers to a `preorders` table, `waitlist_signups`, `watch_state`, or a `cairn-guide` Edge Function is from the deleted project.
 - Read-only engine sources in other projects (never write): GroundTruth_V4_Canonical `hbtgjcxtdcvlngdfhflb` (bls_reference).

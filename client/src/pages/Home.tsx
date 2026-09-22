@@ -62,7 +62,8 @@ const premiumPricing: Record<BillingCycle, { regular: number; prelaunch: number;
  * November 1: Premium at US$8/month or US$61/year with the regular price struck
  * through, "Limited Time prelaunch price" labels, and both billing toggles
  * starting on annual. Set this to true to restore them. That also drops the
- * "Beta users free until launch!" running line, which stops being true at launch.
+ * "Beta users get a free year after launch!" running line, since beta signups
+ * close at launch.
  */
 const SHOW_DISCOUNTED_PRICING = false;
 const DEFAULT_BILLING: BillingCycle = SHOW_DISCOUNTED_PRICING ? "annual" : "monthly";

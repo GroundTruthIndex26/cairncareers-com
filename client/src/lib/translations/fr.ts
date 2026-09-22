@@ -14,7 +14,7 @@ export const fr: typeof en = {
   languageSwitch: "Langue",
   bar: {
     launch: "Lancement le 31 oct.",
-    beta: "Gratuit pour les utilisateurs bêta jusqu'au lancement",
+    beta: "Gratuit pour les utilisateurs bêta jusqu'au 31 octobre 2027",
     guarantee: "Garantie satisfait ou remboursé de 30 jours",
   },
   nav: {
@@ -105,7 +105,7 @@ export const fr: typeof en = {
   },
   beta: {
     eyebrow: "Accès bêta",
-    title: "Utilisez CairnCareers gratuitement jusqu'au lancement.",
+    title: "Inscrivez-vous à la bêta et utilisez CairnCareers gratuitement pendant un an après le lancement.",
     lead: "Laissez votre e-mail et nous créerons votre compte.",
     emailLabel: "Adresse e-mail",
     placeholder: "vous@email.com",
@@ -135,7 +135,7 @@ export const fr: typeof en = {
     limitedSpots: "Places limitées",
     checkout: "Continuer vers le paiement sécurisé",
     checkoutClosed: "Le paiement ouvre au lancement",
-    ticker: "Utilisateurs bêta : gratuit jusqu'au lancement !",
+    ticker: "Utilisateurs bêta : un an gratuit après le lancement !",
     groupNote: "Des tarifs de groupe et entreprise sont disponibles - contactez-nous pour en savoir plus :",
     approx: "Les prix marqués ≈ sont indiqués en {currency} à titre indicatif. Le paiement s'effectue en dollars américains.",
     whySubscription: "**Pourquoi un abonnement plutôt qu'un rapport unique ?** Votre feuille de route se réorganise à mesure que vos lacunes de preuves se comblent ou que votre carrière cible change. Un plan écrit une seule fois est faux dès l'automne suivant. [Voir comment fonctionne la feuille de route](/roadmap).",
@@ -190,7 +190,7 @@ export const fr: typeof en = {
       },
       {
         q: "Combien coûte Cairn Careers ?",
-        a: "Premium coûte 11 $ par mois ou 86 $ par an. Pro coûte 6 $ par mois ou 46 $ par an. Jusqu'au lancement, le 31 octobre 2026, les utilisateurs bêta peuvent utiliser Cairn Careers gratuitement. Chaque achat est couvert par une garantie satisfait ou remboursé de 30 jours, décrite sur la [page de la politique de remboursement](/refunds).",
+        a: "Premium coûte 11 $ par mois ou 86 $ par an. Pro coûte 6 $ par mois ou 46 $ par an. Nous lançons le 31 octobre 2026. Toute personne inscrite à la bêta avant cette date utilise Cairn Careers gratuitement jusqu'au 31 octobre 2027, un an après le lancement. Chaque achat est couvert par une garantie satisfait ou remboursé de 30 jours, décrite sur la [page de la politique de remboursement](/refunds).",
       },
     ],
   },

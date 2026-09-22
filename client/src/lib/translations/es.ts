@@ -14,7 +14,7 @@ export const es: typeof en = {
   languageSwitch: "Idioma",
   bar: {
     launch: "Lanzamiento: 31 de octubre",
-    beta: "Gratis para usuarios beta hasta el lanzamiento",
+    beta: "Gratis para usuarios beta hasta el 31 de octubre de 2027",
     guarantee: "Garantía de devolución de 30 días",
   },
   nav: {
@@ -105,7 +105,7 @@ export const es: typeof en = {
   },
   beta: {
     eyebrow: "Acceso beta",
-    title: "Usa CairnCareers gratis hasta el lanzamiento.",
+    title: "Apúntate a la beta y usa CairnCareers gratis durante un año después del lanzamiento.",
     lead: "Déjanos tu correo y crearemos tu cuenta.",
     emailLabel: "Correo electrónico",
     placeholder: "tu@email.com",
@@ -135,7 +135,7 @@ export const es: typeof en = {
     limitedSpots: "Quedan pocas plazas",
     checkout: "Continuar al pago seguro",
     checkoutClosed: "El pago se abre en el lanzamiento",
-    ticker: "¡Usuarios beta gratis hasta el lanzamiento!",
+    ticker: "¡Los usuarios beta tienen un año gratis después del lanzamiento!",
     groupNote: "Hay precios para grupos y empresas - escríbenos para más información:",
     approx: "Los precios marcados con ≈ se muestran en {currency} como referencia. El cobro se realiza en dólares estadounidenses.",
     whySubscription: "**¿Por qué una suscripción y no un informe único?** Tu hoja de ruta se reordena a medida que cierras brechas de evidencia o cambias de carrera objetivo. Un plan escrito una sola vez ya está mal al otoño siguiente. [Mira cómo funciona la hoja de ruta](/roadmap).",
@@ -190,7 +190,7 @@ export const es: typeof en = {
       },
       {
         q: "¿Cuánto cuesta Cairn Careers?",
-        a: "Premium cuesta 11 $ al mes u 86 $ al año. Pro cuesta 6 $ al mes o 46 $ al año. Hasta el lanzamiento, el 31 de octubre de 2026, los usuarios beta pueden usar Cairn Careers gratis. Toda compra está cubierta por una garantía de devolución de 30 días, descrita en la [página de la política de reembolsos](/refunds).",
+        a: "Premium cuesta 11 $ al mes u 86 $ al año. Pro cuesta 6 $ al mes o 46 $ al año. Lanzamos el 31 de octubre de 2026. Quien se apunte a la beta antes de esa fecha usa Cairn Careers gratis hasta el 31 de octubre de 2027, un año después del lanzamiento. Toda compra está cubierta por una garantía de devolución de 30 días, descrita en la [página de la política de reembolsos](/refunds).",
       },
     ],
   },

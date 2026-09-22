@@ -15,7 +15,7 @@ export const en = {
   languageSwitch: "Language",
   bar: {
     launch: "Launch Oct. 31",
-    beta: "Free for beta users until launch",
+    beta: "Free for beta users through October 31, 2027",
     guarantee: "30-day money-back guarantee",
   },
   nav: {
@@ -106,7 +106,7 @@ export const en = {
   },
   beta: {
     eyebrow: "Beta access",
-    title: "Use CairnCareers free until launch.",
+    title: "Sign up for the beta and use CairnCareers free for a year after launch.",
     lead: "Leave your email and we will set up your account.",
     emailLabel: "Email address",
     placeholder: "you@email.com",
@@ -136,7 +136,7 @@ export const en = {
     limitedSpots: "Limited spots remain",
     checkout: "Continue to secure checkout",
     checkoutClosed: "Checkout opens at launch",
-    ticker: "Beta users free until launch!",
+    ticker: "Beta users get a free year after launch!",
     groupNote: "Group pricing and enterprise pricing are available - contact for more information:",
     approx: "Prices marked ≈ are shown in {currency} for reference. You are charged in US dollars.",
     whySubscription: "**Why a subscription, not a one-time report?** Your roadmap re-sequences as evidence gaps close or your target career changes. A plan written once is wrong by next autumn. [See how the roadmap works](/roadmap).",
@@ -191,7 +191,7 @@ export const en = {
       },
       {
         q: "What does Cairn Careers cost?",
-        a: "Premium is $11 a month or $86 a year. Pro is $6 a month or $46 a year. Until launch on October 31, 2026, beta users can use Cairn Careers free. Every purchase is covered by a 30-day money-back guarantee, described on the [refund policy page](/refunds).",
+        a: "Premium is $11 a month or $86 a year. Pro is $6 a month or $46 a year. We launch on October 31, 2026. Anyone who signs up for the beta before then uses Cairn Careers free through October 31, 2027, one year after launch. Every purchase is covered by a 30-day money-back guarantee, described on the [refund policy page](/refunds).",
       },
     ],
   },

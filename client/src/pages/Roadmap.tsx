@@ -133,7 +133,7 @@ export default function Roadmap() {
           </nav>
           <div className="right">
             <a className="hdr-textlink" href={DASHBOARD}>Dashboard</a>
-            <a className="chip" href="/#beta-access">Free beta until launch</a>
+            <a className="chip" href="/#beta-access">Free for a year after launch</a>
           </div>
         </div>
       </header>

@@ -1,8 +1,9 @@
 /**
  * Server-side logic: redirecting www to the apex domain, saving the two kinds
  * of message the site collects (launch-notification signups and contact form
- * submissions) to Supabase, emailing each new subscriber a thank-you, and
- * emailing the owner a daily digest of new signups. Everything else is served as static assets
+ * submissions) to Supabase, emailing each new subscriber or beta requester an
+ * acknowledgment, alerting the owner the moment someone signs up, and emailing
+ * the owner a daily count of signups. Everything else is served as static assets
  * via env.ASSETS, which still applies the html_handling and not_found_handling
  * rules configured in wrangler.jsonc.
  *
@@ -33,6 +34,8 @@ interface Env {
   OWNER_EMAIL?: string;
   /** Sender for both emails. Must be on a domain verified in Resend (wrangler.jsonc vars). */
   FROM_EMAIL?: string;
+  /** One-line company mailing address, printed under every subscriber email (CAN-SPAM). wrangler.jsonc vars. */
+  POSTAL_ADDRESS?: string;
   ASSETS: Fetcher;
   API_RATE_LIMITER?: RateLimiter;
 }
@@ -138,21 +141,28 @@ interface SignupRow {
   email: string;
   source: string | null;
   created_at: string;
+  /** Null until the automated acknowledgment has been sent for this address. */
+  welcomed_at: string | null;
+  /** Set by /api/unsubscribe. No automated email is ever sent to an address with this stamped. */
+  unsubscribed_at?: string | null;
 }
 
 /**
  * EMAIL
- * Two messages leave this Worker on a new signup, both through Resend:
- *   1. an immediate thank-you to the subscriber the first time an address signs up;
+ * On a new signup, two messages leave this Worker through Resend:
+ *   1. an automated acknowledgment to the person the first time an address is
+ *      seen: the launch-list welcome for a notify-me signup, or the beta
+ *      acknowledgment for a beta-access request;
  *   2. an immediate alert to OWNER_EMAIL naming the address that just joined.
- * Neither may ever break a signup. Every send runs after the row is saved,
- * inside ctx.waitUntil, and a failure is logged, not surfaced. The thank-you
- * stamps welcomed_at, so a retry cannot send it twice; the owner alert fires
- * only on the insert that actually created a row, so it cannot duplicate either.
+ * A third, the daily count (see sendDailyCounts), runs on the cron, not here.
+ * No per-signup send may ever break a signup. Every send runs after the row is
+ * saved, inside ctx.waitUntil, and a failure is logged, not surfaced. The
+ * acknowledgment stamps welcomed_at, so it is never sent to one address twice;
+ * the owner alert fires on the returned row.
  */
 async function sendEmail(
   env: Env,
-  msg: { to: string[]; subject: string; text: string; html?: string; reply_to?: string },
+  msg: { to: string[]; subject: string; text: string; html?: string; reply_to?: string; headers?: Record<string, string> },
 ): Promise<boolean> {
   if (!env.RESEND_API_KEY || !env.FROM_EMAIL) {
     console.warn("email skipped: RESEND_API_KEY or FROM_EMAIL is not set");
@@ -169,49 +179,161 @@ async function sendEmail(
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
 
+/**
+ * Shared HTML frame for the two subscriber emails: ink header with the cairn
+ * mark and wordmark, paper card, lime rule, signature footer. Inline styles and
+ * table-free block layout so it renders in Gmail, Apple Mail, and Outlook. The
+ * mark is a hosted PNG (SVG is stripped by most mail clients); alt text covers
+ * clients that block images.
+ */
+function emailFrame(env: Env, headline: string, body: string, unsubUrl: string): string {
+  return `<!doctype html><html><body style="margin:0;padding:0;background:#f0ead7;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#0b0d0c;line-height:1.55">
+<div style="padding:24px 12px">
+<div style="max-width:560px;margin:0 auto;background:#fbf8ed;border-radius:12px;overflow:hidden;border:1px solid #ddd7c5">
+<div style="background:#0b0d0c;padding:20px 28px;border-bottom:4px solid #b7ff38">
+<a href="https://cairncareers.com" style="text-decoration:none;display:inline-block">
+<img src="https://cairncareers.com/brand/cairn-icon-256.png" width="40" height="40" alt="CairnCareers" style="display:inline-block;vertical-align:middle;border:0;margin-right:12px">
+<span style="display:inline-block;vertical-align:middle;color:#ffffff;font-family:Arial Black,Arial,Helvetica,sans-serif;font-size:24px;font-weight:900;letter-spacing:-1px">Cairn</span><span style="display:inline-block;vertical-align:middle;color:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:800;letter-spacing:3px;margin-left:6px">CAREERS</span>
+</a>
+</div>
+<div style="padding:32px 28px">
+<p style="margin:0 0 16px;font-size:22px;font-weight:700;line-height:1.3">${headline}</p>
+${body}
+<p style="margin:0 0 16px">Have a question, or want to tell us which career paths you are weighing? Reply to this email. A person reads every message.</p>
+<div style="border-top:2px solid #b7ff38;padding-top:16px;font-size:14px">Brooke Houck<br>CairnCareers, a Phronesis Labs LLC product<br><a href="https://cairncareers.com" style="color:#0b0d0c;font-weight:700">cairncareers.com</a></div>
+</div>
+</div>
+<div style="max-width:560px;margin:20px auto 0;text-align:center;font-size:12px;color:#5c635e;line-height:1.6">
+<p style="margin:0 0 12px">You are receiving this because you entered your email at cairncareers.com.</p>
+<p style="margin:0 0 12px"><a href="${unsubUrl}" style="display:inline-block;padding:8px 18px;border:1px solid #5c635e;border-radius:6px;color:#0b0d0c;text-decoration:none;font-weight:700">Unsubscribe</a></p>
+<p style="margin:0">Phronesis Labs LLC${env.POSTAL_ADDRESS ? `<br>${esc(env.POSTAL_ADDRESS)}` : ""}</p>
+</div>
+</div></body></html>`;
+}
+
+/** Plain-text closing shared by both subscriber emails: signature, unsubscribe link, mailing address. */
+function textFooter(env: Env, unsubUrl: string): string[] {
+  return [
+    "Brooke Houck",
+    "CairnCareers, a Phronesis Labs LLC product",
+    "https://cairncareers.com",
+    "",
+    "You are receiving this because you entered your email at cairncareers.com.",
+    `Unsubscribe any time: ${unsubUrl}`,
+    "",
+    ["Phronesis Labs LLC", env.POSTAL_ADDRESS].filter(Boolean).join(", "),
+  ];
+}
+
+/** RFC 8058 headers so Gmail and Apple Mail show their own unsubscribe control. */
+function unsubHeaders(unsubUrl: string): Record<string, string> {
+  return {
+    "List-Unsubscribe": `<${unsubUrl}>`,
+    "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+  };
+}
+
+/**
+ * Unsubscribe links are signed so nobody can remove an address by guessing it.
+ * token = first 32 hex chars of HMAC-SHA256(lowercased email, service-role key).
+ * Same scheme as the AI Job Risk Check email-unsubscribe function.
+ */
+async function unsubToken(env: Env, email: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(env.SUPABASE_SERVICE_ROLE_KEY ?? ""),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(email.toLowerCase()));
+  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 32);
+}
+
+async function unsubscribeUrl(env: Env, email: string): Promise<string> {
+  const token = await unsubToken(env, email);
+  return `https://cairncareers.com/api/unsubscribe?e=${encodeURIComponent(email.toLowerCase())}&t=${token}`;
+}
+
+const ABOUT =
+  "CairnCareers helps college students and recent graduates compare realistic career paths using salary, job growth, and how exposed each path is to AI, then leave with a next move they can explain.";
+
 /** The thank-you note a new subscriber receives right after signing up. */
-function welcomeEmail(env: Env) {
+function welcomeEmail(env: Env, unsubUrl: string) {
   const replyTo = env.NOTIFY_EMAIL;
   const lines = [
     "Thanks for joining the CairnCareers launch list.",
     "",
-    "CairnCareers helps college students and recent graduates compare realistic career paths using salary, job growth, and how exposed each path is to AI, then leave with a next move they can explain.",
+    ABOUT,
     "",
     "What happens next:",
     "  - We launch on October 31, 2026. You will get one email from us the day it goes live.",
     "  - Until then, beta access is free. Request it at https://cairncareers.com/#beta-access and we will email you when your account is ready.",
-    "  - We will not send you anything else in between. No drip sequence, no weekly newsletter.",
     "",
     "Have a question, or want to tell us which career paths you are weighing? Reply to this email. A person reads every message.",
     "",
-    "If you did not sign up for this, reply with the word REMOVE and we will delete your address.",
-    "",
-    "Brooke Houck",
-    "CairnCareers, a Phronesis Labs LLC product",
-    "https://cairncareers.com",
+    ...textFooter(env, unsubUrl),
   ];
   const text = lines.join("\n");
-  const html = `<!doctype html><html><body style="margin:0;padding:24px;background:#f6f7f4;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1b1b1b;line-height:1.55">
-<div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;padding:32px">
-<p style="margin:0 0 16px;font-size:20px;font-weight:700">Thanks for joining the CairnCareers launch list.</p>
-<p style="margin:0 0 16px">CairnCareers helps college students and recent graduates compare realistic career paths using salary, job growth, and how exposed each path is to AI, then leave with a next move they can explain.</p>
+  const html = emailFrame(
+    env,
+    "Thanks for joining the CairnCareers launch list.",
+    `<p style="margin:0 0 16px">${ABOUT}</p>
 <p style="margin:0 0 8px;font-weight:700">What happens next</p>
 <ul style="margin:0 0 16px;padding-left:20px">
 <li style="margin-bottom:6px">We launch on <strong>October 31, 2026</strong>. You will get one email from us the day it goes live.</li>
-<li style="margin-bottom:6px">Until then, beta access is free. <a href="https://cairncareers.com/#beta-access" style="color:#1b1b1b">Request it here</a> and we will email you when your account is ready.</li>
-<li>We will not send you anything else in between. No drip sequence, no weekly newsletter.</li>
-</ul>
-<p style="margin:0 0 16px">Have a question, or want to tell us which career paths you are weighing? Reply to this email. A person reads every message.</p>
-<p style="margin:0 0 24px;font-size:13px;color:#555">If you did not sign up for this, reply with the word REMOVE and we will delete your address.</p>
-<p style="margin:0;font-size:14px">Brooke Houck<br>CairnCareers, a Phronesis Labs LLC product<br><a href="https://cairncareers.com" style="color:#1b1b1b">cairncareers.com</a></p>
-</div></body></html>`;
-  return { subject: "You are on the CairnCareers launch list", text, html, reply_to: replyTo };
+<li>Until then, beta access is free. <a href="https://cairncareers.com/#beta-access" style="color:#0b0d0c;font-weight:700">Request it here</a> and we will email you when your account is ready.</li>
+</ul>`,
+    unsubUrl,
+  );
+  return { subject: "You are on the CairnCareers launch list", text, html, reply_to: replyTo, headers: unsubHeaders(unsubUrl) };
 }
 
-/** Send the welcome email for one new row, then stamp welcomed_at so it is never sent twice. */
-async function welcomeNewSignup(env: Env, row: SignupRow): Promise<void> {
+/** The acknowledgment a new beta-access requester receives right after asking. */
+function betaAckEmail(env: Env, unsubUrl: string) {
+  const replyTo = env.NOTIFY_EMAIL;
+  const lines = [
+    "You are in. CairnCareers is free for you for one year.",
+    "",
+    "Thanks for requesting beta access. As a beta user, you get CairnCareers free from the day your account opens until October 31, 2027, one year after the public launch. No card, no trial clock, nothing to cancel.",
+    "",
+    ABOUT,
+    "",
+    "What happens next:",
+    "  - We will email you the moment your beta account is ready. Nothing else is needed from you right now.",
+    "  - We launch publicly on October 31, 2026. Your beta access carries through launch and for one year after the public launch.",
+    "",
+    "Have a question, or want to tell us which career paths you are weighing? Reply to this email. A person reads every message.",
+    "",
+    ...textFooter(env, unsubUrl),
+  ];
+  const text = lines.join("\n");
+  const html = emailFrame(
+    env,
+    "You are in. CairnCareers is free for you for one year.",
+    `<div style="background:#0b0d0c;color:#b7ff38;border-radius:8px;padding:14px 18px;margin:0 0 20px;font-weight:700;font-size:15px">Beta perk: CairnCareers is free for you from the day your account opens until October 31, 2027, one year after the public launch. No card, no trial clock, nothing to cancel.</div>
+<p style="margin:0 0 16px">Thanks for requesting beta access. ${ABOUT}</p>
+<p style="margin:0 0 8px;font-weight:700">What happens next</p>
+<ul style="margin:0 0 16px;padding-left:20px">
+<li style="margin-bottom:6px">We will email you the moment your beta account is ready. Nothing else is needed from you right now.</li>
+<li>We launch publicly on <strong>October 31, 2026</strong>. Your beta access carries through launch and for one year after the public launch.</li>
+</ul>`,
+    unsubUrl,
+  );
+  return { subject: "You are in: one free year of CairnCareers", text, html, reply_to: replyTo, headers: unsubHeaders(unsubUrl) };
+}
+
+/**
+ * Send the automated acknowledgment for one new row, then stamp welcomed_at so
+ * it is never sent to the same address twice. The launch-list welcome goes to a
+ * notify-me signup; the beta acknowledgment goes to a beta-access request.
+ */
+async function sendSignupEmail(env: Env, row: SignupRow): Promise<void> {
   try {
-    const ok = await sendEmail(env, { to: [row.email], ...welcomeEmail(env) });
+    if (row.unsubscribed_at) return;
+    const unsubUrl = await unsubscribeUrl(env, row.email);
+    const message = row.source === "beta-request" ? betaAckEmail(env, unsubUrl) : welcomeEmail(env, unsubUrl);
+    const ok = await sendEmail(env, { to: [row.email], ...message });
     if (!ok) return;
     const res = await fetch(`${env.SUPABASE_URL}/rest/v1/launch_notifications?id=eq.${row.id}`, {
       method: "PATCH",
@@ -220,7 +342,7 @@ async function welcomeNewSignup(env: Env, row: SignupRow): Promise<void> {
     });
     if (!res.ok) console.error("welcomed_at stamp failed", res.status);
   } catch (error) {
-    console.error("welcome email failed", error);
+    console.error("signup acknowledgment failed", error);
   }
 }
 
@@ -268,10 +390,12 @@ async function handleLaunchNotifications(request: Request, env: Env, ctx: Execut
 
     const rows = (await response.json().catch(() => [])) as SignupRow[];
     if (rows.length === 1) {
-      // The beta form confirms on the page, and the next email a beta requester
-      // gets is the one that activates their account, so no thank-you for them.
-      if (!isBeta) ctx.waitUntil(welcomeNewSignup(env, rows[0]));
-      ctx.waitUntil(alertOwnerOfSignup(env, rows[0]));
+      const row = rows[0];
+      // welcomed_at guards the acknowledgment: a launch row is only returned
+      // when new, but a beta merge returns the row on every submit, so this
+      // keeps a repeat beta request from acknowledging the same person twice.
+      if (!row.welcomed_at) ctx.waitUntil(sendSignupEmail(env, row));
+      ctx.waitUntil(alertOwnerOfSignup(env, row));
     }
 
     return Response.json({ saved: true }, { status: 201 });
@@ -371,6 +495,70 @@ async function alertOwnerOfSignup(env: Env, row: SignupRow): Promise<void> {
   } catch (error) {
     console.error("owner alert failed", error);
   }
+}
+
+/**
+ * DAILY COUNT (cron in wrangler.jsonc)
+ * One summary email a day to OWNER_EMAIL: how many beta-access requests and how
+ * many launch-list signups arrived in the last 24 hours, plus the totals to
+ * date. It always sends, even when both counts are zero, so a silent inbox
+ * never has to be interpreted. Counts come from HEAD requests with count=exact,
+ * so no address ever leaves Supabase, only the totals.
+ */
+async function countRows(env: Env, source: string, sinceIso?: string): Promise<number | null> {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return null;
+  const since = sinceIso ? `&created_at=gte.${sinceIso}` : "";
+  try {
+    const res = await fetch(
+      `${env.SUPABASE_URL}/rest/v1/launch_notifications?source=eq.${source}&select=id${since}`,
+      { method: "HEAD", headers: sbHeaders(env, "count=exact") },
+    );
+    const total = Number(res.headers.get("Content-Range")?.split("/")[1]);
+    return res.ok && Number.isFinite(total) ? total : null;
+  } catch (error) {
+    console.error("daily count query failed", source, error);
+    return null;
+  }
+}
+
+async function sendDailyCounts(env: Env): Promise<void> {
+  if (!env.OWNER_EMAIL) {
+    console.warn("daily count skipped: OWNER_EMAIL is not set");
+    return;
+  }
+  const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const [beta24, launch24, betaTotal, launchTotal] = await Promise.all([
+    countRows(env, "beta-request", since),
+    countRows(env, "launch-notification", since),
+    countRows(env, "beta-request"),
+    countRows(env, "launch-notification"),
+  ]);
+  const show = (v: number | null) => (v === null ? "unavailable" : String(v));
+  const text = [
+    "CairnCareers signups in the last 24 hours:",
+    "",
+    `Beta access requests: ${show(beta24)}`,
+    `Launch-list signups:  ${show(launch24)}`,
+    "",
+    `Totals to date: ${show(betaTotal)} beta, ${show(launchTotal)} launch-list.`,
+    "",
+    "Full table: Supabase -> Cairn Careers -> launch_notifications.",
+  ].join("\n");
+  const html = `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1b1b1b;line-height:1.5;padding:16px">
+<p style="margin:0 0 12px;font-size:16px">CairnCareers signups in the last <strong>24 hours</strong>:</p>
+<table style="border-collapse:collapse;font-size:14px">
+<tr><td style="padding:4px 12px 4px 0;color:#555">Beta access requests</td><td style="padding:4px 0"><strong>${show(beta24)}</strong></td></tr>
+<tr><td style="padding:4px 12px 4px 0;color:#555">Launch-list signups</td><td style="padding:4px 0"><strong>${show(launch24)}</strong></td></tr>
+</table>
+<p style="margin:12px 0 0;font-size:13px;color:#555">Totals to date: ${show(betaTotal)} beta, ${show(launchTotal)} launch-list.</p>
+<p style="margin:12px 0 0;font-size:12px;color:#555">Full table: Supabase &rarr; Cairn Careers &rarr; launch_notifications.</p>
+</body></html>`;
+  await sendEmail(env, {
+    to: [env.OWNER_EMAIL],
+    subject: `CairnCareers daily: ${show(beta24)} beta, ${show(launch24)} launch (last 24h)`,
+    text,
+    html,
+  });
 }
 
 /**
@@ -539,6 +727,63 @@ function apexRedirect(url: URL): Response | null {
  * IS the attribution; the SDK cleans it off the URL bar after landing. No real
  * route is a single character, so nothing is excluded.
  */
+/**
+ * UNSUBSCRIBE
+ * GET  /api/unsubscribe?e=<email>&t=<token>  -> stamps unsubscribed_at, HTML confirmation.
+ * POST /api/unsubscribe?e=<email>&t=<token>  -> same, JSON. RFC 8058 one-click from
+ *      Gmail / Apple Mail via the List-Unsubscribe-Post header.
+ * The token is checked in constant time. Idempotent: a second click is still ok.
+ * Email only: nothing here touches billing.
+ */
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+async function suppressEmail(env: Env, rawEmail: string, rawToken: string): Promise<{ ok: boolean; status: number }> {
+  const email = (rawEmail ?? "").trim().toLowerCase();
+  if (!EMAIL_RE.test(email) || email.length > 320) return { ok: false, status: 400 };
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return { ok: false, status: 503 };
+  const expected = await unsubToken(env, email);
+  if (!safeEqual((rawToken ?? "").trim().toLowerCase(), expected)) return { ok: false, status: 403 };
+  const res = await fetch(
+    `${env.SUPABASE_URL}/rest/v1/launch_notifications?email=eq.${encodeURIComponent(email)}&unsubscribed_at=is.null`,
+    { method: "PATCH", headers: sbHeaders(env, "return=minimal"), body: JSON.stringify({ unsubscribed_at: new Date().toISOString() }) },
+  );
+  if (!res.ok) {
+    console.error("unsubscribe stamp failed", res.status);
+    return { ok: false, status: 500 };
+  }
+  console.log(`unsubscribed ${email}`);
+  return { ok: true, status: 200 };
+}
+
+function unsubscribePage(title: string, body: string, status: number): Response {
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${title} | CairnCareers</title></head>
+<body style="margin:0;padding:0;background:#f0ead7;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#0b0d0c;line-height:1.55">
+<div style="padding:48px 12px"><div style="max-width:560px;margin:0 auto;background:#fbf8ed;border-radius:12px;overflow:hidden;border:1px solid #ddd7c5">
+<div style="background:#0b0d0c;padding:20px 28px;border-bottom:4px solid #b7ff38"><a href="https://cairncareers.com" style="text-decoration:none"><span style="color:#fff;font-family:Arial Black,Arial,Helvetica,sans-serif;font-size:24px;font-weight:900;letter-spacing:-1px">Cairn</span><span style="color:#fff;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:800;letter-spacing:3px;margin-left:6px">CAREERS</span></a></div>
+<div style="padding:32px 28px"><h1 style="margin:0 0 16px;font-size:22px">${title}</h1>${body}
+<p style="margin:24px 0 0"><a href="https://cairncareers.com" style="color:#0b0d0c;font-weight:700">Back to CairnCareers</a></p></div></div></div></body></html>`;
+  return new Response(html, { status, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" } });
+}
+
+const UNSUB_DONE = `<p style="margin:0 0 16px">You will not get any more email from CairnCareers at that address.</p><p style="margin:0">Changed your mind, or clicked by accident? Email <a href="mailto:contact@cairncareers.com" style="color:#0b0d0c">contact@cairncareers.com</a> and we will turn it back on.</p>`;
+const UNSUB_BAD = `<p style="margin:0 0 16px">That unsubscribe link is not valid. It may have been cut short by your email client.</p><p style="margin:0">Email <a href="mailto:contact@cairncareers.com" style="color:#0b0d0c">contact@cairncareers.com</a> and we will take you off the list by hand.</p>`;
+
+async function handleUnsubscribe(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url);
+  const email = url.searchParams.get("e") ?? "";
+  const token = url.searchParams.get("t") ?? "";
+  const r = await suppressEmail(env, email, token);
+  if (request.method === "GET") {
+    return r.ok ? unsubscribePage("You are unsubscribed", UNSUB_DONE, 200) : unsubscribePage("Unsubscribe", UNSUB_BAD, r.status);
+  }
+  return Response.json({ ok: r.ok }, { status: r.status, headers: { "Cache-Control": "no-store" } });
+}
+
 function shortLinkRedirect(url: URL): Response | null {
   const match = /^\/([a-z0-9])$/.exec(url.pathname);
   if (!match) return null;
@@ -572,6 +817,10 @@ export default {
       return secured(response);
     }
 
+    if (url.pathname === "/api/unsubscribe" && (request.method === "GET" || request.method === "POST")) {
+      return secured(await handleUnsubscribe(request, env));
+    }
+
     if (request.method === "GET" && url.pathname === "/api/beta-count") {
       return handleBetaCount(request, env, ctx);
     }
@@ -579,5 +828,10 @@ export default {
     // Any other /api/* path (or a non-POST on this one) falls through to assets,
     // which will 404 it via not_found_handling. There's nothing else to serve here.
     return localizeHtml(withHeaders(await env.ASSETS.fetch(request), url.pathname), request, url);
-  }
+  },
+
+  /** Runs on the cron schedule in wrangler.jsonc: the daily signup count. */
+  async scheduled(_event, env, ctx) {
+    ctx.waitUntil(sendDailyCounts(env));
+  },
 } satisfies ExportedHandler<Env>;

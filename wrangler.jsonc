@@ -51,12 +51,19 @@
       "simple": { "limit": 10, "period": 60 }
     }
   ],
-  // Plain-text config for the two emails. RESEND_API_KEY is a secret, set with
+  // Daily signup count to OWNER_EMAIL (worker/index.ts `scheduled`). 13:00 UTC
+  // is 9 am US Eastern in summer, 8 am in winter. It always sends, even on a
+  // day with zero signups, so a quiet inbox is never ambiguous.
+  "triggers": { "crons": ["0 13 * * *"] },
+  // Plain-text config for the emails. RESEND_API_KEY is a secret, set with
   // `wrangler secret put RESEND_API_KEY`, never here.
   "vars": {
     "NOTIFY_EMAIL": "contact@cairncareers.com",
     "OWNER_EMAIL": "brookehouck@cairncareers.com",
-    "FROM_EMAIL": "CairnCareers <contact@cairncareers.com>"
+    "FROM_EMAIL": "CairnCareers <contact@cairncareers.com>",
+    // One-line company mailing address printed under every subscriber email
+    // (CAN-SPAM).
+    "POSTAL_ADDRESS": "1710 East Franklin Street #1045, Chapel Hill, NC 27514, United States"
   },
   "routes": [
     { "pattern": "cairncareers.com", "custom_domain": true },

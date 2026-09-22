@@ -36,6 +36,8 @@ interface Env {
   FROM_EMAIL?: string;
   /** One-line company mailing address, printed under every subscriber email (CAN-SPAM). wrangler.jsonc vars. */
   POSTAL_ADDRESS?: string;
+  /** Where a beta user signs in. Linked from the "your account is ready" email. wrangler.jsonc vars. */
+  APP_URL?: string;
   ASSETS: Fetcher;
   API_RATE_LIMITER?: RateLimiter;
 }
@@ -145,6 +147,10 @@ interface SignupRow {
   welcomed_at: string | null;
   /** Set by /api/unsubscribe. No automated email is ever sent to an address with this stamped. */
   unsubscribed_at?: string | null;
+  /** Set by hand (Supabase table editor or SQL) once the beta account exists. Triggers the account-ready email. */
+  account_ready_at?: string | null;
+  /** Stamped by the Worker after Resend accepts the account-ready email, so it is sent once. */
+  account_ready_sent_at?: string | null;
 }
 
 /**
@@ -321,6 +327,88 @@ function betaAckEmail(env: Env, unsubUrl: string) {
     unsubUrl,
   );
   return { subject: "You are in: one free year of CairnCareers", text, html, reply_to: replyTo, headers: unsubHeaders(unsubUrl) };
+}
+
+/** The note a beta user receives once their account exists and they can sign in. */
+function accountReadyEmail(env: Env, unsubUrl: string) {
+  const replyTo = env.NOTIFY_EMAIL;
+  const appUrl = env.APP_URL || "https://cairncareers.com";
+  const lines = [
+    "Your CairnCareers beta account is ready.",
+    "",
+    "You asked for beta access, and your account is open. Sign in with this email address, the one this note was sent to.",
+    "",
+    `Sign in: ${appUrl}`,
+    "",
+    "What you get as a beta user:",
+    "  - CairnCareers is free for you until October 31, 2027, one year after the public launch. No card, no trial clock, nothing to cancel.",
+    "  - Compare the career paths you are weighing on salary, job growth, and how exposed each is to AI, then leave with a next move you can explain.",
+    "  - You are using it before anyone else. If something is confusing, slow, or wrong, reply and tell us. Beta feedback shapes what we fix first.",
+    "",
+    "Have a question, or want to tell us which career paths you are weighing? Reply to this email. A person reads every message.",
+    "",
+    ...textFooter(env, unsubUrl),
+  ];
+  const text = lines.join("\n");
+  const html = emailFrame(
+    env,
+    "Your CairnCareers beta account is ready.",
+    `<p style="margin:0 0 20px">You asked for beta access, and your account is open. Sign in with this email address, the one this note was sent to.</p>
+<p style="margin:0 0 24px"><a href="${appUrl}" style="display:inline-block;background:#b7ff38;color:#0b0d0c;font-weight:700;font-size:16px;padding:14px 28px;border-radius:8px;text-decoration:none">Sign in to CairnCareers</a></p>
+<p style="margin:0 0 8px;font-weight:700">What you get as a beta user</p>
+<ul style="margin:0 0 16px;padding-left:20px">
+<li style="margin-bottom:6px">CairnCareers is free for you until <strong>October 31, 2027</strong>, one year after the public launch. No card, no trial clock, nothing to cancel.</li>
+<li style="margin-bottom:6px">Compare the career paths you are weighing on salary, job growth, and how exposed each is to AI, then leave with a next move you can explain.</li>
+<li>You are using it before anyone else. If something is confusing, slow, or wrong, reply and tell us. Beta feedback shapes what we fix first.</li>
+</ul>
+<p style="margin:0 0 16px;font-size:13px;color:#5c635e">If the button does not work, open this link: <a href="${appUrl}" style="color:#0b0d0c">${appUrl}</a></p>`,
+    unsubUrl,
+  );
+  return { subject: "Your CairnCareers beta account is ready", text, html, reply_to: replyTo, headers: unsubHeaders(unsubUrl) };
+}
+
+/**
+ * ACCOUNT-READY EMAILS
+ * Provisioning is manual. Once an account exists, set account_ready_at on the
+ * row (Supabase table editor, or SQL). Every 15 minutes the cron picks up rows
+ * with account_ready_at set, account_ready_sent_at null, and no unsubscribe,
+ * sends the note, and stamps account_ready_sent_at so it goes out once.
+ */
+async function sendAccountReadyEmails(env: Env): Promise<void> {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return;
+  let rows: SignupRow[] = [];
+  try {
+    const res = await fetch(
+      `${env.SUPABASE_URL}/rest/v1/launch_notifications?account_ready_at=not.is.null&account_ready_sent_at=is.null&unsubscribed_at=is.null&select=id,email,source,created_at,welcomed_at&order=account_ready_at.asc&limit=50`,
+      { headers: sbHeaders(env) },
+    );
+    if (!res.ok) {
+      console.error("account-ready query failed", res.status);
+      return;
+    }
+    rows = (await res.json()) as SignupRow[];
+  } catch (error) {
+    console.error("account-ready query failed", error);
+    return;
+  }
+  for (const row of rows) {
+    try {
+      const unsubUrl = await unsubscribeUrl(env, row.email);
+      const ok = await sendEmail(env, { to: [row.email], ...accountReadyEmail(env, unsubUrl) });
+      if (!ok) continue;
+      const res = await fetch(`${env.SUPABASE_URL}/rest/v1/launch_notifications?id=eq.${row.id}`, {
+        method: "PATCH",
+        headers: sbHeaders(env, "return=minimal"),
+        body: JSON.stringify({ account_ready_sent_at: new Date().toISOString() }),
+      });
+      if (!res.ok) console.error("account_ready_sent_at stamp failed", row.id, res.status);
+      else console.log(`account-ready sent to ${row.email}`);
+      // Resend allows two requests a second; space the sends out.
+      if (rows.length > 1) await new Promise((r) => setTimeout(r, 600));
+    } catch (error) {
+      console.error("account-ready send failed", row.id, error);
+    }
+  }
 }
 
 /**
@@ -830,8 +918,13 @@ export default {
     return localizeHtml(withHeaders(await env.ASSETS.fetch(request), url.pathname), request, url);
   },
 
-  /** Runs on the cron schedule in wrangler.jsonc: the daily signup count. */
-  async scheduled(_event, env, ctx) {
-    ctx.waitUntil(sendDailyCounts(env));
+  /**
+   * Cron schedules in wrangler.jsonc. The daily count runs on the 13:00 UTC
+   * tick; every tick, including that one, also sends any pending account-ready
+   * emails.
+   */
+  async scheduled(event, env, ctx) {
+    if (event.cron === "0 13 * * *") ctx.waitUntil(sendDailyCounts(env));
+    ctx.waitUntil(sendAccountReadyEmails(env));
   },
 } satisfies ExportedHandler<Env>;

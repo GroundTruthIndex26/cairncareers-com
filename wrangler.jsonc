@@ -51,10 +51,12 @@
       "simple": { "limit": 10, "period": 60 }
     }
   ],
-  // Daily signup count to OWNER_EMAIL (worker/index.ts `scheduled`). 13:00 UTC
-  // is 9 am US Eastern in summer, 8 am in winter. It always sends, even on a
-  // day with zero signups, so a quiet inbox is never ambiguous.
-  "triggers": { "crons": ["0 13 * * *"] },
+  // Two schedules (worker/index.ts `scheduled`). 13:00 UTC is the daily signup
+  // count to OWNER_EMAIL (9 am US Eastern in summer, 8 am in winter); it always
+  // sends, even on a day with zero signups, so a quiet inbox is never
+  // ambiguous. Every 15 minutes: the "your account is ready" email to any beta
+  // row with account_ready_at set and not yet sent.
+  "triggers": { "crons": ["0 13 * * *", "*/15 * * * *"] },
   // Plain-text config for the emails. RESEND_API_KEY is a secret, set with
   // `wrangler secret put RESEND_API_KEY`, never here.
   "vars": {
@@ -63,7 +65,11 @@
     "FROM_EMAIL": "CairnCareers <contact@cairncareers.com>",
     // One-line company mailing address printed under every subscriber email
     // (CAN-SPAM).
-    "POSTAL_ADDRESS": "1710 East Franklin Street #1045, Chapel Hill, NC 27514, United States"
+    "POSTAL_ADDRESS": "1710 East Franklin Street #1045, Chapel Hill, NC 27514, United States",
+    // Sign-in link in the "your account is ready" email. The beta app is not
+    // built yet; while this is empty that email never sends. Fill it in when the
+    // app exists (docs/ideas/beta-account-ready-email.md).
+    "APP_URL": ""
   },
   "routes": [
     { "pattern": "cairncareers.com", "custom_domain": true },

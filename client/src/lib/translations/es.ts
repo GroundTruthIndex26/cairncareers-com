@@ -67,6 +67,7 @@ export const es: typeof en = {
   },
   route: {
     label: "La ruta",
+    noResume: "No necesitas currículum ni experiencia laboral. Trae tus intereses, tus cursos y lo que has hecho hasta ahora.",
     title: "Planificación profesional que termina en un primer paso.",
     lead: "Si llevas meses sin avanzar y todavía no tienes un plan profesional concreto, tu mapa debería hacer que la siguiente decisión sea más pequeña, más concreta y más fácil de poner a prueba en el mundo real.",
     steps: [

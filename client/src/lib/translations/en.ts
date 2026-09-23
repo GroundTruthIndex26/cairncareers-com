@@ -68,6 +68,7 @@ export const en = {
   },
   route: {
     label: "The route",
+    noResume: "No resume or work history needed. Bring your interests, coursework, and what you have done so far.",
     title: "Career planning that ends with a first move.",
     lead: "If you have been stuck for months and still do not have a concrete career plan, your map should make the next decision smaller, more specific, and easier to test in the real world.",
     steps: [

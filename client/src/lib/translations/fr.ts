@@ -67,6 +67,7 @@ export const fr: typeof en = {
   },
   route: {
     label: "Le parcours",
+    noResume: "Aucun CV ni expérience professionnelle requis. Apportez vos centres d'intérêt, vos cours et ce que vous avez déjà fait.",
     title: "Une planification de carrière qui aboutit à une première étape.",
     lead: "Si vous tournez en rond depuis des mois, toujours sans plan de carrière concret, votre carte doit rendre la prochaine décision plus petite, plus précise et plus facile à tester dans le monde réel.",
     steps: [

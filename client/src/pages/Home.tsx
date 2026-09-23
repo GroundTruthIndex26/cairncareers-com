@@ -525,6 +525,7 @@ export default function Home() {
                 </article>
               ))}
             </div>
+            <p className="route-callout">{t.route.noResume}</p>
           </div>
         </section>
 

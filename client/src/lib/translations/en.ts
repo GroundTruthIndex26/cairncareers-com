@@ -72,7 +72,7 @@ export const en = {
     title: "Career planning that ends with a first move.",
     lead: "If you have been stuck for months and still do not have a concrete career plan, your map should make the next decision smaller, more specific, and easier to test in the real world.",
     steps: [
-      ["Bring what you know", "Your interests, coursework, experience, and the work that holds your attention."],
+      ["Bring what you know", "Your interests, coursework, experience, and the work that holds your attention. You see which of the classes you have already taken count toward each path."],
       ["Read the whole picture", "Salary, job growth, and AI exposure in one place, not isolated numbers."],
       ["Leave with a route", "A practical LinkedIn, networking, and first-conversation direction."],
     ],

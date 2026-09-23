@@ -71,7 +71,7 @@ export const fr: typeof en = {
     title: "Une planification de carrière qui aboutit à une première étape.",
     lead: "Si vous tournez en rond depuis des mois, toujours sans plan de carrière concret, votre carte doit rendre la prochaine décision plus petite, plus précise et plus facile à tester dans le monde réel.",
     steps: [
-      ["Apportez ce que vous savez", "Vos centres d'intérêt, vos cours, votre expérience et le travail qui retient votre attention."],
+      ["Apportez ce que vous savez", "Vos centres d'intérêt, vos cours, votre expérience et le travail qui retient votre attention. Vous voyez lesquels des cours déjà suivis comptent pour chaque parcours."],
       ["Voyez l'ensemble du tableau", "Salaire, croissance de l'emploi et exposition à l'IA au même endroit, pas des chiffres isolés."],
       ["Repartez avec un parcours", "Une direction concrète pour LinkedIn, votre réseau et votre première conversation."],
     ],

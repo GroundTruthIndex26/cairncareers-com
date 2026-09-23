@@ -71,7 +71,7 @@ export const es: typeof en = {
     title: "Planificación profesional que termina en un primer paso.",
     lead: "Si llevas meses sin avanzar y todavía no tienes un plan profesional concreto, tu mapa debería hacer que la siguiente decisión sea más pequeña, más concreta y más fácil de poner a prueba en el mundo real.",
     steps: [
-      ["Trae lo que sabes", "Tus intereses, tus asignaturas, tu experiencia y el trabajo que capta tu atención."],
+      ["Trae lo que sabes", "Tus intereses, tus asignaturas, tu experiencia y el trabajo que capta tu atención. Ves cuáles de las clases que ya tomaste cuentan para cada camino."],
       ["Mira el cuadro completo", "Salario, crecimiento del empleo y exposición a la IA en un solo lugar, no cifras aisladas."],
       ["Sal con una ruta", "Una dirección práctica para LinkedIn, tu red de contactos y tu primera conversación."],
     ],

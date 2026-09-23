@@ -54,9 +54,6 @@
 @media (max-width: 640px) {
   .roadmap-page .hdr-in { gap: 12px; padding: 0 14px; }
   .roadmap-page .hdr nav { display: none; }
-  /* The Dashboard text link pushed the right-hand controls 17px past a 375px
-     viewport, clipping the Preorder chip. The dashboard is still reachable
-     from the page body and the footer. */
   .roadmap-page .hdr-textlink { display: none; }
 }
 

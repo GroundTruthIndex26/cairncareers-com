@@ -227,6 +227,7 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .steps-grid { position:relative; display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 .steps-grid:before { content:""; position:absolute; left:4%; right:4%; top:42px; height:3px; background:linear-gradient(90deg,var(--cyan),var(--lime) 52%,var(--pink)); box-shadow:0 0 0 1px var(--ink); transform:rotate(-1deg); }
 .step-card { min-height:290px; display:flex; flex-direction:column; padding:26px; background:var(--paper-light); border:2px solid var(--ink); box-shadow:7px 7px 0 var(--ink); }
+.route-callout { margin:28px 0 0; padding:14px 18px; border:2px solid var(--ink); background:var(--paper-light); font-weight:700; }
 .step-card:nth-child(2) { transform:translateY(22px); box-shadow:7px 7px 0 var(--cyan); }
 .step-card:nth-child(3) { box-shadow:7px 7px 0 var(--pink); }
 .step-number { font:800 13px "IBM Plex Mono",monospace; color:#687069; }

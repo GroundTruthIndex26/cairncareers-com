@@ -13,8 +13,8 @@ const BREADCRUMB = [{ name: "Home", href: "/" }, { name: "Contact", href: "/cont
 
 export default function Contact() {
   usePageMeta({
-    title: "Contact Us: Questions About the Pre-Order | CairnCareers",
-    description: "Ask CairnCareers about the pre-order, career-planning features, or how the site can better serve college students and recent graduates.",
+    title: "Contact Us: Questions and Feedback | CairnCareers",
+    description: "Ask CairnCareers about career-planning features, or how the site can better serve college students and recent graduates.",
   });
 
   const [form, setForm] = useState<ContactForm>(initialForm);
@@ -48,7 +48,7 @@ export default function Contact() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd(BREADCRUMB) }} />
       <PageHeader />
       <PageHero eyebrow="Contact · thoughtful questions welcome" title="Let's find the next useful conversation." breadcrumb={BREADCRUMB}>
-        <p>Ask about the pre-order, a future CairnCareers offering, or how the site can better serve college students and recent graduates.</p>
+        <p>Ask about a future CairnCareers offering, or how the site can better serve college students and recent graduates.</p>
       </PageHero>
 
       <div className="container contact-grid">

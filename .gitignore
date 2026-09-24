@@ -10,4 +10,5 @@ dist
 # Local-only working notes / session handoff (never commit to the public repo)
 HANDOFF.md
 Claude outputs/
-.claude/
+.claude/*
+!.claude/skills/

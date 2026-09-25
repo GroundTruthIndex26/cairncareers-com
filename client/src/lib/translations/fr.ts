@@ -36,7 +36,7 @@ export const fr: typeof en = {
     campaigns: {
       default: {
         eyebrow: "Pour les étudiants et les jeunes diplômés",
-        body: "Comparez des parcours professionnels réalistes à partir du salaire, de la croissance de l'emploi et de l'exposition à l'IA, puis repartez avec une prochaine étape que vous pouvez expliquer.",
+        body: "Comparez des parcours professionnels réalistes avec un score d'exposition à l'IA de 0 à 100, construit à partir de données fédérales sur les tâches et de recherches évaluées par des pairs, avec le contexte du salaire et de la croissance de l'emploi, puis repartez avec une prochaine étape que vous pouvez expliquer.",
       },
       campus: {
         eyebrow: "Du campus à un premier poste qui vous correspond",
@@ -69,7 +69,7 @@ export const fr: typeof en = {
     label: "Le parcours",
     noResume: "Aucun CV ni expérience professionnelle requis. Apportez vos centres d'intérêt, vos cours et ce que vous avez déjà fait.",
     title: "Une planification de carrière qui aboutit à une première étape.",
-    lead: "Si vous tournez en rond depuis des mois, toujours sans plan de carrière concret, votre carte doit rendre la prochaine décision plus petite, plus précise et plus facile à tester dans le monde réel.",
+    lead: "Vous tournez en rond depuis des mois, toujours sans plan de carrière concret ? Votre carte doit rendre la prochaine décision plus petite, plus précise et plus facile à tester.",
     steps: [
       ["Apportez ce que vous savez", "Vos centres d'intérêt, vos cours, votre expérience et le travail qui retient votre attention. Vous voyez lesquels des cours déjà suivis comptent pour chaque parcours."],
       ["Voyez l'ensemble du tableau", "Salaire, croissance de l'emploi et exposition à l'IA au même endroit, pas des chiffres isolés."],
@@ -147,7 +147,11 @@ export const fr: typeof en = {
     badge: "Conçu par une chercheuse titulaire d'un doctorat",
     founder: "Brooke Houck, PhD · Fondatrice",
     imageAlt: "Brooke Houck, PhD, fondatrice de CairnCareers",
+    videoLabel: "Brooke Houck explique pourquoi elle a créé CairnCareers (vidéo d'une minute)",
     quote: "« J'ai créé CairnCareers parce que je n'arrêtais pas de m'agacer. Chaque semaine, un nouveau titre annonçait quels métiers l'IA allait faire disparaître, et presque aucun ne disait comment il le savait. Quand j'ai remonté la piste de ces affirmations, la plupart reposaient sur un intitulé de poste et une supposition. Dans mon domaine, on ne publie pas un chiffre sans montrer d'où il vient. Les étudiants prennent l'une des décisions les plus coûteuses de leur vie sur la base d'affirmations qui ne résisteraient pas à une évaluation par les pairs, et ils méritent la norme qui s'applique à mon propre travail. »",
+  },
+  featured: {
+    label: "Cité dans",
   },
   testimonials: {
     label: "Bêta-testeurs",
@@ -187,7 +191,7 @@ export const fr: typeof en = {
       },
       {
         q: "À qui s'adresse Cairn Careers ?",
-        a: "Aux étudiants et aux jeunes diplômés qui décident quoi viser et quoi faire ensuite. Il est le plus utile si vous hésitez entre plusieurs parcours, ou si vous en avez déjà choisi un et voulez un plan mois par mois vers un premier emploi. Vous pouvez voir ce plan dans la [feuille de route type](/roadmap).",
+        a: "Aux étudiants et aux jeunes diplômés qui décident quoi viser et quoi faire ensuite. Il est le plus utile si vous hésitez entre plusieurs parcours, ou si vous en avez déjà choisi un et voulez un plan mois par mois vers un premier emploi. Vous pouvez voir ce plan dans la [feuille de route type](/roadmap). Il n'est pas conçu pour les personnes déjà installées dans une carrière qui préparent une reconversion en milieu de parcours.",
       },
       {
         q: "Combien coûte Cairn Careers ?",

@@ -37,7 +37,7 @@ export const en = {
     campaigns: {
       default: {
         eyebrow: "For college students and recent graduates",
-        body: "Compare realistic career paths using salary, job growth, and AI context, then leave with a next move you can explain.",
+        body: "Compare realistic career paths with an AI-exposure score from 0 to 100, built from federal task data and peer-reviewed research, plus salary and job growth context, then leave with a next move you can explain.",
       },
       campus: {
         eyebrow: "From campus to a first role that fits",
@@ -70,7 +70,7 @@ export const en = {
     label: "The route",
     noResume: "No resume or work history needed. Bring your interests, coursework, and what you have done so far.",
     title: "Career planning that ends with a first move.",
-    lead: "If you have been stuck for months and still do not have a concrete career plan, your map should make the next decision smaller, more specific, and easier to test in the real world.",
+    lead: "Stuck for months without a concrete career plan? Your map should make the next decision smaller, more specific, and easier to test.",
     steps: [
       ["Bring what you know", "Your interests, coursework, experience, and the work that holds your attention. You see which of the classes you have already taken count toward each path."],
       ["Read the whole picture", "Salary, job growth, and AI exposure in one place, not isolated numbers."],
@@ -148,7 +148,11 @@ export const en = {
     badge: "Built by a PhD research scientist",
     founder: "Brooke Houck, PhD · Founder",
     imageAlt: "Brooke Houck, PhD, founder of CairnCareers",
+    videoLabel: "Brooke Houck on why she built CairnCareers (1 minute video)",
     quote: "“I built CairnCareers because I kept getting annoyed. Every week there was a new headline about which jobs AI would wipe out, and almost none of them said how they knew. When I traced the claims back, most rested on a job title and a guess. In my field you do not get to publish a number without showing where it came from. Students are making one of the most expensive decisions of their lives on claims that would not survive peer review, and they deserve the standard I am held to.”",
+  },
+  featured: {
+    label: "Featured in",
   },
   testimonials: {
     label: "Beta testers",
@@ -188,7 +192,7 @@ export const en = {
       },
       {
         q: "Who is Cairn Careers for?",
-        a: "College students and recent graduates deciding what to aim for and what to do next. It is most useful if you are choosing between several paths, or have already chosen one and want a month-by-month plan toward a first job. You can see that plan in the [sample roadmap](/roadmap).",
+        a: "College students and recent graduates deciding what to aim for and what to do next. It is most useful if you are choosing between several paths, or have already chosen one and want a month-by-month plan toward a first job. You can see that plan in the [sample roadmap](/roadmap). It is not built for people already established in a career who are planning a mid-career switch.",
       },
       {
         q: "What does Cairn Careers cost?",

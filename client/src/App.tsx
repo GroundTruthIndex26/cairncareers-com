@@ -2,7 +2,7 @@
  * CairnCareers revision style note: preserve the brand's editorial utility look,
  * with a light document surface and a decisive near-black hero.
  */
-import { lazy, Suspense, type ComponentType } from "react";
+import { lazy, Suspense, useEffect, useState, type ComponentType } from "react";
 import CanonicalUrl from "./components/CanonicalUrl";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -12,6 +12,21 @@ import Home from "./pages/Home";
 // own chunk instead of sitting in the bundle every visitor parses before the
 // page is interactive. lib/toast.ts loads the same chunk when a toast fires.
 const Toaster = lazy(() => import("@/components/ui/sonner").then((m) => ({ default: m.Toaster })));
+
+// Mounts the Toaster only after hydration. main.tsx hydrates the prerendered
+// HTML, and a lazy component inside Suspense has no matching markup in a
+// browser-captured page, so rendering it during hydration would make React
+// throw the prerendered DOM away and paint the whole page again.
+function DeferredToaster() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+  return (
+    <Suspense fallback={null}>
+      <Toaster position="bottom-right" richColors />
+    </Suspense>
+  );
+}
 
 // NOTE: every path below must also appear in the ROUTES list in
 // scripts/prerender.mjs. wrangler serves real 404s, so a route that is not
@@ -59,9 +74,7 @@ function App({ Page }: { Page: ComponentType }) {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
-        <Suspense fallback={null}>
-          <Toaster position="bottom-right" richColors />
-        </Suspense>
+        <DeferredToaster />
         <CanonicalUrl />
         <Page />
       </ThemeProvider>

@@ -43,6 +43,17 @@ const BRAND_ASSETS = {
 
 const leadCaptureEndpoint = import.meta.env.VITE_LEAD_CAPTURE_ENDPOINT || "/api/launch-notifications";
 
+/**
+ * Both signup forms carry a hidden `website` field, like the contact form. No
+ * person sees or fills it; a form-filling bot usually does. The Worker answers
+ * a filled one with the normal success response and saves nothing, so the bot
+ * cannot tell. It is uncontrolled and read at submit time.
+ */
+function honeypot(form: HTMLFormElement): string {
+  const value = new FormData(form).get("website");
+  return typeof value === "string" ? value.trim() : "";
+}
+
 type CampaignKey = "default" | "campus" | "social";
 type BillingCycle = "monthly" | "annual";
 
@@ -356,6 +367,7 @@ export default function Home() {
   const submitLead = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!email.trim()) return;
+    const website = honeypot(event.currentTarget);
     if (!leadCaptureEndpoint) {
       toast.error("Database capture is not configured for this preview", {
         description: "Add VITE_LEAD_CAPTURE_ENDPOINT before collecting launch-notification signups.",
@@ -368,10 +380,10 @@ export default function Home() {
       const response = await fetch(leadCaptureEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), source: "launch-notification" }),
+        body: JSON.stringify({ email: email.trim(), source: "launch-notification", website }),
       });
       if (!response.ok) throw new Error("Lead capture request failed");
-      trackConversion({ name: "Signup", list: "launch" });
+      if (!website) trackConversion({ name: "Signup", list: "launch" });
       toast.success(t.modal.successTitle, { description: t.modal.successBody });
       setEmail("");
       setShowLeadModal(false);
@@ -398,19 +410,20 @@ export default function Home() {
     event.preventDefault();
     const address = betaEmail.trim();
     if (!address) return;
+    const website = honeypot(event.currentTarget);
     setBetaStatus("submitting");
     setBetaError("");
     try {
       const response = await fetch(leadCaptureEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: address, source: "beta-request" }),
+        body: JSON.stringify({ email: address, source: "beta-request", website }),
       });
       if (!response.ok) {
         const data = (await response.json().catch(() => null)) as { error?: string } | null;
         throw new Error(data?.error || t.beta.error);
       }
-      trackConversion({ name: "Signup", list: "beta" });
+      if (!website) trackConversion({ name: "Signup", list: "beta" });
       setBetaStatus("done");
       sessionStorage.setItem("cairn-checklist-dismissed", "1");
     } catch (error) {
@@ -673,6 +686,10 @@ export default function Home() {
                       <button type="submit" disabled={betaStatus === "submitting"}>{betaStatus === "submitting" ? t.beta.saving : t.beta.submit} <ArrowRight /></button>
                     </div>
                     {betaError && <p className="form-error" role="alert">{betaError}</p>}
+                    <label className="sr-only" aria-hidden="true">
+                      Website
+                      <input name="website" tabIndex={-1} autoComplete="off" />
+                    </label>
                   </form>
                 </>
               )}
@@ -829,6 +846,10 @@ export default function Home() {
               <label htmlFor="modal-email">{t.modal.emailLabel}</label>
               <div><Mail /><input id="modal-email" type="email" required placeholder={t.beta.placeholder} value={email} onChange={(event) => setEmail(event.target.value)} /></div>
               <button type="submit" className="primary-cta" disabled={isLeadSubmitting}>{isLeadSubmitting ? t.modal.saving : t.modal.submit} <ArrowRight /></button>
+              <label className="sr-only" aria-hidden="true">
+                Website
+                <input name="website" tabIndex={-1} autoComplete="off" />
+              </label>
             </form>
           </div>
         </div>

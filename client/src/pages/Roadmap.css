@@ -23,7 +23,7 @@
 }
 .roadmap-page a { color: inherit; }
 .roadmap-page img, .roadmap-page svg { max-width: 100%; }
-.roadmap-page .dsp { font-family: "Archivo Black",Impact,"Arial Black",sans-serif; font-weight: 400; letter-spacing: -.01em; }
+.roadmap-page .dsp { font-family: "Archivo Black","Archivo Black Fallback",Impact,"Arial Black",sans-serif; font-weight: 400; letter-spacing: -.01em; }
 .roadmap-page .mono { font-family: "Space Mono",ui-monospace,SFMono-Regular,Menlo,monospace; }
 
 .roadmap-page .hdr { position: sticky; top: 0; z-index: 50; background: var(--rm-lime); border-bottom: 3px solid var(--rm-ink); }
@@ -31,7 +31,7 @@
 .roadmap-page .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--rm-ink); flex: none; }
 .roadmap-page .mark { border: 2px solid var(--rm-ink); background: var(--rm-ink); padding: 2px; display: block; }
 .roadmap-page .brand .nm { line-height: 1; }
-.roadmap-page .brand .nm b { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-size: 1.32rem; }
+.roadmap-page .brand .nm b { font-family: "Archivo Black","Archivo Black Fallback",Impact,sans-serif; font-weight: 400; font-size: 1.32rem; }
 .roadmap-page .brand .nm span { font-family: "Space Mono",monospace; font-size: .6rem; font-weight: 700; letter-spacing: .18em; margin-left: 5px; text-transform: uppercase; }
 .roadmap-page .hdr nav { display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; }
 .roadmap-page .hdr nav::-webkit-scrollbar { display: none; }
@@ -69,8 +69,8 @@
 .breadcrumb-nav.rm-crumbs a { color: var(--rm-ink); }
 .breadcrumb-nav.rm-crumbs a:hover { color: var(--rm-ink); text-decoration: underline; }
 .breadcrumb-nav.rm-crumbs span[aria-current] { color: var(--rm-ink); font-weight: 700; }
-h1.t { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-size: 2.3rem; line-height: 1.02; letter-spacing: -.02em; margin: 16px 0 0; max-width: 22ch; }
-h2.t { font-family: "Archivo Black",Impact,sans-serif; font-weight: 400; font-size: 1.5rem; line-height: 1.06; letter-spacing: -.015em; margin: 10px 0 0; max-width: 26ch; }
+h1.t { font-family: "Archivo Black","Archivo Black Fallback",Impact,sans-serif; font-weight: 400; font-size: 2.3rem; line-height: 1.02; letter-spacing: -.02em; margin: 16px 0 0; max-width: 22ch; }
+h2.t { font-family: "Archivo Black","Archivo Black Fallback",Impact,sans-serif; font-weight: 400; font-size: 1.5rem; line-height: 1.06; letter-spacing: -.015em; margin: 10px 0 0; max-width: 26ch; }
 .lede { margin: 12px 0 0; max-width: 62ch; font-size: 1rem; color: #2a2a2a; }
 .sec { display: flex; flex-direction: column; gap: 16px; }
 .card { background: var(--rm-card); border: 3px solid var(--rm-ink); box-shadow: 6px 6px 0 var(--rm-ink); padding: 20px; }

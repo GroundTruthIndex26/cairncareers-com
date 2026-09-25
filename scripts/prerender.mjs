@@ -18,9 +18,14 @@
  * application variant of wrangler.jsonc, so every client-side route (not
  * just "/") resolves to the SPA shell instead of 404ing.
  *
- * main.tsx uses createRoot (not hydrateRoot), so React discards this markup and
- * re-renders on the client. Crawlers read the prerendered HTML; visitors get a
- * normal client render; there is no hydration contract between them.
+ * main.tsx HYDRATES this markup (hydrateRoot), so React adopts the captured DOM
+ * instead of painting the page a second time. That makes the capture a
+ * contract: React's first client render must produce the same DOM. Anything
+ * that only exists after startup must stay out of the first render (see
+ * DeferredToaster in App.tsx) or be stripped below, and adjacent text nodes
+ * must survive serialisation (client/src/lib/textBoundaries.ts marks them in
+ * the crawling browser, as react-dom/server would). A mismatch is not fatal:
+ * React logs a recoverable error and falls back to a full client render.
  *
  * SAFETY
  * The build FAILS if any route in ROUTES does not render. A missing file would
@@ -91,6 +96,9 @@ function applyPerRouteHead(html, route) {
   html = html.replace(/<script\b[^>]*\bsrc="https?:\/\/(?!plausible\.io\/)[^"]*"[^>]*>\s*<\/script>\s*/gi, "");
   html = html.replace(/<link\b[^>]*\brel="modulepreload"[^>]*>\s*/gi, "");
   html = html.replace(/<style type="text\/css">[^<]*\[data-sonner-toaster\][^<]*<\/style>\s*/gi, "");
+  // The toast container mounts after hydration (App.tsx), so its empty
+  // <section> in the captured DOM would not match React's first render.
+  html = html.replace(/<section\b[^>]*aria-label="Notifications[^"]*"[^>]*>\s*<\/section>/gi, "");
 
   // The hero image preload belongs to the homepage only.
   if (route.path !== "/") html = html.replace(/<link\s+rel="preload"\s+as="image"[^>]*>\s*/i, "");

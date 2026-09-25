@@ -62,3 +62,33 @@ export function trackKeyEvent(event: (typeof KEY_EVENTS)[keyof typeof KEY_EVENTS
     // Analytics must never break the page.
   }
 }
+
+declare global {
+  interface Window {
+    plausible?: (event: string, options?: { props?: Record<string, string> }) => void;
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+/**
+ * Conversions sent to Plausible and GA4, which attribute each one to the
+ * visit's utm_source and referrer. That is how a signup from an Instagram or
+ * Reddit post is counted: tag the post's link with UTMs (see
+ * docs/social-utm-links.md) and read the goal broken down by source.
+ *
+ * Plausible needs a custom-event goal named "Signup" and one named
+ * "Contact", plus the "list" custom property, before these show up there.
+ * GA4 receives the recommended generate_lead event for signups.
+ */
+export type Conversion = { name: "Signup"; list: "launch" | "beta" } | { name: "Contact" };
+
+export function trackConversion(conversion: Conversion) {
+  try {
+    if (typeof navigator !== "undefined" && navigator.webdriver) return;
+    const props: Record<string, string> = conversion.name === "Signup" ? { list: conversion.list } : {};
+    window.plausible?.(conversion.name, { props });
+    window.gtag?.("event", conversion.name === "Signup" ? "generate_lead" : "contact_submit", props);
+  } catch {
+    // Analytics must never break the page.
+  }
+}

@@ -5,6 +5,7 @@ import { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { PageFooter, PageHeader, PageHero } from "@/components/PageChrome";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { CONTACT_EMAIL, endpoints } from "@/lib/site";
+import { trackConversion } from "@/lib/analytics";
 
 type ContactForm = { name: string; email: string; subject: string; message: string; website: string };
 
@@ -32,6 +33,7 @@ export default function Contact() {
       const response = await fetch(endpoints.contact, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
       const payload = (await response.json().catch(() => null)) as { error?: string } | null;
       if (!response.ok) throw new Error(payload?.error ?? "We could not send your message. Please try again.");
+      trackConversion({ name: "Contact" });
       setStatus("success");
       setForm(initialForm);
       toast.success("Message sent", { description: "Thank you. The CairnCareers team will reply through the email address you provided." });

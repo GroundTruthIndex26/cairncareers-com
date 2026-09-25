@@ -70,7 +70,7 @@ export default function Contact() {
             <div className="contact-success" aria-live="polite">
               <Check />
               <p style={{ marginTop: 16, fontWeight: 800, textTransform: "uppercase", fontSize: 11, letterSpacing: ".08em" }}>Message sent</p>
-              <h2 style={{ margin: "8px 0 0", font: '400 32px "Archivo Black",Impact,sans-serif' }}>Thank you for reaching out.</h2>
+              <h2 style={{ margin: "8px 0 0", font: '400 32px "Archivo Black","Archivo Black Fallback",Impact,sans-serif' }}>Thank you for reaching out.</h2>
               <p style={{ marginTop: 12 }}>Your inquiry has been sent to the CairnCareers team. We will respond through the email address you provided.</p>
               <button type="button" className="contact-submit" style={{ marginTop: 18 }} onClick={() => setStatus("idle")}>
                 Send another message <ArrowRight />

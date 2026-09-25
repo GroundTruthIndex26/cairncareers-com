@@ -24,6 +24,7 @@ import { toast } from "@/lib/toast";
 import { LanguageSwitch } from "@/components/PageChrome";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { plain, rich, useI18n } from "@/lib/i18n";
+import { trackConversion } from "@/lib/analytics";
 
 const BASE_URL = import.meta.env.BASE_URL;
 const ASSETS = {
@@ -274,7 +275,7 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search);
     const source = (params.get("utm_source") || params.get("source") || "").toLowerCase();
     if (source.includes("campus")) setCampaign("campus");
-    if (source.includes("social")) setCampaign("social");
+    if (source.includes("social") || params.get("utm_medium")?.toLowerCase() === "social") setCampaign("social");
   }, []);
 
   useEffect(() => {
@@ -370,6 +371,7 @@ export default function Home() {
         body: JSON.stringify({ email: email.trim(), source: "launch-notification" }),
       });
       if (!response.ok) throw new Error("Lead capture request failed");
+      trackConversion({ name: "Signup", list: "launch" });
       toast.success(t.modal.successTitle, { description: t.modal.successBody });
       setEmail("");
       setShowLeadModal(false);
@@ -408,6 +410,7 @@ export default function Home() {
         const data = (await response.json().catch(() => null)) as { error?: string } | null;
         throw new Error(data?.error || t.beta.error);
       }
+      trackConversion({ name: "Signup", list: "beta" });
       setBetaStatus("done");
       sessionStorage.setItem("cairn-checklist-dismissed", "1");
     } catch (error) {

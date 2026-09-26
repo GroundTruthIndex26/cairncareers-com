@@ -494,6 +494,7 @@ export default function Home() {
                 <ol>
                   {t.hero.routeSteps.map((step, index) => <li key={step}><span>{index + 1}</span> {step}</li>)}
                 </ol>
+                <p className="route-card-note">{t.hero.routeNote}</p>
               </div>
             </div>
           </div>
@@ -525,7 +526,20 @@ export default function Home() {
                 </article>
               ))}
             </div>
+            <div className="route-example">
+              <div><small>{t.route.example.beforeLabel}</small>{t.route.example.before}</div>
+              <ArrowRight aria-hidden="true" />
+              <div><small>{t.route.example.afterLabel}</small>{t.route.example.after}</div>
+            </div>
             <p className="route-callout">{t.route.noResume}</p>
+          </div>
+        </section>
+
+        <section className="ink-section degree-band">
+          <div className="container">
+            <span className="hero-eyebrow">{t.degree.eyebrow}</span>
+            <h2>{t.degree.title}</h2>
+            <p>{t.degree.body}</p>
           </div>
         </section>
 

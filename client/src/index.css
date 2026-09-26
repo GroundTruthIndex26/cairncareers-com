@@ -227,6 +227,15 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .steps-grid { position:relative; display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
 .steps-grid:before { content:""; position:absolute; left:4%; right:4%; top:42px; height:3px; background:linear-gradient(90deg,var(--cyan),var(--lime) 52%,var(--pink)); box-shadow:0 0 0 1px var(--ink); transform:rotate(-1deg); }
 .step-card { min-height:290px; display:flex; flex-direction:column; padding:26px; background:var(--paper-light); border:2px solid var(--ink); box-shadow:7px 7px 0 var(--ink); }
+.route-example { display:grid; grid-template-columns:1fr auto 1fr; gap:16px; align-items:center; margin:56px 0 0; }
+.route-example > div { padding:16px 18px; background:var(--paper-light); border:2px solid var(--ink); }
+.route-example small { display:block; margin-bottom:6px; font:700 10px "IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.09em; color:#505750; }
+.route-example > svg { width:24px; height:24px; }
+@media (max-width:700px) { .route-example { grid-template-columns:1fr; } .route-example > svg { transform:rotate(90deg); justify-self:center; } }
+.route-card-note { margin:14px 0 0; padding-top:10px; border-top:1px solid var(--ink); font-size:12px; color:#505750; }
+.degree-band { padding:72px 0; }
+.degree-band h2 { max-width:22ch; margin:12px 0 16px; font-size:clamp(30px,4vw,46px); line-height:1.05; text-wrap:balance; }
+.degree-band p { max-width:62ch; margin:0; font-size:18px; color:rgba(255,255,255,.82); }
 .route-callout { margin:28px 0 0; padding:14px 18px; border:2px solid var(--ink); background:var(--paper-light); font-weight:700; }
 .step-card:nth-child(2) { transform:translateY(22px); box-shadow:7px 7px 0 var(--cyan); }
 .step-card:nth-child(3) { box-shadow:7px 7px 0 var(--pink); }

@@ -32,11 +32,11 @@ export const fr: typeof en = {
     mobile: "Navigation mobile",
   },
   hero: {
-    title: "Trouvez un premier emploi qui résiste à l'IA.",
+    title: "Transformez ce que vous avez fait à la fac en un premier emploi qui résiste à l'IA.",
     campaigns: {
       default: {
         eyebrow: "Pour les étudiants et les jeunes diplômés",
-        body: "Comparez des parcours professionnels réalistes à partir du salaire, de la croissance de l'emploi et de l'exposition à l'IA, puis repartez avec une prochaine étape que vous pouvez expliquer.",
+        body: "Vos cours, vos projets et vos jobs étudiants deviennent des lignes de CV et de LinkedIn que vous pouvez vraiment utiliser. En chemin, vous voyez comment l'IA risque de transformer chaque métier que vous envisagez, pour construire un plan que vous pouvez expliquer.",
       },
       campus: {
         eyebrow: "Du campus à un premier poste qui vous correspond",
@@ -52,9 +52,10 @@ export const fr: typeof en = {
     visualLabel: "Parcours professionnel, de la connaissance de soi à une prochaine étape étayée par des preuves",
     imageAlt: "Carte d'itinéraire abstraite avec trois jalons de planification de carrière",
     routeKicker: "Une voie plus sûre",
-    routeTitle: "Trois signaux. Une prochaine étape.",
+    routeTitle: "De vos cours à une première étape.",
     secondaryCta: "Voir d'abord un tableau de bord d'exemple",
-    routeSteps: ["Ce que vous savez", "Le contexte du marché", "Un parcours à tester"],
+    routeSteps: ["Ce que vous avez fait à la fac", "Un CV et un profil LinkedIn qui en découlent", "Une première étape que vous pouvez expliquer"],
+    routeNote: "Des repères sur l'IA pour chaque parcours, tirés de la recherche publiée.",
   },
   trust: {
     label: "Confiance et garantie",
@@ -68,13 +69,24 @@ export const fr: typeof en = {
   route: {
     label: "Le parcours",
     noResume: "Aucun CV ni expérience professionnelle requis. Apportez vos centres d'intérêt, vos cours et ce que vous avez déjà fait.",
-    title: "Une planification de carrière qui aboutit à une première étape.",
-    lead: "Si vous tournez en rond depuis des mois, toujours sans plan de carrière concret, votre carte doit rendre la prochaine décision plus petite, plus précise et plus facile à tester dans le monde réel.",
+    title: "Une planification de carrière qui aboutit à un CV prêt à envoyer.",
+    lead: "Vous tournez en rond depuis des mois ? Toujours pas de plan de carrière concret ? Vous en avez fait plus que vous ne le pensez. Le plus dur, c'est d'en faire quelque chose qu'un recruteur peut lire.",
     steps: [
-      ["Apportez ce que vous savez", "Vos centres d'intérêt, vos cours, votre expérience et le travail qui retient votre attention. Vous voyez lesquels des cours déjà suivis comptent pour chaque parcours."],
-      ["Voyez l'ensemble du tableau", "Salaire, croissance de l'emploi et exposition à l'IA au même endroit, pas des chiffres isolés."],
-      ["Repartez avec un parcours", "Une direction concrète pour LinkedIn, votre réseau et votre première conversation."],
+      ["Apportez ce que vous avez fait", "Cours, projets de groupe, jobs et associations. Vous voyez lesquels des cours déjà suivis comptent pour chaque parcours."],
+      ["Construisez votre CV et votre LinkedIn", "Chaque expérience devient une ligne de CV et une ligne LinkedIn liées aux parcours que vous envisagez."],
+      ["Confrontez-le à l'IA", "Voyez lesquelles de vos compétences resteront recherchées à mesure que l'IA transforme le travail, puis choisissez votre première étape."],
     ],
+    example: {
+      beforeLabel: "Ce que vous avez",
+      before: "Projet de groupe en cours de marketing : une enquête sur le campus pour un café du quartier.",
+      afterLabel: "Ligne de CV (exemple)",
+      after: "Conception et réalisation d'une enquête clients pour un commerce local, avec des recommandations tarifaires présentées à la gérante.",
+    },
+  },
+  degree: {
+    eyebrow: "Votre diplôme, mis au travail",
+    title: "Vous avez consacré des années à vos études. Montrez aux employeurs ce qu'elles vous ont apporté.",
+    body: "CairnCareers montre lesquels de vos cours comptent déjà pour chaque parcours et les transforme en preuves visibles pour les employeurs, pour que votre formation se lise comme une preuve et non comme une liste d'intitulés de cours.",
   },
   dashboard: {
     label: "Tableau de bord type",

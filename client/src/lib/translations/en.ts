@@ -33,11 +33,11 @@ export const en = {
     mobile: "Mobile navigation",
   },
   hero: {
-    title: "Find an entry-level path that holds up to AI.",
+    title: "Turn what you did in college into a first job that holds up to AI.",
     campaigns: {
       default: {
         eyebrow: "For college students and recent graduates",
-        body: "Compare realistic career paths using salary, job growth, and AI context, then leave with a next move you can explain.",
+        body: "Your classes, projects, and part-time jobs become resume bullets and LinkedIn lines you can actually use. Along the way, you see how AI is likely to change each career you are considering, so the plan you build is one you can explain.",
       },
       campus: {
         eyebrow: "From campus to a first role that fits",
@@ -53,9 +53,10 @@ export const en = {
     visualLabel: "Career route from self-knowledge to an evidence-supported next move",
     imageAlt: "Abstract route map with three career-planning waypoints",
     routeKicker: "A steadier way forward",
-    routeTitle: "Three signals. One next move.",
+    routeTitle: "From coursework to a first move.",
     secondaryCta: "See a sample dashboard first",
-    routeSteps: ["What you know", "Market context", "A route to test"],
+    routeSteps: ["What you did in college", "A resume and LinkedIn built from it", "A first move you can explain"],
+    routeNote: "AI guidance on every path, from published research.",
   },
   trust: {
     label: "Trust and risk reversal",
@@ -69,13 +70,24 @@ export const en = {
   route: {
     label: "The route",
     noResume: "No resume or work history needed. Bring your interests, coursework, and what you have done so far.",
-    title: "Career planning that ends with a first move.",
-    lead: "If you have been stuck for months and still do not have a concrete career plan, your map should make the next decision smaller, more specific, and easier to test in the real world.",
+    title: "Career planning that ends with a resume you can send.",
+    lead: "Stuck for months? Still no concrete career plan? You have done more than you think. The hard part is turning it into something a recruiter can read.",
     steps: [
-      ["Bring what you know", "Your interests, coursework, experience, and the work that holds your attention. You see which of the classes you have already taken count toward each path."],
-      ["Read the whole picture", "Salary, job growth, and AI exposure in one place, not isolated numbers."],
-      ["Leave with a route", "A practical LinkedIn, networking, and first-conversation direction."],
+      ["Bring what you did", "Classes, group projects, jobs, and clubs. You see which of the classes you have already taken count toward each path."],
+      ["Build the resume and LinkedIn", "Each experience becomes a resume bullet and a LinkedIn line tied to the paths you are weighing."],
+      ["Check it against AI", "See which of your skills stay in demand as AI changes the work, then pick your first move."],
     ],
+    example: {
+      beforeLabel: "What you have",
+      before: "Marketing class group project: ran a campus survey for a local coffee shop.",
+      afterLabel: "Resume bullet (sample)",
+      after: "Designed and ran a customer survey for a local business and presented pricing recommendations to the owner.",
+    },
+  },
+  degree: {
+    eyebrow: "Your degree, put to work",
+    title: "You put years into college. Show employers what it bought you.",
+    body: "CairnCareers shows which of your classes already count toward each path and turns them into evidence employers can see, so your education reads as proof and not a list of course titles.",
   },
   dashboard: {
     label: "Sample Dashboard",

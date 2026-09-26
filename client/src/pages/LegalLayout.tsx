@@ -3,6 +3,7 @@ import { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { PageFooter, PageHeader, PageHero } from "@/components/PageChrome";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { useI18n } from "@/lib/i18n";
+import { pageJsonLd } from "@/lib/pageJsonLd";
 
 type LegalSection = {
   title: string;
@@ -19,6 +20,8 @@ type LegalLayoutProps = {
   updatedDateTime: string;
   intro: ReactNode;
   sections: LegalSection[];
+  /** Article for reference pages like the methodology; policies stay WebPage. */
+  schemaType?: "Article" | "WebPage";
 };
 
 export default function LegalLayout({
@@ -31,6 +34,7 @@ export default function LegalLayout({
   updatedDateTime,
   intro,
   sections,
+  schemaType = "WebPage",
 }: LegalLayoutProps) {
   usePageMeta({ title: documentTitle, description });
   const { t } = useI18n();
@@ -41,6 +45,7 @@ export default function LegalLayout({
   return (
     <div className="site-shell">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd(breadcrumb) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd({ type: schemaType, path, headline: documentTitle.replace(/ \| CairnCareers$/, ""), description }) }} />
       <PageHeader />
       <PageHero eyebrow={eyebrow} title={title} breadcrumb={breadcrumb}>
         <div className="legal-updated">

@@ -4,18 +4,19 @@ import { toast } from "@/lib/toast";
 import { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { PageFooter, PageHeader, PageHero } from "@/components/PageChrome";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { pageJsonLd } from "@/lib/pageJsonLd";
 import { CONTACT_EMAIL, endpoints } from "@/lib/site";
+import { trackConversion } from "@/lib/analytics";
 
 type ContactForm = { name: string; email: string; subject: string; message: string; website: string };
 
 const initialForm: ContactForm = { name: "", email: "", subject: "", message: "", website: "" };
 const BREADCRUMB = [{ name: "Home", href: "/" }, { name: "Contact", href: "/contact" }];
+const TITLE = "Contact Us: Questions and Feedback | CairnCareers";
+const DESCRIPTION = "Ask CairnCareers about career-planning features, or how the site can better serve college students and recent graduates.";
 
 export default function Contact() {
-  usePageMeta({
-    title: "Contact Us: Questions About the Pre-Order | CairnCareers",
-    description: "Ask CairnCareers about the pre-order, career-planning features, or how the site can better serve college students and recent graduates.",
-  });
+  usePageMeta({ title: TITLE, description: DESCRIPTION });
 
   const [form, setForm] = useState<ContactForm>(initialForm);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -32,6 +33,7 @@ export default function Contact() {
       const response = await fetch(endpoints.contact, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
       const payload = (await response.json().catch(() => null)) as { error?: string } | null;
       if (!response.ok) throw new Error(payload?.error ?? "We could not send your message. Please try again.");
+      trackConversion({ name: "Contact" });
       setStatus("success");
       setForm(initialForm);
       toast.success("Message sent", { description: "Thank you. The CairnCareers team will reply through the email address you provided." });
@@ -46,9 +48,10 @@ export default function Contact() {
   return (
     <div className="site-shell">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd(BREADCRUMB) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd({ type: "ContactPage", path: "/contact", headline: "Contact Us: Questions and Feedback", description: DESCRIPTION }) }} />
       <PageHeader />
-      <PageHero eyebrow="Contact · thoughtful questions welcome" title="Let's find the next useful conversation." breadcrumb={BREADCRUMB}>
-        <p>Ask about the pre-order, a future CairnCareers offering, or how the site can better serve college students and recent graduates.</p>
+      <PageHero eyebrow="Contact · thoughtful questions welcome" title="Contact us with questions or feedback." breadcrumb={BREADCRUMB}>
+        <p>CairnCareers is a career-planning tool for college students and recent graduates. Ask about a future CairnCareers offering, or how the site can better serve you.</p>
       </PageHero>
 
       <div className="container contact-grid">
@@ -68,7 +71,7 @@ export default function Contact() {
             <div className="contact-success" aria-live="polite">
               <Check />
               <p style={{ marginTop: 16, fontWeight: 800, textTransform: "uppercase", fontSize: 11, letterSpacing: ".08em" }}>Message sent</p>
-              <h2 style={{ margin: "8px 0 0", font: '400 32px "Archivo Black",Impact,sans-serif' }}>Thank you for reaching out.</h2>
+              <h2 style={{ margin: "8px 0 0", font: '400 32px "Archivo Black","Archivo Black Fallback",Impact,sans-serif' }}>Thank you for reaching out.</h2>
               <p style={{ marginTop: 12 }}>Your inquiry has been sent to the CairnCareers team. We will respond through the email address you provided.</p>
               <button type="button" className="contact-submit" style={{ marginTop: 18 }} onClick={() => setStatus("idle")}>
                 Send another message <ArrowRight />

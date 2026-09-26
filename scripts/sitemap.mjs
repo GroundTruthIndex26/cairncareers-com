@@ -18,47 +18,17 @@
  * silently drifts from the site, which is exactly the failure being fixed.
  */
 
-import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { ROOT, ROUTES, lastModified } from "./routes.mjs";
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 const ORIGIN = "https://cairncareers.com";
 
-// `source` lists the files whose git history dates the route; the newest wins.
-// Home and Methodology keep their copy in the English translation file, so a
-// copy edit there has to move their lastmod too.
-const ROUTES = [
-  { path: "/",        priority: "1.0", changefreq: "weekly",  source: ["client/src/pages/Home.tsx", "client/src/lib/translations/en.ts"] },
-  { path: "/roadmap", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Roadmap.tsx" },
-  { path: "/methodology", priority: "0.8", changefreq: "monthly", source: ["client/src/pages/Methodology.tsx", "client/src/lib/translations/en.ts"] },
-  { path: "/vs/chatgpt", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
-  { path: "/vs/careerwing", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
-  { path: "/vs/career-mirror", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
-  { path: "/vs/maketheleap", priority: "0.7", changefreq: "monthly", source: "client/src/pages/Compare.tsx" },
-  { path: "/contact", priority: "0.5", changefreq: "monthly", source: "client/src/pages/Contact.tsx" },
-  { path: "/privacy", priority: "0.3", changefreq: "monthly", source: "client/src/pages/Privacy.tsx" },
-  { path: "/terms",   priority: "0.3", changefreq: "monthly", source: "client/src/pages/Terms.tsx" },
-  { path: "/refunds", priority: "0.3", changefreq: "monthly", source: "client/src/pages/Refunds.tsx" },
-];
+// ROUTES and the git date helpers live in routes.mjs, shared with the
+// per-page JSON-LD dates that vite.config.ts bakes into the build.
 
 const log = (...a) => console.log("[sitemap]", ...a);
-
-const git = (args) => {
-  try {
-    return execFileSync("git", args, { cwd: ROOT, encoding: "utf8" }).trim();
-  } catch {
-    return "";
-  }
-};
-
-/** Committer date (YYYY-MM-DD) of the last commit touching any of `files`. */
-function lastModified(files, fallback) {
-  const d = git(["log", "-1", "--format=%cs", "--", ...[files].flat()]);
-  return /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : fallback;
-}
 
 /** Route path for a prerendered file, or null if it is not a route index. */
 function routeFor(file) {

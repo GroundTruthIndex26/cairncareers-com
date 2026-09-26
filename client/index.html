@@ -39,10 +39,20 @@
     <title>Find an Entry-Level Path That Holds Up to AI | CairnCareers</title>
 
     <script>
+      // The gtag queue is global and configured now, so the app can send
+      // conversion events (client/src/lib/analytics.ts) at any time. Only the
+      // gtag.js download waits for the idle callback below. page_location is
+      // captured now because the HeyCatch SDK strips utm_* from the address
+      // bar a second after it starts, which can land before gtag.js reads it.
+      const ga4Id = "G-ES1F56DT2X";
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ window.dataLayer.push(arguments); }
+      gtag("js", new Date());
+      gtag("config", ga4Id, { page_location: window.location.href });
+
       // Tag scripts start after the page has loaded and the main thread is
       // idle, so they never compete with the first paint or hydration.
       function cairnLoadTags() {
-        const ga4Id = "G-ES1F56DT2X";
         const clarityId = "y7f34abyqv";
 
         if (ga4Id) {
@@ -50,10 +60,6 @@
           ga.async = true;
           ga.src = "https://www.googletagmanager.com/gtag/js?id=" + ga4Id;
           document.head.appendChild(ga);
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){ window.dataLayer.push(arguments); }
-          gtag("js", new Date());
-          gtag("config", ga4Id);
         }
 
         if (clarityId) {

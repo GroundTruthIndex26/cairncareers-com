@@ -33,6 +33,7 @@ export const fr: typeof en = {
   },
   hero: {
     title: "Transformez ce que vous avez fait à la fac en un premier emploi qui résiste à l'IA.",
+    definition: "CairnCareers est un outil de planification de carrière pour les étudiants et les jeunes diplômés, qui évalue chaque parcours selon son exposition à l'IA et transforme le résultat en un plan, période par période, vers un premier emploi.",
     campaigns: {
       default: {
         eyebrow: "Pour les étudiants et les jeunes diplômés",
@@ -159,7 +160,11 @@ export const fr: typeof en = {
     badge: "Conçu par une chercheuse titulaire d'un doctorat",
     founder: "Brooke Houck, PhD · Fondatrice",
     imageAlt: "Brooke Houck, PhD, fondatrice de CairnCareers",
+    videoLabel: "Brooke Houck explique pourquoi elle a créé CairnCareers (vidéo d'une minute)",
     quote: "« J'ai créé CairnCareers parce que je n'arrêtais pas de m'agacer. Chaque semaine, un nouveau titre annonçait quels métiers l'IA allait faire disparaître, et presque aucun ne disait comment il le savait. Quand j'ai remonté la piste de ces affirmations, la plupart reposaient sur un intitulé de poste et une supposition. Dans mon domaine, on ne publie pas un chiffre sans montrer d'où il vient. Les étudiants prennent l'une des décisions les plus coûteuses de leur vie sur la base d'affirmations qui ne résisteraient pas à une évaluation par les pairs, et ils méritent la norme qui s'applique à mon propre travail. »",
+  },
+  featured: {
+    label: "Cité dans",
   },
   testimonials: {
     label: "Bêta-testeurs",
@@ -199,7 +204,7 @@ export const fr: typeof en = {
       },
       {
         q: "À qui s'adresse Cairn Careers ?",
-        a: "Aux étudiants et aux jeunes diplômés qui décident quoi viser et quoi faire ensuite. Il est le plus utile si vous hésitez entre plusieurs parcours, ou si vous en avez déjà choisi un et voulez un plan mois par mois vers un premier emploi. Vous pouvez voir ce plan dans la [feuille de route type](/roadmap).",
+        a: "Aux étudiants et aux jeunes diplômés qui décident quoi viser et quoi faire ensuite. Il est le plus utile si vous hésitez entre plusieurs parcours, ou si vous en avez déjà choisi un et voulez un plan mois par mois vers un premier emploi. Vous pouvez voir ce plan dans la [feuille de route type](/roadmap). Il n'est pas conçu pour les personnes déjà installées dans une carrière qui préparent une reconversion en milieu de parcours.",
       },
       {
         q: "Combien coûte Cairn Careers ?",
@@ -230,6 +235,7 @@ export const fr: typeof en = {
     cairn: { title: "CairnCareers", points: ["Note chaque parcours à partir des données fédérales sur les tâches professionnelles.", "Nomme et lie chaque source sur la page de méthodologie.", "Garde salaire et croissance séparés du score d'exposition, pour voir ce qui a fait bouger le résultat.", "N'invente jamais un chiffre. Il pose la question qui le produit."] },
     methodLink: "Lire la méthodologie",
     fullLink: "Voir la comparaison complète",
+    othersLead: "Aussi comparé à :",
   },
   modal: {
     badge: "Alerte de lancement",
@@ -255,7 +261,7 @@ export const fr: typeof en = {
   methodology: {
     eyebrow: "Comment les chiffres sont construits",
     title: "Méthodologie",
-    documentTitle: "Comment le score d'exposition à l'IA est calculé | CairnCareers",
+    documentTitle: "Méthodologie : comment le score d'exposition à l'IA est calculé | CairnCareers",
     description: "Comment le score d'exposition à l'IA de CairnCareers est construit : données de tâches O*NET, le cadre d'Eloundou et al. (2024) dans Science et la tendance de METR, chaque source reliée.",
     updated: "31 août 2026",
     intro: "**Le chiffre d'exposition n'est pas notre opinion.** Il est construit à partir de données fédérales sur les tâches professionnelles et de recherches évaluées par les pairs, et cette page nomme chaque source, la relie et explique exactement ce que le chiffre mesure et ce qu'il ne mesure pas.",

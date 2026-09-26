@@ -24,6 +24,8 @@ import { toast } from "@/lib/toast";
 import { LanguageSwitch } from "@/components/PageChrome";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { plain, rich, useI18n } from "@/lib/i18n";
+import { pageJsonLd } from "@/lib/pageJsonLd";
+import { trackConversion } from "@/lib/analytics";
 
 const BASE_URL = import.meta.env.BASE_URL;
 const ASSETS = {
@@ -41,6 +43,17 @@ const BRAND_ASSETS = {
 };
 
 const leadCaptureEndpoint = import.meta.env.VITE_LEAD_CAPTURE_ENDPOINT || "/api/launch-notifications";
+
+/**
+ * Both signup forms carry a hidden `website` field, like the contact form. No
+ * person sees or fills it; a form-filling bot usually does. The Worker answers
+ * a filled one with the normal success response and saves nothing, so the bot
+ * cannot tell. It is uncontrolled and read at submit time.
+ */
+function honeypot(form: HTMLFormElement): string {
+  const value = new FormData(form).get("website");
+  return typeof value === "string" ? value.trim() : "";
+}
 
 type CampaignKey = "default" | "campus" | "social";
 type BillingCycle = "monthly" | "annual";
@@ -139,6 +152,25 @@ function faqJsonLd(items: { q: string; a: string }[]) {
  * `who` is a first name plus year and field, for example "Senior, Computer Science".
  */
 const BETA_QUOTES: { quote: string; name: string; who: string }[] = [];
+
+/**
+ * Third-party mentions, shown in a slim strip under the trust strip. Empty until
+ * there is a real one: the strip renders nothing while this list is empty, so
+ * no "Featured in" heading ships over a blank row. `href` points at the mention
+ * itself (the launch page, article, or review profile), never a homepage.
+ * `logo` is optional, a path under client/public such as "brand/press/ph.svg".
+ */
+const FEATURED_IN: { name: string; href: string; logo?: string }[] = [];
+
+/**
+ * The 60-second why-I-built-this video under the founder quote. Null until it
+ * is recorded, and the founder card is unchanged while it is null. Paths are
+ * under client/public, for example "media/founder-why.mp4". Captions are
+ * required: the video is the only place those words appear. Self-hosted on
+ * purpose: the CSP in worker/index.ts has no frame-src, so a Loom or YouTube
+ * iframe would be blocked.
+ */
+const FOUNDER_VIDEO: { src: string; poster: string; captions: string } | null = null;
 
 function SectionLabel({ number, children }: { number: string; children: React.ReactNode }) {
   return (
@@ -274,7 +306,7 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search);
     const source = (params.get("utm_source") || params.get("source") || "").toLowerCase();
     if (source.includes("campus")) setCampaign("campus");
-    if (source.includes("social")) setCampaign("social");
+    if (source.includes("social") || params.get("utm_medium")?.toLowerCase() === "social") setCampaign("social");
   }, []);
 
   useEffect(() => {
@@ -355,6 +387,7 @@ export default function Home() {
   const submitLead = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!email.trim()) return;
+    const website = honeypot(event.currentTarget);
     if (!leadCaptureEndpoint) {
       toast.error("Database capture is not configured for this preview", {
         description: "Add VITE_LEAD_CAPTURE_ENDPOINT before collecting launch-notification signups.",
@@ -367,9 +400,10 @@ export default function Home() {
       const response = await fetch(leadCaptureEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), source: "launch-notification" }),
+        body: JSON.stringify({ email: email.trim(), source: "launch-notification", website }),
       });
       if (!response.ok) throw new Error("Lead capture request failed");
+      if (!website) trackConversion({ name: "Signup", list: "launch" });
       toast.success(t.modal.successTitle, { description: t.modal.successBody });
       setEmail("");
       setShowLeadModal(false);
@@ -396,18 +430,20 @@ export default function Home() {
     event.preventDefault();
     const address = betaEmail.trim();
     if (!address) return;
+    const website = honeypot(event.currentTarget);
     setBetaStatus("submitting");
     setBetaError("");
     try {
       const response = await fetch(leadCaptureEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: address, source: "beta-request" }),
+        body: JSON.stringify({ email: address, source: "beta-request", website }),
       });
       if (!response.ok) {
         const data = (await response.json().catch(() => null)) as { error?: string } | null;
         throw new Error(data?.error || t.beta.error);
       }
+      if (!website) trackConversion({ name: "Signup", list: "beta" });
       setBetaStatus("done");
       sessionStorage.setItem("cairn-checklist-dismissed", "1");
     } catch (error) {
@@ -468,13 +504,16 @@ export default function Home() {
       </header>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd(t.faq.items) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd({ type: "WebPage", path: "/", headline: t.hero.title.replace(/\.$/, ""), description: t.hero.definition }) }} />
       <main id="top">
         <section className="hero-section">
           <div className="container hero-grid">
             <div className="hero-copy">
               <div className="hero-eyebrow">{message.eyebrow}</div>
               <h1>{t.hero.title}</h1>
-              <p>{message.body}</p>
+              {/* Opens with a one-sentence "CairnCareers is ..." definition, the
+                  shape search and answer engines lift verbatim. */}
+              <p>{t.hero.definition} {message.body}</p>
               <div className="hero-actions">
                 <a className="primary-cta" href="#beta-access">{t.nav.cta} <ArrowRight /></a>
                 <a className="secondary-cta" href="#dashboard-preview">{t.hero.secondaryCta} <ArrowRight /></a>
@@ -507,6 +546,24 @@ export default function Home() {
             <div><BarChart3 /><span><strong>{t.trust.sources}</strong> {rich(t.trust.sourcesDetail)}</span></div>
           </div>
         </section>
+
+        {FEATURED_IN.length > 0 && (
+          <section className="featured-strip" aria-label={t.featured.label}>
+            <div className="container featured-strip-inner">
+              <span className="featured-label">{t.featured.label}</span>
+              <ul>
+                {FEATURED_IN.map((item) => (
+                  <li key={item.href}>
+                    <a href={item.href} target="_blank" rel="noreferrer">
+                      {item.logo ? <img src={`${BASE_URL}${item.logo}`} alt={item.name} height="24" loading="lazy" decoding="async" /> : item.name}
+                      <ExternalLink aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
 
         <section id="how-it-works" className="paper-section route-section">
           <div className="container">
@@ -565,6 +622,11 @@ export default function Home() {
             <p className="compare-links">
               <a href="/methodology">{t.compare.methodLink} <ArrowRight /></a>
               <a href="/vs/chatgpt">{t.compare.fullLink} <ArrowRight /></a>
+            </p>
+            {/* In-body links to the other comparisons. Linked only from the
+                footer, they read to crawlers as listing-only pages. */}
+            <p className="compare-others">
+              {t.compare.othersLead} <a href="/vs/careerwing">CairnCareers vs CareerWing</a>, <a href="/vs/career-mirror">CairnCareers vs Career Mirror</a>, <a href="/vs/maketheleap">CairnCareers vs Make the Leap</a>.
             </p>
           </div>
         </section>
@@ -684,6 +746,10 @@ export default function Home() {
                       <button type="submit" disabled={betaStatus === "submitting"}>{betaStatus === "submitting" ? t.beta.saving : t.beta.submit} <ArrowRight /></button>
                     </div>
                     {betaError && <p className="form-error" role="alert">{betaError}</p>}
+                    <label className="sr-only" aria-hidden="true">
+                      Website
+                      <input name="website" tabIndex={-1} autoComplete="off" />
+                    </label>
                   </form>
                 </>
               )}
@@ -767,7 +833,14 @@ export default function Home() {
               <h2>{t.about.title}</h2>
               <article className="founder-card">
                 <img src={ASSETS.founder} alt={t.about.imageAlt} width="300" height="300" loading="lazy" decoding="async" />
-                <div><span className="slot-badge">{t.about.badge}</span><h3><a href="https://www.linkedin.com/in/brookehouck" target="_blank" rel="noreferrer">{t.about.founder}</a></h3><p>{t.about.quote}</p></div>
+                <div><span className="slot-badge">{t.about.badge}</span><h3><a href="https://www.linkedin.com/in/brookehouck" target="_blank" rel="noreferrer">{t.about.founder}</a></h3><p>{t.about.quote}</p>
+                  {FOUNDER_VIDEO && (
+                    <video className="founder-video" controls preload="none" playsInline width="640" height="360" poster={`${BASE_URL}${FOUNDER_VIDEO.poster}`} aria-label={t.about.videoLabel}>
+                      <source src={`${BASE_URL}${FOUNDER_VIDEO.src}`} type="video/mp4" />
+                      <track kind="captions" src={`${BASE_URL}${FOUNDER_VIDEO.captions}`} srcLang="en" label="English" default />
+                    </video>
+                  )}
+                </div>
               </article>
             </div>
           </div>
@@ -840,6 +913,10 @@ export default function Home() {
               <label htmlFor="modal-email">{t.modal.emailLabel}</label>
               <div><Mail /><input id="modal-email" type="email" required placeholder={t.beta.placeholder} value={email} onChange={(event) => setEmail(event.target.value)} /></div>
               <button type="submit" className="primary-cta" disabled={isLeadSubmitting}>{isLeadSubmitting ? t.modal.saving : t.modal.submit} <ArrowRight /></button>
+              <label className="sr-only" aria-hidden="true">
+                Website
+                <input name="website" tabIndex={-1} autoComplete="off" />
+              </label>
             </form>
           </div>
         </div>

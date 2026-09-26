@@ -34,6 +34,7 @@ export const en = {
   },
   hero: {
     title: "Turn what you did in college into a first job that holds up to AI.",
+    definition: "CairnCareers is a career-planning tool for college students and recent graduates that scores each career path for AI exposure and turns the result into a term-by-term plan toward a first job.",
     campaigns: {
       default: {
         eyebrow: "For college students and recent graduates",
@@ -160,7 +161,11 @@ export const en = {
     badge: "Built by a PhD research scientist",
     founder: "Brooke Houck, PhD · Founder",
     imageAlt: "Brooke Houck, PhD, founder of CairnCareers",
+    videoLabel: "Brooke Houck on why she built CairnCareers (1 minute video)",
     quote: "“I built CairnCareers because I kept getting annoyed. Every week there was a new headline about which jobs AI would wipe out, and almost none of them said how they knew. When I traced the claims back, most rested on a job title and a guess. In my field you do not get to publish a number without showing where it came from. Students are making one of the most expensive decisions of their lives on claims that would not survive peer review, and they deserve the standard I am held to.”",
+  },
+  featured: {
+    label: "Featured in",
   },
   testimonials: {
     label: "Beta testers",
@@ -200,7 +205,7 @@ export const en = {
       },
       {
         q: "Who is Cairn Careers for?",
-        a: "College students and recent graduates deciding what to aim for and what to do next. It is most useful if you are choosing between several paths, or have already chosen one and want a month-by-month plan toward a first job. You can see that plan in the [sample roadmap](/roadmap).",
+        a: "College students and recent graduates deciding what to aim for and what to do next. It is most useful if you are choosing between several paths, or have already chosen one and want a month-by-month plan toward a first job. You can see that plan in the [sample roadmap](/roadmap). It is not built for people already established in a career who are planning a mid-career switch.",
       },
       {
         q: "What does Cairn Careers cost?",
@@ -231,6 +236,7 @@ export const en = {
     cairn: { title: "CairnCareers", points: ["Scores each path against federal occupational task data.", "Names and links every source on the methodology page.", "Keeps pay and growth separate from the exposure score, so you can see what moved the result.", "Never invents a number. It asks the question that produces one."] },
     methodLink: "Read the methodology",
     fullLink: "See the full comparison",
+    othersLead: "Also compared:",
   },
   modal: {
     badge: "Launch notification",
@@ -256,7 +262,7 @@ export const en = {
   methodology: {
     eyebrow: "How the numbers are built",
     title: "Methodology",
-    documentTitle: "How the AI-Exposure Score Is Calculated | CairnCareers",
+    documentTitle: "Methodology: How the AI-Exposure Score Is Calculated | CairnCareers",
     description: "How the CairnCareers AI-exposure score is built: O*NET task data, the Eloundou et al. (2024) framework in Science, and METR's trend, every source linked.",
     updated: "August 31, 2026",
     intro: "**The exposure number is not our opinion.** It is built from federal occupational task data and peer-reviewed research, and this page names every source, links it, and explains exactly what the number does and does not measure.",

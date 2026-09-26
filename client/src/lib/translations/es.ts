@@ -33,6 +33,7 @@ export const es: typeof en = {
   },
   hero: {
     title: "Convierte lo que hiciste en la universidad en un primer empleo que resista a la IA.",
+    definition: "CairnCareers es una herramienta de planificación profesional para estudiantes universitarios y recién graduados que puntúa cada trayectoria profesional según su exposición a la IA y convierte el resultado en un plan, período por período, hacia un primer empleo.",
     campaigns: {
       default: {
         eyebrow: "Para estudiantes universitarios y recién graduados",
@@ -159,7 +160,11 @@ export const es: typeof en = {
     badge: "Creado por una científica investigadora con doctorado",
     founder: "Brooke Houck, PhD · Fundadora",
     imageAlt: "Brooke Houck, PhD, fundadora de CairnCareers",
+    videoLabel: "Brooke Houck explica por qué creó CairnCareers (video de 1 minuto)",
     quote: "“Creé CairnCareers porque no dejaba de molestarme. Cada semana salía un titular nuevo sobre los empleos que la IA iba a eliminar, y casi ninguno explicaba cómo lo sabía. Cuando rastreé esas afirmaciones, la mayoría se apoyaba en el nombre de un puesto y una suposición. En mi campo no se publica una cifra sin mostrar de dónde viene. Los estudiantes están tomando una de las decisiones más caras de su vida con afirmaciones que no superarían una revisión por pares, y merecen el mismo estándar que se me exige a mí.”",
+  },
+  featured: {
+    label: "Mencionado en",
   },
   testimonials: {
     label: "Usuarios de la beta",
@@ -199,7 +204,7 @@ export const es: typeof en = {
       },
       {
         q: "¿Para quién es Cairn Careers?",
-        a: "Para estudiantes universitarios y recién graduados que están decidiendo a qué aspirar y qué hacer a continuación. Es más útil si estás eligiendo entre varias trayectorias, o si ya has elegido una y quieres un plan mes a mes hacia un primer empleo. Puedes ver ese plan en la [hoja de ruta de muestra](/roadmap).",
+        a: "Para estudiantes universitarios y recién graduados que están decidiendo a qué aspirar y qué hacer a continuación. Es más útil si estás eligiendo entre varias trayectorias, o si ya has elegido una y quieres un plan mes a mes hacia un primer empleo. Puedes ver ese plan en la [hoja de ruta de muestra](/roadmap). No está pensado para personas ya asentadas en una carrera que planean un cambio a mitad de su trayectoria.",
       },
       {
         q: "¿Cuánto cuesta Cairn Careers?",
@@ -230,6 +235,7 @@ export const es: typeof en = {
     cairn: { title: "CairnCareers", points: ["Puntúa cada trayectoria con datos federales de tareas ocupacionales.", "Nombra y enlaza cada fuente en la página de metodología.", "Mantiene salario y crecimiento separados de la puntuación de exposición, para que veas qué movió el resultado.", "Nunca inventa una cifra. Hace la pregunta que la produce."] },
     methodLink: "Leer la metodología",
     fullLink: "Ver la comparación completa",
+    othersLead: "También comparado con:",
   },
   modal: {
     badge: "Aviso de lanzamiento",
@@ -255,7 +261,7 @@ export const es: typeof en = {
   methodology: {
     eyebrow: "Cómo se construyen las cifras",
     title: "Metodología",
-    documentTitle: "Cómo se calcula la puntuación de exposición a la IA | CairnCareers",
+    documentTitle: "Metodología: cómo se calcula la puntuación de exposición a la IA | CairnCareers",
     description: "Cómo se construye la puntuación de exposición a la IA de CairnCareers: datos de tareas de O*NET, el marco de Eloundou et al. (2024) en Science y la tendencia de METR, con todas las fuentes enlazadas.",
     updated: "31 de agosto de 2026",
     intro: "**La cifra de exposición no es nuestra opinión.** Se construye a partir de datos federales de tareas ocupacionales e investigación revisada por pares, y esta página nombra cada fuente, la enlaza y explica exactamente qué mide la cifra y qué no.",

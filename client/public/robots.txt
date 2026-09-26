@@ -1,4 +1,7 @@
+# Content Signals (https://contentsignals.org): search engines and AI answers
+# may use this site's content; it may not be used to train AI models.
 User-agent: *
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 
 Sitemap: https://cairncareers.com/sitemap.xml

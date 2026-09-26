@@ -788,6 +788,8 @@ async function serveMarkdown(request: Request, env: Env, url: URL): Promise<Resp
       // Rough estimate (about four characters per token), the same kind of
       // figure Cloudflare's own Markdown for Agents conversion reports.
       "x-markdown-tokens": String(Math.ceil(text.length / 4)),
+      // Same preferences as the Content-Signal line in robots.txt.
+      "Content-Signal": "ai-train=no, search=yes, ai-input=yes",
       Link: `<https://cairncareers.com${page === "/" ? "/" : page}>; rel="canonical"`,
     },
   });

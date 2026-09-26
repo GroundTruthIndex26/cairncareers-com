@@ -51,6 +51,10 @@ export function scheduleAnalytics() {
 export const KEY_EVENTS = {
   previewedCareers: "previewed_careers",
   viewedRoadmap: "viewed_roadmap",
+  // HeyCatch's documented name for a completed signup. HeyCatch posts to X,
+  // Reddit, Facebook, Instagram and YouTube through the one-character short
+  // links, so this is what ties a signup back to the post that brought it.
+  signupCompleted: "signup_completed",
 } as const;
 
 export function trackKeyEvent(event: (typeof KEY_EVENTS)[keyof typeof KEY_EVENTS], properties?: Record<string, string | number | boolean | null>) {
@@ -78,7 +82,9 @@ declare global {
  *
  * Plausible needs a custom-event goal named "Signup" and one named
  * "Contact", plus the "list" custom property, before these show up there.
- * GA4 receives the recommended generate_lead event for signups.
+ * GA4 receives the recommended generate_lead event for signups. Signups also
+ * go to HeyCatch as signup_completed (no identity and no email: the site has
+ * no user accounts, and HeyCatch's ids must never be an email).
  */
 export type Conversion = { name: "Signup"; list: "launch" | "beta" } | { name: "Contact" };
 
@@ -88,6 +94,7 @@ export function trackConversion(conversion: Conversion) {
     const props: Record<string, string> = conversion.name === "Signup" ? { list: conversion.list } : {};
     window.plausible?.(conversion.name, { props });
     window.gtag?.("event", conversion.name === "Signup" ? "generate_lead" : "contact_submit", props);
+    if (conversion.name === "Signup") trackKeyEvent(KEY_EVENTS.signupCompleted, props);
   } catch {
     // Analytics must never break the page.
   }

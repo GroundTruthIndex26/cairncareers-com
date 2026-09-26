@@ -51,12 +51,13 @@
       "simple": { "limit": 10, "period": 60 }
     }
   ],
-  // Two schedules (worker/index.ts `scheduled`). 13:00 UTC is the daily signup
-  // count to OWNER_EMAIL (9 am US Eastern in summer, 8 am in winter); it always
-  // sends, even on a day with zero signups, so a quiet inbox is never
-  // ambiguous. Every 15 minutes: the "your account is ready" email to any beta
-  // row with account_ready_at set and not yet sent.
-  "triggers": { "crons": ["0 13 * * *", "*/15 * * * *"] },
+  // One schedule (worker/index.ts `scheduled`). Every 15 minutes: the "your
+  // account is ready" email to any beta row with account_ready_at set and not
+  // yet sent. The 13:00 UTC daily signup count to OWNER_EMAIL was removed on
+  // 2026-09-22 — the 8am Eastern recap from the AI Job Risk Check project now
+  // lists Cairn signups and the automatic email each one got, which is the
+  // same news in more detail. Per-signup owner alerts are untouched.
+  "triggers": { "crons": ["*/15 * * * *"] },
   // Plain-text config for the emails. RESEND_API_KEY is a secret, set with
   // `wrangler secret put RESEND_API_KEY`, never here.
   "vars": {

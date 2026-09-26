@@ -33,7 +33,7 @@ export const fr: typeof en = {
   },
   hero: {
     title: "Trouvez un premier emploi qui résiste à l'IA.",
-    definition: "CairnCareers est un outil de planification de carrière pour les étudiants et les jeunes diplômés, qui évalue chaque parcours selon son exposition à l'IA et transforme le résultat en un plan, période par période, vers un premier emploi.",
+    definition: "CairnCareers est un outil de planification de carrière qui transforme les options professionnelles des étudiants et des jeunes diplômés en un plan, période par période, vers un premier emploi.",
     campaigns: {
       default: {
         eyebrow: "Pour les étudiants et les jeunes diplômés",

@@ -8,7 +8,7 @@ import type { en } from "./en";
 
 export const es: typeof en = {
   meta: {
-    homeTitle: "Convierte la universidad en un primer empleo que resista a la IA | CairnCareers",
+    homeTitle: "Convierte la universidad en un primer empleo que la IA no pueda reemplazar | CairnCareers",
     homeDescription: "Compara trayectorias profesionales realistas con datos de salario, crecimiento del empleo y exposición a la IA, y sal con un siguiente paso que puedas explicar.",
   },
   languageSwitch: "Idioma",
@@ -32,7 +32,7 @@ export const es: typeof en = {
     mobile: "Navegación móvil",
   },
   hero: {
-    title: "Convierte la universidad en un primer empleo que resista a la IA.",
+    title: "Convierte la universidad en un primer empleo que la IA no pueda reemplazar.",
     definition: "CairnCareers es una herramienta de planificación profesional que convierte las opciones profesionales de estudiantes universitarios y recién graduados en un plan, período por período, hacia un primer empleo.",
     campaigns: {
       default: {
@@ -71,7 +71,14 @@ export const es: typeof en = {
     label: "La ruta",
     noResume: "No necesitas currículum ni experiencia laboral. Trae tus intereses, tus cursos y lo que has hecho hasta ahora.",
     title: "Planificación profesional que termina en un currículum listo para enviar.",
-    lead: "¿Llevas meses sin avanzar? ¿Todavía no tienes un plan profesional concreto? Has hecho más de lo que crees. Lo difícil es convertirlo en algo que un reclutador pueda leer.",
+    lead: "¿Llevas meses sin avanzar y sin un plan profesional concreto? Suele verse más o menos así.",
+    pains: [
+      "Tu currículum menciona tu carrera y un trabajo en el campus, pero no la encuesta que hiciste, el presupuesto del club que manejaste ni el informe de laboratorio que tu profesor elogió.",
+      "Llevas semanas postulando a puestos de nivel inicial sin respuesta, y nadie sabe decirte qué cambiar.",
+      "Todos los titulares dicen que la IA viene por los empleos de nivel inicial, y casi ninguno dice a cuáles de los trabajos que consideras afecta de verdad.",
+      "Tu familia te pregunta qué harás después de graduarte, y no tienes una respuesta que puedas explicar.",
+    ],
+    painsClose: "Has hecho más de lo que crees. Lo difícil es convertirlo en algo que un reclutador pueda leer.",
     steps: [
       ["Trae lo que hiciste", "Clases, proyectos en grupo, trabajos y clubes. Ves cuáles de las clases que ya tomaste cuentan para cada camino."],
       ["Arma tu currículum y tu LinkedIn", "Cada experiencia se convierte en un logro para tu currículum y una línea de LinkedIn ligada a los caminos que estás considerando."],

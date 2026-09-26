@@ -9,7 +9,7 @@
  */
 export const en = {
   meta: {
-    homeTitle: "Turn College Into a First Job That Holds Up to AI | CairnCareers",
+    homeTitle: "Turn College Into a First Job AI Can't Replace | CairnCareers",
     homeDescription: "Compare realistic career paths using salary, job growth, and AI context, then leave with a next move you can explain.",
   },
   languageSwitch: "Language",
@@ -33,7 +33,7 @@ export const en = {
     mobile: "Mobile navigation",
   },
   hero: {
-    title: "Turn college into a first job that holds up to AI.",
+    title: "Turn college into a first job AI can't replace.",
     definition: "CairnCareers is a career-planning tool that turns college students' and recent graduates' career options into a term-by-term plan toward a first job.",
     campaigns: {
       default: {
@@ -72,7 +72,14 @@ export const en = {
     label: "The route",
     noResume: "No resume or work history needed. Bring your interests, coursework, and what you have done so far.",
     title: "Career planning that ends with a resume you can send.",
-    lead: "Stuck for months? Still no concrete career plan? You have done more than you think. The hard part is turning it into something a recruiter can read.",
+    lead: "Stuck for months with no concrete career plan? It usually looks something like this.",
+    pains: [
+      "Your resume lists a major and a campus job, but not the survey you ran, the club budget you managed, or the lab report your professor praised.",
+      "You have applied to entry-level roles for weeks and heard nothing back, and nobody can tell you what to change.",
+      "Every headline says AI is coming for entry-level work, and almost none say which of the jobs you are considering it actually touches.",
+      "Your family asks what you plan to do after graduation, and you do not have an answer you can explain.",
+    ],
+    painsClose: "You have done more than you think. The hard part is turning it into something a recruiter can read.",
     steps: [
       ["Bring what you did", "Classes, group projects, jobs, and clubs. You see which of the classes you have already taken count toward each path."],
       ["Build the resume and LinkedIn", "Each experience becomes a resume bullet and a LinkedIn line tied to the paths you are weighing."],

@@ -8,7 +8,7 @@ import type { en } from "./en";
 
 export const fr: typeof en = {
   meta: {
-    homeTitle: "Transformez vos études en un premier emploi qui résiste à l'IA | CairnCareers",
+    homeTitle: "Transformez vos études en un premier emploi que l'IA ne peut pas remplacer | CairnCareers",
     homeDescription: "Comparez des parcours professionnels réalistes à partir du salaire, de la croissance de l'emploi et de l'exposition à l'IA, puis repartez avec une prochaine étape que vous pouvez expliquer.",
   },
   languageSwitch: "Langue",
@@ -32,7 +32,7 @@ export const fr: typeof en = {
     mobile: "Navigation mobile",
   },
   hero: {
-    title: "Transformez vos études en un premier emploi qui résiste à l'IA.",
+    title: "Transformez vos études en un premier emploi que l'IA ne peut pas remplacer.",
     definition: "CairnCareers est un outil de planification de carrière qui transforme les options professionnelles des étudiants et des jeunes diplômés en un plan, période par période, vers un premier emploi.",
     campaigns: {
       default: {
@@ -71,7 +71,14 @@ export const fr: typeof en = {
     label: "Le parcours",
     noResume: "Aucun CV ni expérience professionnelle requis. Apportez vos centres d'intérêt, vos cours et ce que vous avez déjà fait.",
     title: "Une planification de carrière qui aboutit à un CV prêt à envoyer.",
-    lead: "Vous tournez en rond depuis des mois ? Toujours pas de plan de carrière concret ? Vous en avez fait plus que vous ne le pensez. Le plus dur, c'est d'en faire quelque chose qu'un recruteur peut lire.",
+    lead: "Vous tournez en rond depuis des mois, sans plan de carrière concret ? Cela ressemble souvent à ceci.",
+    pains: [
+      "Votre CV mentionne votre filière et un job sur le campus, mais pas l'enquête que vous avez menée, le budget d'association que vous avez géré ni le rapport de TP que votre professeur a salué.",
+      "Vous postulez depuis des semaines à des postes de débutant sans réponse, et personne ne sait vous dire quoi changer.",
+      "Tous les titres annoncent que l'IA s'attaque aux emplois de débutant, et presque aucun ne dit lesquels des métiers que vous envisagez elle touche vraiment.",
+      "Votre famille vous demande ce que vous ferez après votre diplôme, et vous n'avez pas de réponse que vous pouvez expliquer.",
+    ],
+    painsClose: "Vous en avez fait plus que vous ne le pensez. Le plus dur, c'est d'en faire quelque chose qu'un recruteur peut lire.",
     steps: [
       ["Apportez ce que vous avez fait", "Cours, projets de groupe, jobs et associations. Vous voyez lesquels des cours déjà suivis comptent pour chaque parcours."],
       ["Construisez votre CV et votre LinkedIn", "Chaque expérience devient une ligne de CV et une ligne LinkedIn liées aux parcours que vous envisagez."],

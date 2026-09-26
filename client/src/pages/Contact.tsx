@@ -4,6 +4,7 @@ import { toast } from "@/lib/toast";
 import { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { PageFooter, PageHeader, PageHero } from "@/components/PageChrome";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { pageJsonLd } from "@/lib/pageJsonLd";
 import { CONTACT_EMAIL, endpoints } from "@/lib/site";
 import { trackConversion } from "@/lib/analytics";
 
@@ -11,12 +12,11 @@ type ContactForm = { name: string; email: string; subject: string; message: stri
 
 const initialForm: ContactForm = { name: "", email: "", subject: "", message: "", website: "" };
 const BREADCRUMB = [{ name: "Home", href: "/" }, { name: "Contact", href: "/contact" }];
+const TITLE = "Contact Us: Questions and Feedback | CairnCareers";
+const DESCRIPTION = "Ask CairnCareers about career-planning features, or how the site can better serve college students and recent graduates.";
 
 export default function Contact() {
-  usePageMeta({
-    title: "Contact Us: Questions and Feedback | CairnCareers",
-    description: "Ask CairnCareers about career-planning features, or how the site can better serve college students and recent graduates.",
-  });
+  usePageMeta({ title: TITLE, description: DESCRIPTION });
 
   const [form, setForm] = useState<ContactForm>(initialForm);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -48,9 +48,10 @@ export default function Contact() {
   return (
     <div className="site-shell">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd(BREADCRUMB) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd({ type: "ContactPage", path: "/contact", headline: "Contact Us: Questions and Feedback", description: DESCRIPTION }) }} />
       <PageHeader />
-      <PageHero eyebrow="Contact · thoughtful questions welcome" title="Let's find the next useful conversation." breadcrumb={BREADCRUMB}>
-        <p>Ask about a future CairnCareers offering, or how the site can better serve college students and recent graduates.</p>
+      <PageHero eyebrow="Contact · thoughtful questions welcome" title="Contact us with questions or feedback." breadcrumb={BREADCRUMB}>
+        <p>CairnCareers is a career-planning tool for college students and recent graduates. Ask about a future CairnCareers offering, or how the site can better serve you.</p>
       </PageHero>
 
       <div className="container contact-grid">

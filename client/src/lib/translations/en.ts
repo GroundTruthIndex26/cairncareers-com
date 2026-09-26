@@ -34,6 +34,7 @@ export const en = {
   },
   hero: {
     title: "Find an entry-level path that holds up to AI.",
+    definition: "CairnCareers is a career-planning tool for college students and recent graduates that scores each career path for AI exposure and turns the result into a term-by-term plan toward a first job.",
     campaigns: {
       default: {
         eyebrow: "For college students and recent graduates",
@@ -219,6 +220,7 @@ export const en = {
     cairn: { title: "CairnCareers", points: ["Scores each path against federal occupational task data.", "Names and links every source on the methodology page.", "Keeps pay and growth separate from the exposure score, so you can see what moved the result.", "Never invents a number. It asks the question that produces one."] },
     methodLink: "Read the methodology",
     fullLink: "See the full comparison",
+    othersLead: "Also compared:",
   },
   modal: {
     badge: "Launch notification",
@@ -244,7 +246,7 @@ export const en = {
   methodology: {
     eyebrow: "How the numbers are built",
     title: "Methodology",
-    documentTitle: "How the AI-Exposure Score Is Calculated | CairnCareers",
+    documentTitle: "Methodology: How the AI-Exposure Score Is Calculated | CairnCareers",
     description: "How the CairnCareers AI-exposure score is built: O*NET task data, the Eloundou et al. (2024) framework in Science, and METR's trend, every source linked.",
     updated: "August 31, 2026",
     intro: "**The exposure number is not our opinion.** It is built from federal occupational task data and peer-reviewed research, and this page names every source, links it, and explains exactly what the number does and does not measure.",

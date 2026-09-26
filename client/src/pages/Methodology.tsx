@@ -36,6 +36,7 @@ export default function Methodology() {
     eyebrow={m.eyebrow}
     title={m.title}
     path="/methodology"
+    schemaType="Article"
     documentTitle={m.documentTitle}
     description={m.description}
     updated={m.updated}

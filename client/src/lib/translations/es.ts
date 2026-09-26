@@ -33,6 +33,7 @@ export const es: typeof en = {
   },
   hero: {
     title: "Encuentra un primer empleo que resista a la IA.",
+    definition: "CairnCareers es una herramienta de planificación profesional para estudiantes universitarios y recién graduados que puntúa cada trayectoria profesional según su exposición a la IA y convierte el resultado en un plan, período por período, hacia un primer empleo.",
     campaigns: {
       default: {
         eyebrow: "Para estudiantes universitarios y recién graduados",
@@ -218,6 +219,7 @@ export const es: typeof en = {
     cairn: { title: "CairnCareers", points: ["Puntúa cada trayectoria con datos federales de tareas ocupacionales.", "Nombra y enlaza cada fuente en la página de metodología.", "Mantiene salario y crecimiento separados de la puntuación de exposición, para que veas qué movió el resultado.", "Nunca inventa una cifra. Hace la pregunta que la produce."] },
     methodLink: "Leer la metodología",
     fullLink: "Ver la comparación completa",
+    othersLead: "También comparado con:",
   },
   modal: {
     badge: "Aviso de lanzamiento",
@@ -243,7 +245,7 @@ export const es: typeof en = {
   methodology: {
     eyebrow: "Cómo se construyen las cifras",
     title: "Metodología",
-    documentTitle: "Cómo se calcula la puntuación de exposición a la IA | CairnCareers",
+    documentTitle: "Metodología: cómo se calcula la puntuación de exposición a la IA | CairnCareers",
     description: "Cómo se construye la puntuación de exposición a la IA de CairnCareers: datos de tareas de O*NET, el marco de Eloundou et al. (2024) en Science y la tendencia de METR, con todas las fuentes enlazadas.",
     updated: "31 de agosto de 2026",
     intro: "**La cifra de exposición no es nuestra opinión.** Se construye a partir de datos federales de tareas ocupacionales e investigación revisada por pares, y esta página nombra cada fuente, la enlaza y explica exactamente qué mide la cifra y qué no.",

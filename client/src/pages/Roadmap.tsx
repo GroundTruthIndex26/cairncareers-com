@@ -1,12 +1,17 @@
 import { useEffect, useRef } from "react";
 import Breadcrumbs, { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { pageJsonLd } from "@/lib/pageJsonLd";
 import { KEY_EVENTS, trackKeyEvent } from "@/lib/analytics";
 import "./Roadmap.css";
 
 const BASE_URL = import.meta.env.BASE_URL;
 const DASHBOARD = `${BASE_URL}dashboard-preview`;
 const BREADCRUMB = [{ name: "Home", href: "/" }, { name: "Roadmap", href: "/roadmap" }];
+// The title carries the H1's main phrase ("Twelve months, mapped") so the two
+// agree on what the page is about.
+const TITLE = "Twelve Months, Mapped: A Sample Career Roadmap | CairnCareers Premium";
+const DESCRIPTION = "A sample twelve-month roadmap: each month tied to a specific evidence gap, sequenced so the earliest work makes the later work easier.";
 
 const DASHBOARD_NAV = [
   { href: `${DASHBOARD}/evidence`, label: "Evidence" },
@@ -75,10 +80,7 @@ function howToJsonLd() {
  * the only one that needed its own title, canonical URL, and prerendering.
  */
 export default function Roadmap() {
-  usePageMeta({
-    title: "Sample 12-Month Career Roadmap | CairnCareers Premium",
-    description: "A sample twelve-month roadmap: each month tied to a specific evidence gap, sequenced so the earliest work makes the later work easier.",
-  });
+  usePageMeta({ title: TITLE, description: DESCRIPTION });
 
   const roadRef = useRef<HTMLDivElement>(null);
 
@@ -120,6 +122,7 @@ export default function Roadmap() {
     <div className="roadmap-page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd(BREADCRUMB) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: howToJsonLd() }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd({ type: "Article", path: "/roadmap", headline: "Twelve months, mapped so the biggest gaps close first", description: DESCRIPTION }) }} />
       <header className="hdr">
         <div className="hdr-in">
           <a className="brand" href="/" aria-label="CairnCareers home">

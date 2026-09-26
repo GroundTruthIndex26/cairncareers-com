@@ -24,6 +24,7 @@ import { toast } from "@/lib/toast";
 import { LanguageSwitch } from "@/components/PageChrome";
 import { usePageMeta } from "@/hooks/usePageMeta";
 import { plain, rich, useI18n } from "@/lib/i18n";
+import { pageJsonLd } from "@/lib/pageJsonLd";
 import { trackConversion } from "@/lib/analytics";
 
 const BASE_URL = import.meta.env.BASE_URL;
@@ -484,13 +485,16 @@ export default function Home() {
       </header>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd(t.faq.items) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd({ type: "WebPage", path: "/", headline: t.hero.title.replace(/\.$/, ""), description: t.hero.definition }) }} />
       <main id="top">
         <section className="hero-section">
           <div className="container hero-grid">
             <div className="hero-copy">
               <div className="hero-eyebrow">{message.eyebrow}</div>
               <h1>{t.hero.title}</h1>
-              <p>{message.body}</p>
+              {/* Opens with a one-sentence "CairnCareers is ..." definition, the
+                  shape search and answer engines lift verbatim. */}
+              <p>{t.hero.definition} {message.body}</p>
               <div className="hero-actions">
                 <a className="primary-cta" href="#beta-access">{t.nav.cta} <ArrowRight /></a>
                 <a className="secondary-cta" href="#dashboard-preview">{t.hero.secondaryCta} <ArrowRight /></a>
@@ -567,6 +571,11 @@ export default function Home() {
             <p className="compare-links">
               <a href="/methodology">{t.compare.methodLink} <ArrowRight /></a>
               <a href="/vs/chatgpt">{t.compare.fullLink} <ArrowRight /></a>
+            </p>
+            {/* In-body links to the other comparisons. Linked only from the
+                footer, they read to crawlers as listing-only pages. */}
+            <p className="compare-others">
+              {t.compare.othersLead} <a href="/vs/careerwing">CairnCareers vs CareerWing</a>, <a href="/vs/career-mirror">CairnCareers vs Career Mirror</a>, <a href="/vs/maketheleap">CairnCareers vs Make the Leap</a>.
             </p>
           </div>
         </section>

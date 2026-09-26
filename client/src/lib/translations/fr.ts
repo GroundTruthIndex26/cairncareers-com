@@ -33,6 +33,7 @@ export const fr: typeof en = {
   },
   hero: {
     title: "Trouvez un premier emploi qui résiste à l'IA.",
+    definition: "CairnCareers est un outil de planification de carrière pour les étudiants et les jeunes diplômés, qui évalue chaque parcours selon son exposition à l'IA et transforme le résultat en un plan, période par période, vers un premier emploi.",
     campaigns: {
       default: {
         eyebrow: "Pour les étudiants et les jeunes diplômés",
@@ -218,6 +219,7 @@ export const fr: typeof en = {
     cairn: { title: "CairnCareers", points: ["Note chaque parcours à partir des données fédérales sur les tâches professionnelles.", "Nomme et lie chaque source sur la page de méthodologie.", "Garde salaire et croissance séparés du score d'exposition, pour voir ce qui a fait bouger le résultat.", "N'invente jamais un chiffre. Il pose la question qui le produit."] },
     methodLink: "Lire la méthodologie",
     fullLink: "Voir la comparaison complète",
+    othersLead: "Aussi comparé à :",
   },
   modal: {
     badge: "Alerte de lancement",
@@ -243,7 +245,7 @@ export const fr: typeof en = {
   methodology: {
     eyebrow: "Comment les chiffres sont construits",
     title: "Méthodologie",
-    documentTitle: "Comment le score d'exposition à l'IA est calculé | CairnCareers",
+    documentTitle: "Méthodologie : comment le score d'exposition à l'IA est calculé | CairnCareers",
     description: "Comment le score d'exposition à l'IA de CairnCareers est construit : données de tâches O*NET, le cadre d'Eloundou et al. (2024) dans Science et la tendance de METR, chaque source reliée.",
     updated: "31 août 2026",
     intro: "**Le chiffre d'exposition n'est pas notre opinion.** Il est construit à partir de données fédérales sur les tâches professionnelles et de recherches évaluées par les pairs, et cette page nomme chaque source, la relie et explique exactement ce que le chiffre mesure et ce qu'il ne mesure pas.",

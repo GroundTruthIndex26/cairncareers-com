@@ -8,7 +8,7 @@ import type { en } from "./en";
 
 export const es: typeof en = {
   meta: {
-    homeTitle: "Encuentra un primer empleo que resista a la IA | CairnCareers",
+    homeTitle: "Convierte la universidad en un primer empleo que resista a la IA | CairnCareers",
     homeDescription: "Compara trayectorias profesionales realistas con datos de salario, crecimiento del empleo y exposición a la IA, y sal con un siguiente paso que puedas explicar.",
   },
   languageSwitch: "Idioma",
@@ -32,7 +32,7 @@ export const es: typeof en = {
     mobile: "Navegación móvil",
   },
   hero: {
-    title: "Convierte lo que hiciste en la universidad en un primer empleo que resista a la IA.",
+    title: "Convierte la universidad en un primer empleo que resista a la IA.",
     definition: "CairnCareers es una herramienta de planificación profesional que convierte las opciones profesionales de estudiantes universitarios y recién graduados en un plan, período por período, hacia un primer empleo.",
     campaigns: {
       default: {
@@ -144,6 +144,7 @@ export const es: typeof en = {
     free: { for: "¿Dónde estoy?", name: "Gratis", price: "$0", cadence: "para siempre", features: ["Puntuación de exposición a la IA", "Mapa de tareas duraderas frente a expuestas", "Contexto de salario mediano"] },
     pro: { for: "¿Cómo llego allí?", name: "Pro", features: ["Todo lo del plan Gratis", "Reformulaciones del currículum", "Actualizaciones mensuales"] },
     premium: { for: "Conocer mi primer paso", name: "Premium", features: ["Todo lo del plan Pro", "Currículum vivo + sistema de LinkedIn", "Motor de contactos cercanos", "Hoja de ruta hasta la graduación"] },
+    recommended: "Recomendado",
     ribbon: "Precio de prelanzamiento por tiempo limitado",
     prelaunchLabel: "Precio de prelanzamiento por tiempo limitado",
     limitedSpots: "Quedan pocas plazas",

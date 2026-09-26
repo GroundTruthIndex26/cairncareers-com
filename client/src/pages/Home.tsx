@@ -788,6 +788,7 @@ export default function Home() {
               </article>
               <article id="premium-checkout" className="price-card featured-price">
                 {SHOW_DISCOUNTED_PRICING && <div className="price-ribbon">{t.pricing.ribbon}</div>}
+                <span className="price-recommended">{t.pricing.recommended}</span>
                 <span className="price-for">{t.pricing.premium.for}</span>
                 <h3>{t.pricing.premium.name}</h3>
                 <div className="price-toggle premium-toggle" role="group" aria-label={t.pricing.premiumGroup}>

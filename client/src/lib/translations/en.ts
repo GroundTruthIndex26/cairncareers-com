@@ -9,7 +9,7 @@
  */
 export const en = {
   meta: {
-    homeTitle: "Find an Entry-Level Path That Holds Up to AI | CairnCareers",
+    homeTitle: "Turn College Into a First Job That Holds Up to AI | CairnCareers",
     homeDescription: "Compare realistic career paths using salary, job growth, and AI context, then leave with a next move you can explain.",
   },
   languageSwitch: "Language",
@@ -33,7 +33,7 @@ export const en = {
     mobile: "Mobile navigation",
   },
   hero: {
-    title: "Turn what you did in college into a first job that holds up to AI.",
+    title: "Turn college into a first job that holds up to AI.",
     definition: "CairnCareers is a career-planning tool that turns college students' and recent graduates' career options into a term-by-term plan toward a first job.",
     campaigns: {
       default: {
@@ -145,6 +145,7 @@ export const en = {
     free: { for: "Where do I stand?", name: "Free", price: "$0", cadence: "forever", features: ["AI-exposure score", "Durable-versus-exposed task map", "Median salary context"] },
     pro: { for: "How do I get there?", name: "Pro", features: ["Everything in Free", "Resume reframes", "Monthly re-runs"] },
     premium: { for: "Know my first move", name: "Premium", features: ["Everything in Pro", "Living resume + LinkedIn system", "Warm-path networking engine", "Graduation-timeline roadmap"] },
+    recommended: "Recommended",
     ribbon: "Limited Time prelaunch price",
     prelaunchLabel: "Limited Time prelaunch price",
     limitedSpots: "Limited spots remain",

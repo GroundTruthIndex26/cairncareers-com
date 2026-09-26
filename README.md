@@ -8,6 +8,7 @@ students and recent graduates, built by Phronesis Labs LLC.
 - **Vite + React + wouter**: client-side app, all marketing/legal pages as real routes.
 - **Cloudflare Workers**: static assets plus one small Worker route (`/api/launch-notifications`, `worker/index.ts`), deployed by the GitHub Actions workflow in `.github/workflows/deploy.yml` on every push to `main`.
 - **Cloudflare Browser Rendering**: `scripts/prerender.mjs` prerenders every indexable route to real static HTML during the build, so crawlers (search and AI) see full content instead of an empty SPA shell. See the comments in that file and in `wrangler.jsonc` for why.
+- **Markdown for agents**: `scripts/markdown.mjs` converts each prerendered page to Markdown after the prerender step, and the Worker serves it to any request with `Accept: text/markdown`. Browsers still get HTML.
 
 ## Local development
 

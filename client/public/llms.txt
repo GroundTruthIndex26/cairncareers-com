@@ -4,6 +4,8 @@
 
 Students input their interests, coursework, and experience to receive a nine-page dashboard covering resume guidance, LinkedIn, networking, interview prep, and a graduation-timeline roadmap.
 
+Every page below is also available as Markdown: request it with `Accept: text/markdown`, or add `.md` to the path (`/index.md` for the home page).
+
 ## Product
 
 - [Home](https://cairncareers.com/): Overview of the career-mapping tool and how the dashboard is generated.

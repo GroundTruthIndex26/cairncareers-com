@@ -730,6 +730,61 @@ function withHeaders(response: Response, pathname: string): Response {
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
   const cache = cacheControlFor(pathname);
   if (cache) out.headers.set("Cache-Control", cache);
+  // Pages answer in Markdown or HTML depending on Accept (serveMarkdown).
+  if ((out.headers.get("Content-Type") || "").includes("text/html")) out.headers.append("Vary", "Accept");
+  if (pathname.endsWith(".md")) out.headers.set("Content-Type", "text/markdown; charset=utf-8");
+  return out;
+}
+
+/**
+ * MARKDOWN FOR AGENTS
+ * An agent that sends `Accept: text/markdown` gets the page as Markdown
+ * instead of the full HTML, so it reads the copy without scraping the layout.
+ * scripts/markdown.mjs writes one .md file per prerendered route at build
+ * time ("/" -> /index.md, "/vs/chatgpt" -> /vs/chatgpt.md); this only picks
+ * the file. Browsers never list text/markdown, so they keep getting HTML, and
+ * a path with no .md file (sample dashboard pages, 404s) falls through to the
+ * normal HTML response.
+ *
+ * Markdown wins only when the client ranks it at least as high as HTML, so
+ * `text/html, text/markdown;q=0.5` still gets HTML.
+ */
+function prefersMarkdown(request: Request): boolean {
+  let markdown = 0;
+  let html = 0;
+  for (const part of (request.headers.get("Accept") || "").toLowerCase().split(",")) {
+    const [type, ...params] = part.split(";").map((s) => s.trim());
+    const qParam = params.find((p) => p.startsWith("q="));
+    const q = qParam ? Number(qParam.slice(2)) : 1;
+    if (!Number.isFinite(q)) continue;
+    if (type === "text/markdown") markdown = Math.max(markdown, q);
+    if (type === "text/html") html = Math.max(html, q);
+  }
+  return markdown > 0 && markdown >= html;
+}
+
+async function serveMarkdown(request: Request, env: Env, url: URL): Promise<Response | null> {
+  if (request.method !== "GET" && request.method !== "HEAD") return null;
+  if (!prefersMarkdown(request)) return null;
+  const page = url.pathname.replace(/\/+$/, "") || "/";
+  // Page routes only: no file extensions, nothing under /api.
+  if (page !== "/" && (!/^\/[a-z0-9/-]+$/.test(page) || page.startsWith("/api/"))) return null;
+
+  const asset = await env.ASSETS.fetch(new URL(page === "/" ? "/index.md" : `${page}.md`, url.origin));
+  if (asset.status !== 200) return null;
+  const text = await asset.text();
+
+  const out = new Response(request.method === "HEAD" ? null : text, {
+    headers: {
+      "Content-Type": "text/markdown; charset=utf-8",
+      Vary: "Accept",
+      // Rough estimate (about four characters per token), the same kind of
+      // figure Cloudflare's own Markdown for Agents conversion reports.
+      "x-markdown-tokens": String(Math.ceil(text.length / 4)),
+      Link: `<https://cairncareers.com${page === "/" ? "/" : page}>; rel="canonical"`,
+    },
+  });
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
   return out;
 }
 
@@ -920,6 +975,9 @@ export default {
     if (request.method === "GET" && url.pathname === "/api/beta-count") {
       return handleBetaCount(request, env, ctx);
     }
+
+    const markdown = await serveMarkdown(request, env, url);
+    if (markdown) return markdown;
 
     // Any other /api/* path (or a non-POST on this one) falls through to assets,
     // which will 404 it via not_found_handling. There's nothing else to serve here.

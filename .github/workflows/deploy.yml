@@ -93,10 +93,10 @@ jobs:
         run: |
           for f in index.html roadmap/index.html methodology/index.html contact/index.html \
                    privacy/index.html terms/index.html refunds/index.html 404.html \
-                   sitemap.xml; do
+                   index.md methodology.md vs/chatgpt.md sitemap.xml; do
             if [ ! -s "dist/$f" ]; then echo "::error::missing dist/$f"; exit 1; fi
           done
-          echo "All prerendered routes and the generated sitemap are present."
+          echo "All prerendered routes, their Markdown copies, and the generated sitemap are present."
 
       - name: Deploy
         env:
@@ -120,4 +120,12 @@ jobs:
             esac
           }
           for p in / /roadmap /contact /privacy /terms /refunds /BingSiteAuth.xml; do check "$p"; done
+
+          # Markdown for agents: the same URL must answer in Markdown when asked.
+          type=$(curl -sS -A "$ua" -H "Accept: text/markdown" -o /dev/null -w '%{http_code} %{content_type}' "https://cairncareers.com/methodology")
+          case "$type" in
+            "200 text/markdown"*) echo "  /methodology (Accept: text/markdown) -> $type" ;;
+            403*) echo "::warning::/methodology Markdown check returned 403 (Cloudflare challenged the CI runner IP)" ;;
+            *)    echo "::error::/methodology with Accept: text/markdown returned $type"; fail=1 ;;
+          esac
           exit $fail

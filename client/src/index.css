@@ -267,6 +267,10 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .degree-band { padding:72px 0; }
 .degree-band h2 { max-width:22ch; margin:12px 0 16px; font-size:clamp(30px,4vw,46px); line-height:1.05; text-wrap:balance; }
 .degree-band p { max-width:62ch; margin:0; font-size:18px; color:rgba(255,255,255,.82); }
+.route-pains { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:36px 0 0; padding:0; list-style:none; }
+.route-pains li { padding:16px 18px; background:var(--paper-light); border-left:4px solid var(--pink); font-size:16px; line-height:1.5; }
+.route-pains-close { margin:24px 0 40px; font-size:20px; font-weight:700; max-width:40ch; }
+@media (max-width:700px) { .route-pains { grid-template-columns:1fr; } }
 .route-callout { margin:28px 0 0; padding:14px 18px; border:2px solid var(--ink); background:var(--paper-light); font-weight:700; }
 .step-card:nth-child(2) { transform:translateY(22px); box-shadow:7px 7px 0 var(--cyan); }
 .step-card:nth-child(3) { box-shadow:7px 7px 0 var(--pink); }

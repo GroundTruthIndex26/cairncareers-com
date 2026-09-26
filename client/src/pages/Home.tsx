@@ -574,6 +574,10 @@ export default function Home() {
               </div>
               <p>{t.route.lead}</p>
             </div>
+            <ul className="route-pains">
+              {t.route.pains.map((pain) => <li key={pain}>{pain}</li>)}
+            </ul>
+            <p className="route-pains-close">{t.route.painsClose}</p>
             <div className="steps-grid">
               {t.route.steps.map(([title, body], index) => (
                 <article key={title} className="step-card">

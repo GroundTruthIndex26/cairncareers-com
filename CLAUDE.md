@@ -32,5 +32,5 @@ This repo is the ONLY live source for cairncareers.com. The older repo GroundTru
 - The words "semester" and "$32" are banned from the site; use "term".
 - Every number shown to a user carries a numbered footnote with a source link.
 - Anthropic is the only AI vendor. No OpenAI.
-- `main` auto-deploys to cairncareers.com via the GitHub Actions workflow `.github/workflows/deploy.yml` (build, prerender, `wrangler deploy`, then a production smoke test). Cloudflare Workers Builds is NOT the deploy path: its check fails on every commit because the repo connection was never completed, so a red "Workers Builds" check on a PR does not block a merge. The check that matters is `deploy` on `main`.
+- `main` auto-deploys to cairncareers.com via the GitHub Actions workflow `.github/workflows/deploy.yml` (build, prerender, `wrangler deploy`, a Cloudflare cache purge, then a production smoke test). Cloudflare Workers Builds is NOT the deploy path: its check fails on every commit because the repo connection was never completed, so a red "Workers Builds" check on a PR does not block a merge. The check that matters is `deploy` on `main`.
 - Never delete `client/public/googlee25309b4cf7bf9f6.html` (Search Console) or `client/public/BingSiteAuth.xml` (Bing).

@@ -163,6 +163,14 @@ jobs:
             *)    echo "::error::/methodology with Accept: text/markdown returned $type"; fail=1 ;;
           esac
 
+          # auth.md for agents: a static file that must answer as Markdown.
+          type=$(curl -sS -A "$ua" -o /dev/null -w '%{http_code} %{content_type}' "https://cairncareers.com/auth.md")
+          case "$type" in
+            "200 text/markdown"*) echo "  /auth.md -> $type" ;;
+            403*) echo "::warning::/auth.md returned 403 (Cloudflare challenged the CI runner IP)" ;;
+            *)    echo "::error::/auth.md returned $type"; fail=1 ;;
+          esac
+
           # API catalog (RFC 9727): must answer 200 as application/linkset+json.
           type=$(curl -sS -A "$ua" -o /dev/null -w '%{http_code} %{content_type}' "https://cairncareers.com/.well-known/api-catalog")
           case "$type" in

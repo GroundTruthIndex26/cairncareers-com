@@ -36,7 +36,7 @@ export const es: typeof en = {
     campaigns: {
       default: {
         eyebrow: "Para estudiantes universitarios y recién graduados",
-        body: "Compara trayectorias profesionales realistas con datos de salario, crecimiento del empleo y exposición a la IA, y sal con un siguiente paso que puedas explicar.",
+        body: "Compara trayectorias profesionales realistas con una puntuación de exposición a la IA de 0 a 100, construida con datos federales de tareas e investigación revisada por pares, más contexto de salario y crecimiento del empleo, y sal con un siguiente paso que puedas explicar.",
       },
       campus: {
         eyebrow: "Del campus a un primer puesto que encaje contigo",
@@ -69,7 +69,7 @@ export const es: typeof en = {
     label: "La ruta",
     noResume: "No necesitas currículum ni experiencia laboral. Trae tus intereses, tus cursos y lo que has hecho hasta ahora.",
     title: "Planificación profesional que termina en un primer paso.",
-    lead: "Si llevas meses sin avanzar y todavía no tienes un plan profesional concreto, tu mapa debería hacer que la siguiente decisión sea más pequeña, más concreta y más fácil de poner a prueba en el mundo real.",
+    lead: "¿Llevas meses sin avanzar y sin un plan profesional concreto? Tu mapa debería hacer que la siguiente decisión sea más pequeña, más concreta y más fácil de poner a prueba.",
     steps: [
       ["Trae lo que sabes", "Tus intereses, tus asignaturas, tu experiencia y el trabajo que capta tu atención. Ves cuáles de las clases que ya tomaste cuentan para cada camino."],
       ["Mira el cuadro completo", "Salario, crecimiento del empleo y exposición a la IA en un solo lugar, no cifras aisladas."],
@@ -147,7 +147,11 @@ export const es: typeof en = {
     badge: "Creado por una científica investigadora con doctorado",
     founder: "Brooke Houck, PhD · Fundadora",
     imageAlt: "Brooke Houck, PhD, fundadora de CairnCareers",
+    videoLabel: "Brooke Houck explica por qué creó CairnCareers (video de 1 minuto)",
     quote: "“Creé CairnCareers porque no dejaba de molestarme. Cada semana salía un titular nuevo sobre los empleos que la IA iba a eliminar, y casi ninguno explicaba cómo lo sabía. Cuando rastreé esas afirmaciones, la mayoría se apoyaba en el nombre de un puesto y una suposición. En mi campo no se publica una cifra sin mostrar de dónde viene. Los estudiantes están tomando una de las decisiones más caras de su vida con afirmaciones que no superarían una revisión por pares, y merecen el mismo estándar que se me exige a mí.”",
+  },
+  featured: {
+    label: "Mencionado en",
   },
   testimonials: {
     label: "Usuarios de la beta",
@@ -187,7 +191,7 @@ export const es: typeof en = {
       },
       {
         q: "¿Para quién es Cairn Careers?",
-        a: "Para estudiantes universitarios y recién graduados que están decidiendo a qué aspirar y qué hacer a continuación. Es más útil si estás eligiendo entre varias trayectorias, o si ya has elegido una y quieres un plan mes a mes hacia un primer empleo. Puedes ver ese plan en la [hoja de ruta de muestra](/roadmap).",
+        a: "Para estudiantes universitarios y recién graduados que están decidiendo a qué aspirar y qué hacer a continuación. Es más útil si estás eligiendo entre varias trayectorias, o si ya has elegido una y quieres un plan mes a mes hacia un primer empleo. Puedes ver ese plan en la [hoja de ruta de muestra](/roadmap). No está pensado para personas ya asentadas en una carrera que planean un cambio a mitad de su trayectoria.",
       },
       {
         q: "¿Cuánto cuesta Cairn Careers?",

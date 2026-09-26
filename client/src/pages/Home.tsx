@@ -152,6 +152,25 @@ function faqJsonLd(items: { q: string; a: string }[]) {
  */
 const BETA_QUOTES: { quote: string; name: string; who: string }[] = [];
 
+/**
+ * Third-party mentions, shown in a slim strip under the trust strip. Empty until
+ * there is a real one: the strip renders nothing while this list is empty, so
+ * no "Featured in" heading ships over a blank row. `href` points at the mention
+ * itself (the launch page, article, or review profile), never a homepage.
+ * `logo` is optional, a path under client/public such as "brand/press/ph.svg".
+ */
+const FEATURED_IN: { name: string; href: string; logo?: string }[] = [];
+
+/**
+ * The 60-second why-I-built-this video under the founder quote. Null until it
+ * is recorded, and the founder card is unchanged while it is null. Paths are
+ * under client/public, for example "media/founder-why.mp4". Captions are
+ * required: the video is the only place those words appear. Self-hosted on
+ * purpose: the CSP in worker/index.ts has no frame-src, so a Loom or YouTube
+ * iframe would be blocked.
+ */
+const FOUNDER_VIDEO: { src: string; poster: string; captions: string } | null = null;
+
 function SectionLabel({ number, children }: { number: string; children: React.ReactNode }) {
   return (
     <div className="section-label">
@@ -523,6 +542,24 @@ export default function Home() {
           </div>
         </section>
 
+        {FEATURED_IN.length > 0 && (
+          <section className="featured-strip" aria-label={t.featured.label}>
+            <div className="container featured-strip-inner">
+              <span className="featured-label">{t.featured.label}</span>
+              <ul>
+                {FEATURED_IN.map((item) => (
+                  <li key={item.href}>
+                    <a href={item.href} target="_blank" rel="noreferrer">
+                      {item.logo ? <img src={`${BASE_URL}${item.logo}`} alt={item.name} height="24" loading="lazy" decoding="async" /> : item.name}
+                      <ExternalLink aria-hidden="true" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
         <section id="how-it-works" className="paper-section route-section">
           <div className="container">
             <div className="section-heading split-heading">
@@ -773,7 +810,14 @@ export default function Home() {
               <h2>{t.about.title}</h2>
               <article className="founder-card">
                 <img src={ASSETS.founder} alt={t.about.imageAlt} width="300" height="300" loading="lazy" decoding="async" />
-                <div><span className="slot-badge">{t.about.badge}</span><h3><a href="https://www.linkedin.com/in/brookehouck" target="_blank" rel="noreferrer">{t.about.founder}</a></h3><p>{t.about.quote}</p></div>
+                <div><span className="slot-badge">{t.about.badge}</span><h3><a href="https://www.linkedin.com/in/brookehouck" target="_blank" rel="noreferrer">{t.about.founder}</a></h3><p>{t.about.quote}</p>
+                  {FOUNDER_VIDEO && (
+                    <video className="founder-video" controls preload="none" playsInline width="640" height="360" poster={`${BASE_URL}${FOUNDER_VIDEO.poster}`} aria-label={t.about.videoLabel}>
+                      <source src={`${BASE_URL}${FOUNDER_VIDEO.src}`} type="video/mp4" />
+                      <track kind="captions" src={`${BASE_URL}${FOUNDER_VIDEO.captions}`} srcLang="en" label="English" default />
+                    </video>
+                  )}
+                </div>
               </article>
             </div>
           </div>

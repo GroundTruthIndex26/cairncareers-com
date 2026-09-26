@@ -238,6 +238,14 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .trust-strip-grid span { font-size:13px; color:#cbd1cd; }
 .trust-strip-grid strong { display:block; color:white; }
 .trust-strip-grid a { color:var(--lime); text-decoration:underline; text-underline-offset:2px; }
+.featured-strip { background:#171a18; color:white; border-bottom:2px solid var(--ink); }
+.featured-strip-inner { display:flex; flex-wrap:wrap; align-items:center; gap:12px 28px; padding-top:14px; padding-bottom:14px; }
+.featured-label { font:700 12px "IBM Plex Mono","IBM Plex Mono Fallback",monospace; letter-spacing:.08em; text-transform:uppercase; color:#cbd1cd; }
+.featured-strip ul { display:flex; flex-wrap:wrap; align-items:center; gap:12px 28px; margin:0; padding:0; list-style:none; }
+.featured-strip a { display:inline-flex; align-items:center; gap:6px; color:white; font-weight:700; font-size:14px; text-decoration:none; }
+.featured-strip a:hover { color:var(--lime); }
+.featured-strip img { height:24px; width:auto; filter:grayscale(1) brightness(1.6); }
+.featured-strip svg { width:14px; height:14px; color:var(--lime); }
 
 .paper-section { padding:105px 0; background:var(--paper); }
 .section-heading { margin-bottom:42px; }
@@ -499,6 +507,7 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .founder-card img { width:150px; height:150px; object-fit:cover; border:2px solid var(--ink); }
 .founder-card h3 { margin:12px 0 8px; font-size:22px; }
 .founder-card p { margin:0; color:#4e554f; }
+.founder-video { display:block; width:100%; max-width:480px; height:auto; aspect-ratio:16/9; margin-top:16px; background:var(--ink); border:2px solid var(--ink); }
 .trust-file { margin-top:54px; padding:24px; background:var(--paper-light); border:2px solid var(--ink); box-shadow:8px 8px 0 var(--ink); }
 .trust-file > div { display:flex; gap:14px; padding:20px 0; border-bottom:1px solid #c7c9c3; }
 .trust-file > div:last-child { border-bottom:0; }

@@ -32,12 +32,12 @@ export const es: typeof en = {
     mobile: "Navegación móvil",
   },
   hero: {
-    title: "Encuentra un primer empleo que resista a la IA.",
+    title: "Convierte lo que hiciste en la universidad en un primer empleo que resista a la IA.",
     definition: "CairnCareers es una herramienta de planificación profesional que convierte las opciones profesionales de estudiantes universitarios y recién graduados en un plan, período por período, hacia un primer empleo.",
     campaigns: {
       default: {
         eyebrow: "Para estudiantes universitarios y recién graduados",
-        body: "Compara trayectorias profesionales realistas con una puntuación de exposición a la IA de 0 a 100, construida con datos federales de tareas e investigación revisada por pares, más contexto de salario y crecimiento del empleo, y sal con un siguiente paso que puedas explicar.",
+        body: "Tus clases, proyectos y trabajos de medio tiempo se convierten en logros para tu currículum y líneas de LinkedIn que de verdad puedes usar. En el camino, ves cómo es probable que la IA cambie cada carrera que estás considerando, para que el plan que armes sea uno que puedas explicar.",
       },
       campus: {
         eyebrow: "Del campus a un primer puesto que encaje contigo",
@@ -53,9 +53,10 @@ export const es: typeof en = {
     visualLabel: "Ruta profesional desde el autoconocimiento hasta un siguiente paso respaldado por evidencia",
     imageAlt: "Mapa de ruta abstracto con tres hitos de planificación profesional",
     routeKicker: "Un camino más firme",
-    routeTitle: "Tres señales. Un siguiente paso.",
+    routeTitle: "De tus cursos a un primer paso.",
     secondaryCta: "Ver primero un panel de muestra",
-    routeSteps: ["Lo que sabes", "Contexto del mercado", "Una ruta que probar"],
+    routeSteps: ["Lo que hiciste en la universidad", "Un currículum y un LinkedIn basados en eso", "Un primer paso que puedas explicar"],
+    routeNote: "Orientación sobre la IA en cada camino, basada en investigación publicada.",
   },
   trust: {
     label: "Confianza y garantía",
@@ -69,13 +70,24 @@ export const es: typeof en = {
   route: {
     label: "La ruta",
     noResume: "No necesitas currículum ni experiencia laboral. Trae tus intereses, tus cursos y lo que has hecho hasta ahora.",
-    title: "Planificación profesional que termina en un primer paso.",
-    lead: "¿Llevas meses sin avanzar y sin un plan profesional concreto? Tu mapa debería hacer que la siguiente decisión sea más pequeña, más concreta y más fácil de poner a prueba.",
+    title: "Planificación profesional que termina en un currículum listo para enviar.",
+    lead: "¿Llevas meses sin avanzar? ¿Todavía no tienes un plan profesional concreto? Has hecho más de lo que crees. Lo difícil es convertirlo en algo que un reclutador pueda leer.",
     steps: [
-      ["Trae lo que sabes", "Tus intereses, tus asignaturas, tu experiencia y el trabajo que capta tu atención. Ves cuáles de las clases que ya tomaste cuentan para cada camino."],
-      ["Mira el cuadro completo", "Salario, crecimiento del empleo y exposición a la IA en un solo lugar, no cifras aisladas."],
-      ["Sal con una ruta", "Una dirección práctica para LinkedIn, tu red de contactos y tu primera conversación."],
+      ["Trae lo que hiciste", "Clases, proyectos en grupo, trabajos y clubes. Ves cuáles de las clases que ya tomaste cuentan para cada camino."],
+      ["Arma tu currículum y tu LinkedIn", "Cada experiencia se convierte en un logro para tu currículum y una línea de LinkedIn ligada a los caminos que estás considerando."],
+      ["Compáralo con la IA", "Mira qué habilidades tuyas seguirán en demanda a medida que la IA cambia el trabajo y elige tu primer paso."],
     ],
+    example: {
+      beforeLabel: "Lo que tienes",
+      before: "Proyecto en grupo de una clase de marketing: una encuesta en el campus para una cafetería local.",
+      afterLabel: "Logro para el currículum (muestra)",
+      after: "Diseñé y realicé una encuesta de clientes para un negocio local y presenté recomendaciones de precios a la dueña.",
+    },
+  },
+  degree: {
+    eyebrow: "Tu título, puesto a trabajar",
+    title: "Dedicaste años a la universidad. Muestra a los empleadores lo que te dio.",
+    body: "CairnCareers muestra cuáles de tus clases ya cuentan para cada camino y las convierte en evidencia que los empleadores pueden ver, para que tu formación se lea como prueba y no como una lista de nombres de cursos.",
   },
   dashboard: {
     label: "Panel de muestra",

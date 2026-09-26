@@ -445,6 +445,11 @@ async function handleLaunchNotifications(request: Request, env: Env, ctx: Execut
     return Response.json({ error: "Invalid request body." }, { status: 400 });
   }
 
+  // Honeypot: both signup forms carry a hidden `website` field, as the contact
+  // form does. A filled one gets the normal success response with nothing
+  // saved and no email sent, so the bot cannot tell it was rejected.
+  if (str(body, "website")) return Response.json({ saved: true }, { status: 201 });
+
   const email = str(body, "email").toLowerCase();
   if (!EMAIL_RE.test(email) || email.length > 320) {
     return Response.json({ error: "Enter a valid email address." }, { status: 400 });

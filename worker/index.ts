@@ -732,7 +732,14 @@ function withHeaders(response: Response, pathname: string): Response {
   if (cache) out.headers.set("Cache-Control", cache);
   // Pages answer in Markdown or HTML depending on Accept (serveMarkdown).
   if ((out.headers.get("Content-Type") || "").includes("text/html")) out.headers.append("Vary", "Accept");
-  if (pathname.endsWith(".md")) out.headers.set("Content-Type", "text/markdown; charset=utf-8");
+  // Agent discovery (RFC 8288): the homepage points to its Markdown copy and
+  // to llms.txt, the site-wide index written for language models. A 304 has
+  // no Content-Type, and must carry it too or a revalidated copy loses it.
+  if (pathname === "/" && (response.ok || response.status === 304)) {
+    out.headers.set("Link", '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"; type="text/plain"');
+  }
+  // Only a real .md file: a missing one gets the HTML 404 page, which must stay text/html.
+  if (pathname.endsWith(".md") && response.ok) out.headers.set("Content-Type", "text/markdown; charset=utf-8");
   return out;
 }
 

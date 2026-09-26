@@ -492,6 +492,7 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .price-card li svg { flex:0 0 auto; width:17px; height:17px; color:#5c9500; }
 .featured-price { position:relative; background:var(--ink); color:white; box-shadow:8px 8px 0 var(--lime); }
 .featured-price:has(.price-ribbon) { padding-top:68px; }
+.price-recommended { display:table; margin-bottom:10px; padding:4px 10px; background:var(--lime); color:var(--ink); border:1px solid var(--lime); font:700 11px "IBM Plex Mono","IBM Plex Mono Fallback",monospace; letter-spacing:.08em; text-transform:uppercase; }
 .featured-price:after { content:"Marker 03 · move"; color:#aeb6b0; }
 .price-ribbon { position:absolute; left:0; right:0; top:0; padding:13px 20px; background:var(--lime); color:var(--ink); border-bottom:2px solid var(--ink); font:800 10px "IBM Plex Mono","IBM Plex Mono Fallback",monospace; text-transform:uppercase; }
 .featured-price .price-for,.featured-price .price span { color:#aeb6b0; }

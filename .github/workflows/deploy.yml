@@ -145,8 +145,22 @@ jobs:
         run: |
           ua="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
           fail=0
+          # A file this deploy adds can 404 at some Cloudflare locations for a
+          # few seconds after `wrangler deploy` returns, while files that
+          # already existed are still served. So a 404 is retried, up to four
+          # tries 10 s apart, before it counts; any other answer is final.
+          probe() {
+            local out try
+            for try in 1 2 3 4; do
+              out=$(curl -sS -A "$ua" -o /dev/null -w '%{http_code} %{content_type}' "$@")
+              [ "${out%% *}" = 404 ] && [ "$try" -lt 4 ] || break
+              sleep 10
+            done
+            echo "$out"
+          }
           check() {
-            code=$(curl -sSL -A "$ua" -o /dev/null -w '%{http_code}' "https://cairncareers.com$1")
+            code=$(probe -L "https://cairncareers.com$1")
+            code=${code%% *}
             case "$code" in
               200) echo "  $1 -> 200" ;;
               403) echo "::warning::$1 returned 403 (Cloudflare challenged the CI runner IP; not a deploy failure)" ;;
@@ -156,7 +170,7 @@ jobs:
           for p in / /roadmap /contact /privacy /terms /refunds /BingSiteAuth.xml; do check "$p"; done
 
           # Markdown for agents: the same URL must answer in Markdown when asked.
-          type=$(curl -sS -A "$ua" -H "Accept: text/markdown" -o /dev/null -w '%{http_code} %{content_type}' "https://cairncareers.com/methodology")
+          type=$(probe -H "Accept: text/markdown" "https://cairncareers.com/methodology")
           case "$type" in
             "200 text/markdown"*) echo "  /methodology (Accept: text/markdown) -> $type" ;;
             403*) echo "::warning::/methodology Markdown check returned 403 (Cloudflare challenged the CI runner IP)" ;;
@@ -164,7 +178,7 @@ jobs:
           esac
 
           # auth.md for agents: a static file that must answer as Markdown.
-          type=$(curl -sS -A "$ua" -o /dev/null -w '%{http_code} %{content_type}' "https://cairncareers.com/auth.md")
+          type=$(probe "https://cairncareers.com/auth.md")
           case "$type" in
             "200 text/markdown"*) echo "  /auth.md -> $type" ;;
             403*) echo "::warning::/auth.md returned 403 (Cloudflare challenged the CI runner IP)" ;;
@@ -172,7 +186,7 @@ jobs:
           esac
 
           # API catalog (RFC 9727): must answer 200 as application/linkset+json.
-          type=$(curl -sS -A "$ua" -o /dev/null -w '%{http_code} %{content_type}' "https://cairncareers.com/.well-known/api-catalog")
+          type=$(probe "https://cairncareers.com/.well-known/api-catalog")
           case "$type" in
             "200 application/linkset+json"*) echo "  /.well-known/api-catalog -> $type" ;;
             403*) echo "::warning::/.well-known/api-catalog returned 403 (Cloudflare challenged the CI runner IP)" ;;
@@ -180,7 +194,7 @@ jobs:
           esac
 
           # MCP: the server card must answer, and /mcp must list its tools.
-          type=$(curl -sS -A "$ua" -o /dev/null -w '%{http_code} %{content_type}' "https://cairncareers.com/.well-known/mcp/server-card.json")
+          type=$(probe "https://cairncareers.com/.well-known/mcp/server-card.json")
           case "$type" in
             "200 application/json"*) echo "  /.well-known/mcp/server-card.json -> $type" ;;
             403*) echo "::warning::/.well-known/mcp/server-card.json returned 403 (Cloudflare challenged the CI runner IP)" ;;
@@ -196,11 +210,21 @@ jobs:
 
           # Agent Skills: clients reject a skill whose bytes do not match its
           # index digest, so check every one against what production serves.
-          index=$(curl -sS -A "$ua" -w '\n%{http_code}' "https://cairncareers.com/.well-known/agent-skills/index.json")
+          # Same 404 retry as probe(), and a new or changed skill can
+          # briefly serve its old bytes, so a mismatch is retried the same way.
+          for try in 1 2 3 4; do
+            index=$(curl -sS -A "$ua" -w '\n%{http_code}' "https://cairncareers.com/.well-known/agent-skills/index.json")
+            [ "$(tail -n1 <<<"$index")" = 404 ] && [ "$try" -lt 4 ] || break
+            sleep 10
+          done
           case "$(tail -n1 <<<"$index")" in
             200)
               while read -r url digest; do
-                got="sha256:$(curl -sS -A "$ua" "https://cairncareers.com$url" | sha256sum | cut -d' ' -f1)"
+                for try in 1 2 3 4; do
+                  got="sha256:$(curl -sS -A "$ua" "https://cairncareers.com$url" | sha256sum | cut -d' ' -f1)"
+                  [ "$got" != "$digest" ] && [ "$try" -lt 4 ] || break
+                  sleep 10
+                done
                 if [ "$got" = "$digest" ]; then echo "  $url digest ok"; else echo "::error::$url digest $got does not match index $digest"; fail=1; fi
               done < <(sed '$d' <<<"$index" | jq -r '.skills[] | "\(.url) \(.digest)"')
               ;;

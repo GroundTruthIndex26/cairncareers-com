@@ -19,6 +19,7 @@ Every page below is also available as Markdown: request it with `Accept: text/ma
 ## Support
 
 - [Contact](https://cairncareers.com/contact): Form or details for reaching the Cairn Careers team.
+- [Public API](https://cairncareers.com/docs/api.md): The form endpoints behind the site (signups, contact, beta count, health). OpenAPI spec at https://cairncareers.com/openapi.json; RFC 9727 catalog at https://cairncareers.com/.well-known/api-catalog.
 
 ## Legal
 

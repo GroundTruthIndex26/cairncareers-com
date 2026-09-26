@@ -1,0 +1,151 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "CairnCareers public API",
+    "version": "1.0.0",
+    "summary": "Form endpoints behind cairncareers.com: launch and beta signups, the contact form, the beta signup count, and a health check.",
+    "description": "These endpoints exist to serve the forms on cairncareers.com. They are public and need no key. The two POST endpoints share a limit of 10 requests per minute per IP and reject bodies over 32 KB. Human-readable docs: https://cairncareers.com/docs/api.md",
+    "contact": { "name": "CairnCareers", "email": "contact@cairncareers.com", "url": "https://cairncareers.com/contact" }
+  },
+  "servers": [{ "url": "https://cairncareers.com" }],
+  "paths": {
+    "/api/launch-notifications": {
+      "post": {
+        "operationId": "createLaunchNotification",
+        "summary": "Sign up for launch news or request beta access",
+        "description": "Saves an email address to the launch list, or to the beta list when source is beta-request, and sends one acknowledgment email. Posting an address already on the launch list with source beta-request moves it to the beta list.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "maxLength": 320 },
+                  "source": {
+                    "type": "string",
+                    "enum": ["launch-notification", "beta-request"],
+                    "default": "launch-notification",
+                    "description": "Any other value is treated as launch-notification."
+                  },
+                  "website": { "type": "string", "description": "Honeypot. Leave empty or omit." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/Saved" },
+          "400": { "$ref": "#/components/responses/Error" },
+          "413": { "$ref": "#/components/responses/Error" },
+          "429": { "$ref": "#/components/responses/Error" },
+          "502": { "$ref": "#/components/responses/Error" },
+          "503": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    },
+    "/api/contact": {
+      "post": {
+        "operationId": "sendContactMessage",
+        "summary": "Send a message to the CairnCareers team",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "message"],
+                "properties": {
+                  "name": { "type": "string", "maxLength": 200 },
+                  "email": { "type": "string", "format": "email", "maxLength": 320 },
+                  "subject": { "type": "string", "maxLength": 300 },
+                  "message": { "type": "string", "maxLength": 5000 },
+                  "website": { "type": "string", "description": "Honeypot. Leave empty or omit." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "$ref": "#/components/responses/Saved" },
+          "400": { "$ref": "#/components/responses/Error" },
+          "413": { "$ref": "#/components/responses/Error" },
+          "429": { "$ref": "#/components/responses/Error" },
+          "502": { "$ref": "#/components/responses/Error" },
+          "503": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    },
+    "/api/beta-count": {
+      "get": {
+        "operationId": "getBetaCount",
+        "summary": "How many addresses have requested beta access",
+        "description": "Returns null below 10. Cached at the edge for 10 minutes.",
+        "responses": {
+          "200": {
+            "description": "The current count.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["count"],
+                  "properties": { "count": { "type": ["integer", "null"], "minimum": 10 } }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "operationId": "getHealth",
+        "summary": "Health check",
+        "description": "Answers 200 whenever the Worker that serves the site and the API is up.",
+        "responses": {
+          "200": {
+            "description": "The Worker is up.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["status"],
+                  "properties": { "status": { "type": "string", "const": "ok" } }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "Saved": {
+        "description": "Accepted.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["saved"],
+              "properties": { "saved": { "type": "boolean", "const": true } }
+            }
+          }
+        }
+      },
+      "Error": {
+        "description": "Rejected. The message is written to be shown to the person filling in the form.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["error"],
+              "properties": { "error": { "type": "string" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

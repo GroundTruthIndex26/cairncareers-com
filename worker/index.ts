@@ -733,10 +733,14 @@ function withHeaders(response: Response, pathname: string): Response {
   // Pages answer in Markdown or HTML depending on Accept (serveMarkdown).
   if ((out.headers.get("Content-Type") || "").includes("text/html")) out.headers.append("Vary", "Accept");
   // Agent discovery (RFC 8288): the homepage points to its Markdown copy and
-  // to llms.txt, the site-wide index written for language models. A 304 has
-  // no Content-Type, and must carry it too or a revalidated copy loses it.
+  // to llms.txt, the site-wide index written for language models, and to the
+  // RFC 9727 API catalog (apiCatalog). A 304 has no Content-Type, and must
+  // carry it too or a revalidated copy loses it.
   if (pathname === "/" && (response.ok || response.status === 304)) {
-    out.headers.set("Link", '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"; type="text/plain"');
+    out.headers.set(
+      "Link",
+      '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"; type="text/plain", </.well-known/api-catalog>; rel="api-catalog"',
+    );
   }
   // Only a real .md file: a missing one gets the HTML 404 page, which must stay text/html.
   if (pathname.endsWith(".md") && response.ok) out.headers.set("Content-Type", "text/markdown; charset=utf-8");
@@ -944,6 +948,39 @@ async function handleUnsubscribe(request: Request, env: Env): Promise<Response> 
   return Response.json({ ok: r.ok }, { status: r.status, headers: { "Cache-Control": "no-store" } });
 }
 
+/**
+ * API CATALOG (RFC 9727)
+ * /.well-known/api-catalog lets an agent find the API without scraping: one
+ * linkset entry for the public API, pointing to its OpenAPI spec
+ * (client/public/openapi.json), its human docs (client/public/docs/api.md)
+ * and /api/health. Built here rather than shipped as a static file so the
+ * Content-Type is exact. The homepage Link header points here too
+ * (withHeaders). Add an entry when a new API goes public.
+ */
+const API_CATALOG = JSON.stringify({
+  linkset: [
+    {
+      anchor: "https://cairncareers.com/api",
+      "service-desc": [{ href: "https://cairncareers.com/openapi.json", type: "application/vnd.oai.openapi+json;version=3.1" }],
+      "service-doc": [{ href: "https://cairncareers.com/docs/api.md", type: "text/markdown" }],
+      status: [{ href: "https://cairncareers.com/api/health", type: "application/json" }],
+    },
+  ],
+});
+
+function apiCatalog(request: Request): Response {
+  const out = new Response(request.method === "HEAD" ? null : API_CATALOG, {
+    headers: {
+      "Content-Type": 'application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"',
+      "Cache-Control": "public, max-age=3600",
+      "Access-Control-Allow-Origin": "*",
+      Link: '<https://cairncareers.com/.well-known/api-catalog>; rel="api-catalog"',
+    },
+  });
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
+  return out;
+}
+
 function shortLinkRedirect(url: URL): Response | null {
   const match = /^\/([a-z0-9])$/.exec(url.pathname);
   if (!match) return null;
@@ -983,6 +1020,14 @@ export default {
 
     if (request.method === "GET" && url.pathname === "/api/beta-count") {
       return handleBetaCount(request, env, ctx);
+    }
+
+    if (request.method === "GET" && url.pathname === "/api/health") {
+      return secured(Response.json({ status: "ok" }));
+    }
+
+    if ((request.method === "GET" || request.method === "HEAD") && url.pathname === "/.well-known/api-catalog") {
+      return apiCatalog(request);
     }
 
     const markdown = await serveMarkdown(request, env, url);

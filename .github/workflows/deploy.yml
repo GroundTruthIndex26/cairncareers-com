@@ -128,4 +128,12 @@ jobs:
             403*) echo "::warning::/methodology Markdown check returned 403 (Cloudflare challenged the CI runner IP)" ;;
             *)    echo "::error::/methodology with Accept: text/markdown returned $type"; fail=1 ;;
           esac
+
+          # API catalog (RFC 9727): must answer 200 as application/linkset+json.
+          type=$(curl -sS -A "$ua" -o /dev/null -w '%{http_code} %{content_type}' "https://cairncareers.com/.well-known/api-catalog")
+          case "$type" in
+            "200 application/linkset+json"*) echo "  /.well-known/api-catalog -> $type" ;;
+            403*) echo "::warning::/.well-known/api-catalog returned 403 (Cloudflare challenged the CI runner IP)" ;;
+            *)    echo "::error::/.well-known/api-catalog returned $type"; fail=1 ;;
+          esac
           exit $fail

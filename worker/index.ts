@@ -720,7 +720,7 @@ function cacheControlFor(pathname: string): string | null {
   if (pathname.startsWith("/media/") || pathname.startsWith("/brand/")) {
     return "public, max-age=2592000, stale-while-revalidate=604800";
   }
-  if (/\.(txt|xml)$/.test(pathname)) return "public, max-age=3600";
+  if (/\.(txt|xml)$/.test(pathname) || pathname.startsWith("/.well-known/agent-skills/")) return "public, max-age=3600";
   return null;
 }
 
@@ -745,6 +745,9 @@ function withHeaders(response: Response, pathname: string): Response {
   }
   // Only a real .md file: a missing one gets the HTML 404 page, which must stay text/html.
   if (pathname.endsWith(".md") && response.ok) out.headers.set("Content-Type", "text/markdown; charset=utf-8");
+  // Agent Skills (scripts/agent-skills.mjs builds the index): public files
+  // that browser-based agents may fetch cross-origin.
+  if (pathname.startsWith("/.well-known/agent-skills/")) out.headers.set("Access-Control-Allow-Origin", "*");
   return out;
 }
 
@@ -1119,10 +1122,10 @@ async function callMcpTool(
 ): Promise<ReturnType<typeof toolText>> {
   if (name === "list_pages") {
     const index = await (await env.ASSETS.fetch(new URL("/llms.txt", url.origin))).text();
-    // llms.txt also links this server's own card, which is not a page.
+    // llms.txt also links this server's own card and the skills index, which are not pages.
     const pages = [...index.matchAll(/^- \[([^\]]+)\]\(https:\/\/cairncareers\.com(\/[^)]*)\): (.+)$/gm)]
       .map(([, title, path, summary]) => ({ path: path.replace(/\.md$/, ""), title, summary }))
-      .filter((page) => !page.path.startsWith("/mcp"));
+      .filter((page) => !page.path.startsWith("/mcp") && !page.path.startsWith("/.well-known/"));
     return toolText(JSON.stringify(pages, null, 2));
   }
 

@@ -185,4 +185,18 @@ jobs:
             *' HTTP403') echo "::warning::/mcp returned 403 (Cloudflare challenged the CI runner IP)" ;;
             *)           echo "::error::/mcp tools/list failed: ${reply: -200}"; fail=1 ;;
           esac
+
+          # Agent Skills: clients reject a skill whose bytes do not match its
+          # index digest, so check every one against what production serves.
+          index=$(curl -sS -A "$ua" -w '\n%{http_code}' "https://cairncareers.com/.well-known/agent-skills/index.json")
+          case "$(tail -n1 <<<"$index")" in
+            200)
+              while read -r url digest; do
+                got="sha256:$(curl -sS -A "$ua" "https://cairncareers.com$url" | sha256sum | cut -d' ' -f1)"
+                if [ "$got" = "$digest" ]; then echo "  $url digest ok"; else echo "::error::$url digest $got does not match index $digest"; fail=1; fi
+              done < <(sed '$d' <<<"$index" | jq -r '.skills[] | "\(.url) \(.digest)"')
+              ;;
+            403) echo "::warning::agent-skills index returned 403 (Cloudflare challenged the CI runner IP)" ;;
+            *)   echo "::error::agent-skills index returned $(tail -n1 <<<"$index")"; fail=1 ;;
+          esac
           exit $fail

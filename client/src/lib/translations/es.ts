@@ -33,7 +33,7 @@ export const es: typeof en = {
   },
   hero: {
     title: "Convierte lo que hiciste en la universidad en un primer empleo que resista a la IA.",
-    definition: "CairnCareers es una herramienta de planificación profesional para estudiantes universitarios y recién graduados que puntúa cada trayectoria profesional según su exposición a la IA y convierte el resultado en un plan, período por período, hacia un primer empleo.",
+    definition: "CairnCareers es una herramienta de planificación profesional que convierte las opciones profesionales de estudiantes universitarios y recién graduados en un plan, período por período, hacia un primer empleo.",
     campaigns: {
       default: {
         eyebrow: "Para estudiantes universitarios y recién graduados",

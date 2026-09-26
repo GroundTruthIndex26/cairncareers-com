@@ -34,7 +34,7 @@ export const en = {
   },
   hero: {
     title: "Turn what you did in college into a first job that holds up to AI.",
-    definition: "CairnCareers is a career-planning tool for college students and recent graduates that scores each career path for AI exposure and turns the result into a term-by-term plan toward a first job.",
+    definition: "CairnCareers is a career-planning tool that turns college students' and recent graduates' career options into a term-by-term plan toward a first job.",
     campaigns: {
       default: {
         eyebrow: "For college students and recent graduates",

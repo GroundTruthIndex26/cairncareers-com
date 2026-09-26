@@ -967,7 +967,10 @@ const API_CATALOG = JSON.stringify({
     {
       anchor: "https://cairncareers.com/api",
       "service-desc": [{ href: "https://cairncareers.com/openapi.json", type: "application/vnd.oai.openapi+json;version=3.1" }],
-      "service-doc": [{ href: "https://cairncareers.com/docs/api.md", type: "text/markdown" }],
+      "service-doc": [
+        { href: "https://cairncareers.com/docs/api.md", type: "text/markdown" },
+        { href: "https://cairncareers.com/auth.md", type: "text/markdown", title: "Authentication for agents (none needed)" },
+      ],
       status: [{ href: "https://cairncareers.com/api/health", type: "application/json" }],
     },
   ],

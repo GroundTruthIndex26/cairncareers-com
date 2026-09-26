@@ -21,6 +21,7 @@ Every page below is also available as Markdown: request it with `Accept: text/ma
 - [Contact](https://cairncareers.com/contact): Form or details for reaching the Cairn Careers team.
 - [Public API](https://cairncareers.com/docs/api.md): The form endpoints behind the site (signups, contact, beta count, health). OpenAPI spec at https://cairncareers.com/openapi.json; RFC 9727 catalog at https://cairncareers.com/.well-known/api-catalog.
 - [MCP server](https://cairncareers.com/mcp/server-card): Read-only MCP server at https://cairncareers.com/mcp (Streamable HTTP, no key) with tools to list pages, read any page as Markdown, and get the beta count.
+- [Agent authentication](https://cairncareers.com/auth.md): auth.md for agents. Nothing public needs a key, and there is no agent registration or credential issuance.
 - [Agent skills](https://cairncareers.com/.well-known/agent-skills/index.json): Agent Skills index with two skills, `cairncareers` (answering questions about the product from its own pages) and `explain-ai-exposure-score` (explaining what a score means and how it is calculated).
 
 ## Legal

@@ -131,35 +131,48 @@ export function useI18n(): I18n {
  * language is data rather than three copies of the JSX: [text](href) for a
  * link, **text** for strong, *text* for emphasis. External links open in a
  * new tab.
+ *
+ * A * with a letter or digit on both sides (the one in "O*NET") is a literal
+ * character, never emphasis. Without that rule the renderer paired the * in
+ * "O*NET" with the next one in the paragraph, italicised everything between
+ * them, and swallowed any link in the way.
  */
-export function rich(text: string): ReactNode[] {
+// Letters and digits, including the accented Latin letters es and fr use.
+const INTRAWORD_STAR = /([0-9A-Za-z\u00C0-\u024F])\*(?=[0-9A-Za-z\u00C0-\u024F])/g;
+const STAR_STANDIN = "\uE000";
+const protectStars = (text: string) => text.replace(INTRAWORD_STAR, `$1${STAR_STANDIN}`);
+const restoreStars = (text: string) => text.replaceAll(STAR_STANDIN, "*");
+
+export function rich(source: string): ReactNode[] {
+  const text = protectStars(source);
   const out: ReactNode[] = [];
   const re = /\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*/g;
   let last = 0;
   let match: RegExpExecArray | null;
   let key = 0;
   while ((match = re.exec(text)) !== null) {
-    if (match.index > last) out.push(text.slice(last, match.index));
+    if (match.index > last) out.push(restoreStars(text.slice(last, match.index)));
     if (match[1] !== undefined) {
-      const href = match[2];
+      const href = restoreStars(match[2]);
       const external = /^https?:/.test(href);
       out.push(
         <a key={key++} href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
-          {match[1]}
+          {restoreStars(match[1])}
         </a>,
       );
     } else if (match[3] !== undefined) {
-      out.push(<strong key={key++}>{match[3]}</strong>);
+      out.push(<strong key={key++}>{restoreStars(match[3])}</strong>);
     } else if (match[4] !== undefined) {
-      out.push(<em key={key++}>{match[4]}</em>);
+      out.push(<em key={key++}>{restoreStars(match[4])}</em>);
     }
     last = re.lastIndex;
   }
-  if (last < text.length) out.push(text.slice(last));
+  if (last < text.length) out.push(restoreStars(text.slice(last)));
   return out;
 }
 
 /** The same string with the markup removed, for JSON-LD and meta tags. */
 export function plain(text: string): string {
-  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\*\*([^*]+)\*\*/g, "$1").replace(/\*([^*]+)\*/g, "$1");
+  const stripped = protectStars(text).replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\*\*([^*]+)\*\*/g, "$1").replace(/\*([^*]+)\*/g, "$1");
+  return restoreStars(stripped);
 }

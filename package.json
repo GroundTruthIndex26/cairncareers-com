@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender.mjs && node scripts/markdown.mjs && node scripts/sitemap.mjs",
+    "build": "vite build && node scripts/prerender.mjs && node scripts/markdown.mjs && node scripts/sitemap.mjs && node scripts/agent-skills.mjs",
     "markdown": "node scripts/markdown.mjs",
     "build:spa": "vite build",
     "prerender": "node scripts/prerender.mjs",
@@ -14,7 +14,8 @@
     "check": "tsc --noEmit",
     "deploy": "npm run build && wrangler deploy",
     "format": "prettier --write .",
-    "sitemap": "node scripts/sitemap.mjs"
+    "sitemap": "node scripts/sitemap.mjs",
+    "agent-skills": "node scripts/agent-skills.mjs"
   },
   "dependencies": {
     "@heycatch/sdk": "^0.7.0",

@@ -170,4 +170,19 @@ jobs:
             403*) echo "::warning::/.well-known/api-catalog returned 403 (Cloudflare challenged the CI runner IP)" ;;
             *)    echo "::error::/.well-known/api-catalog returned $type"; fail=1 ;;
           esac
+
+          # MCP: the server card must answer, and /mcp must list its tools.
+          type=$(curl -sS -A "$ua" -o /dev/null -w '%{http_code} %{content_type}' "https://cairncareers.com/.well-known/mcp/server-card.json")
+          case "$type" in
+            "200 application/json"*) echo "  /.well-known/mcp/server-card.json -> $type" ;;
+            403*) echo "::warning::/.well-known/mcp/server-card.json returned 403 (Cloudflare challenged the CI runner IP)" ;;
+            *)    echo "::error::/.well-known/mcp/server-card.json returned $type"; fail=1 ;;
+          esac
+          reply=$(curl -sS -A "$ua" -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
+            -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' -w ' HTTP%{http_code}' "https://cairncareers.com/mcp")
+          case "$reply" in
+            *'"get_page"'*' HTTP200') echo "  /mcp tools/list -> 200" ;;
+            *' HTTP403') echo "::warning::/mcp returned 403 (Cloudflare challenged the CI runner IP)" ;;
+            *)           echo "::error::/mcp tools/list failed: ${reply: -200}"; fail=1 ;;
+          esac
           exit $fail

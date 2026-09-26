@@ -36,6 +36,16 @@ Send a message to the team.
 
 `{"status": "ok"}` whenever the site is up.
 
+## MCP server
+
+A read-only MCP server at https://cairncareers.com/mcp (Streamable HTTP, no key). Tools:
+
+- `list_pages`: every public page, with its path and a one-line summary.
+- `get_page`: one page as Markdown, by path (`/methodology`, `/vs/chatgpt`, `/` for home).
+- `get_beta_count`: the same number as `GET /api/beta-count`.
+
+Nothing it does writes data or sends email. Limit: 60 requests per minute per IP. Server card: https://cairncareers.com/mcp/server-card (also at `/.well-known/mcp/server-card.json`, and listed in `/.well-known/ai-catalog.json`).
+
 ## Questions
 
 Email contact@cairncareers.com or use https://cairncareers.com/contact.

@@ -49,6 +49,14 @@
       "name": "API_RATE_LIMITER",
       "namespace_id": "1001",
       "simple": { "limit": 10, "period": 60 }
+    },
+    // The read-only MCP server at /mcp. An agent makes several calls in a
+    // row (initialize, tools/list, then a few tools/call), so it gets more
+    // room than the forms; nothing it does writes or sends email.
+    {
+      "name": "MCP_RATE_LIMITER",
+      "namespace_id": "1002",
+      "simple": { "limit": 60, "period": 60 }
     }
   ],
   // Two schedules (worker/index.ts `scheduled`). 13:00 UTC is the daily signup

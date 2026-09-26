@@ -40,6 +40,7 @@ interface Env {
   APP_URL?: string;
   ASSETS: Fetcher;
   API_RATE_LIMITER?: RateLimiter;
+  MCP_RATE_LIMITER?: RateLimiter;
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -847,13 +848,14 @@ function secured(response: Response): Response {
  * Both endpoints write to Supabase, and neither had any limit, so a single
  * client could insert rows as fast as it could open connections. The honeypot
  * only catches bots that fill hidden fields. Keyed on the client IP that
- * Cloudflare resolves, which the client cannot forge at the edge.
+ * Cloudflare resolves, which the client cannot forge at the edge. The MCP
+ * server passes its own, looser limiter.
  */
-async function rateLimited(request: Request, env: Env): Promise<boolean> {
-  if (!env.API_RATE_LIMITER) return false;
+async function rateLimited(request: Request, env: Env, limiter = env.API_RATE_LIMITER): Promise<boolean> {
+  if (!limiter) return false;
   const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
   try {
-    const { success } = await env.API_RATE_LIMITER.limit({ key: ip });
+    const { success } = await limiter.limit({ key: ip });
     return !success;
   } catch (error) {
     // A limiter outage must not take the forms down with it.
@@ -981,6 +983,248 @@ function apiCatalog(request: Request): Response {
   return out;
 }
 
+/**
+ * MCP SERVER
+ * A read-only MCP server at /mcp: Streamable HTTP, stateless, one JSON
+ * response per POST, no sessions and no SSE stream. Its three tools never
+ * write anything or send email:
+ *   list_pages      the page index, parsed from llms.txt so agents and
+ *                   llms.txt readers see the same list
+ *   get_page        a page's build-time Markdown copy (the same files
+ *                   serveMarkdown answers with)
+ *   get_beta_count  the same cached number as /api/beta-count
+ *
+ * The Server Card (MCP SEP-2127, still a draft) says where to connect. It is
+ * served at /mcp/server-card, where the draft recommends, and at
+ * /.well-known/mcp/server-card.json, where scanners look today, and is listed
+ * in /.well-known/ai-catalog.json. Its serverInfo, endpoint and capabilities
+ * fields repeat the older SEP-1649 shape that those scanners still read.
+ *
+ * Origin is not checked. The MCP spec asks for that to stop DNS rebinding
+ * against servers on a private network; everything here is public already.
+ */
+const MCP_PROTOCOL_VERSIONS = ["2025-11-25", "2025-06-18", "2025-03-26"];
+const MCP_ENDPOINT = "https://cairncareers.com/mcp";
+const MCP_SERVER_INFO = { name: "cairncareers", title: "CairnCareers", version: "1.0.0" };
+const MCP_CAPABILITIES = { tools: { listChanged: false } };
+const MCP_READ_ONLY = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
+const NO_ARGS = { type: "object", properties: {}, additionalProperties: false };
+
+const MCP_TOOLS = [
+  {
+    name: "list_pages",
+    title: "List pages",
+    description:
+      "List every public page on cairncareers.com with its path and a one-line summary. Pass a path to get_page to read it.",
+    inputSchema: NO_ARGS,
+    annotations: MCP_READ_ONLY,
+  },
+  {
+    name: "get_page",
+    title: "Get page",
+    description:
+      "Read one cairncareers.com page as Markdown: the product overview, the methodology behind the AI-exposure score and its sources, the sample roadmap, the comparisons with other tools, the API docs, or the privacy, terms and refund policies.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        path: {
+          type: "string",
+          description: 'A path from list_pages, such as "/methodology" or "/vs/chatgpt". "/" is the home page.',
+        },
+      },
+      required: ["path"],
+      additionalProperties: false,
+    },
+    annotations: MCP_READ_ONLY,
+  },
+  {
+    name: "get_beta_count",
+    title: "Get beta count",
+    description: "How many people have requested beta access. Withheld while fewer than 10 have. Refreshed every 10 minutes.",
+    inputSchema: NO_ARGS,
+    annotations: MCP_READ_ONLY,
+  },
+];
+
+const MCP_INSTRUCTIONS =
+  "CairnCareers maps a student's courses and experience to careers, scoring each for AI exposure from linked federal task data. " +
+  "Call list_pages, then get_page for the page you need. Every figure on a page carries a numbered source link; cite it when you repeat the figure.";
+
+const MCP_SERVER_CARD = JSON.stringify({
+  $schema: "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json",
+  name: "com.cairncareers/site",
+  title: "CairnCareers",
+  version: MCP_SERVER_INFO.version,
+  description: "Read-only access to cairncareers.com: its pages as Markdown, the methodology, and the beta count.",
+  websiteUrl: "https://cairncareers.com",
+  icons: [{ src: "https://cairncareers.com/brand/cairn-icon-256.png", mimeType: "image/png", sizes: ["256x256"] }],
+  remotes: [{ type: "streamable-http", url: MCP_ENDPOINT, supportedProtocolVersions: MCP_PROTOCOL_VERSIONS }],
+  serverInfo: MCP_SERVER_INFO,
+  endpoint: MCP_ENDPOINT,
+  capabilities: MCP_CAPABILITIES,
+});
+
+const AI_CATALOG = JSON.stringify({
+  specVersion: "1.0",
+  entries: [
+    {
+      identifier: "urn:air:cairncareers.com:mcp:site",
+      type: "application/mcp-server-card+json",
+      url: "https://cairncareers.com/mcp/server-card",
+    },
+  ],
+});
+
+/** FNV-1a, enough for an ETag on a document that only changes on deploy. */
+function etagFor(text: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 0x01000193);
+  return `"${(h >>> 0).toString(16)}"`;
+}
+
+/** Public metadata documents: open CORS, an hour of caching, ETag revalidation. */
+function discoveryDoc(request: Request, body: string, contentType: string): Response {
+  const etag = etagFor(body);
+  const headers: Record<string, string> = {
+    ...SECURITY_HEADERS,
+    "Content-Type": contentType,
+    "Cache-Control": "public, max-age=3600",
+    ETag: etag,
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, If-None-Match",
+  };
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
+  if (request.headers.get("If-None-Match") === etag) return new Response(null, { status: 304, headers });
+  return new Response(request.method === "HEAD" ? null : body, { headers });
+}
+
+const MCP_CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Accept, MCP-Protocol-Version, Mcp-Session-Id, Last-Event-ID",
+};
+
+const rpcResult = (id: unknown, result: unknown) => Response.json({ jsonrpc: "2.0", id, result });
+const rpcError = (id: unknown, code: number, message: string, status = 200) =>
+  Response.json({ jsonrpc: "2.0", id, error: { code, message } }, { status });
+const toolText = (text: string, isError = false) => ({ content: [{ type: "text", text }], ...(isError ? { isError } : {}) });
+
+async function callMcpTool(
+  name: string,
+  args: Record<string, unknown>,
+  env: Env,
+  ctx: ExecutionContext,
+  url: URL,
+): Promise<ReturnType<typeof toolText>> {
+  if (name === "list_pages") {
+    const index = await (await env.ASSETS.fetch(new URL("/llms.txt", url.origin))).text();
+    // llms.txt also links this server's own card, which is not a page.
+    const pages = [...index.matchAll(/^- \[([^\]]+)\]\(https:\/\/cairncareers\.com(\/[^)]*)\): (.+)$/gm)]
+      .map(([, title, path, summary]) => ({ path: path.replace(/\.md$/, ""), title, summary }))
+      .filter((page) => !page.path.startsWith("/mcp"));
+    return toolText(JSON.stringify(pages, null, 2));
+  }
+
+  if (name === "get_page") {
+    const raw = typeof args.path === "string" ? args.path.trim() : "";
+    let path = raw.replace(/^https?:\/\/(www\.)?cairncareers\.com/, "").replace(/\.md$/, "").replace(/\/+$/, "");
+    if (!path.startsWith("/")) path = `/${path}`;
+    const missing = toolText(`There is no page at "${raw}". Call list_pages for the valid paths.`, true);
+    if (!/^\/[a-z0-9/-]*$/.test(path) || path.includes("//")) return missing;
+    const asset = await env.ASSETS.fetch(new URL(path === "/" ? "/index.md" : `${path}.md`, url.origin));
+    return asset.status === 200 ? toolText(await asset.text()) : missing;
+  }
+
+  // get_beta_count
+  const res = await handleBetaCount(new Request(new URL("/api/beta-count", url.origin)), env, ctx);
+  const { count } = (await res.json()) as { count: number | null };
+  return toolText(
+    count === null
+      ? "Fewer than 10 people have requested beta access so far, so the exact count is not published."
+      : `${count} people have requested beta access.`,
+  );
+}
+
+async function handleMcp(request: Request, env: Env, ctx: ExecutionContext, url: URL): Promise<Response> {
+  const version = request.headers.get("MCP-Protocol-Version");
+  if (version && !MCP_PROTOCOL_VERSIONS.includes(version)) {
+    return rpcError(null, -32600, `Unsupported MCP-Protocol-Version ${version}.`, 400);
+  }
+  let message: unknown;
+  try {
+    message = await request.json();
+  } catch {
+    return rpcError(null, -32700, "Parse error.", 400);
+  }
+  if (!message || typeof message !== "object" || Array.isArray(message)) {
+    return rpcError(null, -32600, "Send one JSON-RPC message per request.", 400);
+  }
+  const { id, method, params } = message as { id?: unknown; method?: unknown; params?: Record<string, unknown> };
+  // Notifications (no id) and client responses (no method) need no answer.
+  if (id === undefined || id === null || typeof method !== "string") return new Response(null, { status: 202 });
+
+  switch (method) {
+    case "initialize": {
+      const asked = params?.protocolVersion;
+      return rpcResult(id, {
+        protocolVersion:
+          typeof asked === "string" && MCP_PROTOCOL_VERSIONS.includes(asked) ? asked : MCP_PROTOCOL_VERSIONS[0],
+        capabilities: MCP_CAPABILITIES,
+        serverInfo: { ...MCP_SERVER_INFO, websiteUrl: "https://cairncareers.com" },
+        instructions: MCP_INSTRUCTIONS,
+      });
+    }
+    case "ping":
+      return rpcResult(id, {});
+    case "tools/list":
+      return rpcResult(id, { tools: MCP_TOOLS });
+    case "tools/call": {
+      const name = params?.name;
+      if (typeof name !== "string" || !MCP_TOOLS.some((t) => t.name === name)) {
+        return rpcError(id, -32602, `Unknown tool ${String(name)}.`);
+      }
+      const args = params?.arguments && typeof params.arguments === "object" ? (params.arguments as Record<string, unknown>) : {};
+      return rpcResult(id, await callMcpTool(name, args, env, ctx, url));
+    }
+    default:
+      return rpcError(id, -32601, `Method not found: ${method}.`);
+  }
+}
+
+/** Everything MCP: the server card, the AI catalog and /mcp itself. Null for any other path. */
+async function routeMcp(request: Request, env: Env, ctx: ExecutionContext, url: URL): Promise<Response | null> {
+  const p = url.pathname;
+  const readable = request.method === "GET" || request.method === "HEAD" || request.method === "OPTIONS";
+  if (p === "/mcp/server-card" && readable) {
+    return discoveryDoc(request, MCP_SERVER_CARD, "application/mcp-server-card+json");
+  }
+  // Scanners fetch the .json path and expect plain JSON.
+  if (p === "/.well-known/mcp/server-card.json" && readable) {
+    return discoveryDoc(request, MCP_SERVER_CARD, "application/json");
+  }
+  if (p === "/.well-known/ai-catalog.json" && readable) {
+    return discoveryDoc(request, AI_CATALOG, "application/ai-catalog+json");
+  }
+  if (p !== "/mcp") return null;
+
+  const withCors = (response: Response): Response => {
+    const out = secured(response);
+    for (const [k, v] of Object.entries(MCP_CORS)) out.headers.set(k, v);
+    return out;
+  };
+  if (request.method === "OPTIONS") return withCors(new Response(null, { status: 204 }));
+  if (request.method !== "POST") {
+    // No server-to-client stream is offered, which the spec answers with 405.
+    return withCors(new Response("This MCP server takes POST only.", { status: 405, headers: { Allow: "POST, OPTIONS" } }));
+  }
+  if (tooLarge(request)) return withCors(rpcError(null, -32600, "That request is too large.", 413));
+  if (await rateLimited(request, env, env.MCP_RATE_LIMITER)) {
+    return withCors(rpcError(null, -32000, "Too many requests. Wait a minute and try again.", 429));
+  }
+  return withCors(await handleMcp(request, env, ctx, url));
+}
+
 function shortLinkRedirect(url: URL): Response | null {
   const match = /^\/([a-z0-9])$/.exec(url.pathname);
   if (!match) return null;
@@ -1029,6 +1273,9 @@ export default {
     if ((request.method === "GET" || request.method === "HEAD") && url.pathname === "/.well-known/api-catalog") {
       return apiCatalog(request);
     }
+
+    const mcp = await routeMcp(request, env, ctx, url);
+    if (mcp) return mcp;
 
     const markdown = await serveMarkdown(request, env, url);
     if (markdown) return markdown;

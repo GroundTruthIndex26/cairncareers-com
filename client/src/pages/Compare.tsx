@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { breadcrumbJsonLd } from "@/components/Breadcrumbs";
 import { PageFooter, PageHeader, PageHero } from "@/components/PageChrome";
 import { usePageMeta } from "@/hooks/usePageMeta";
+import { pageJsonLd } from "@/lib/pageJsonLd";
 
 /**
  * The /vs comparison pages.
@@ -32,6 +33,8 @@ type Comparison = {
   shortName: string;
   documentTitle: string;
   description: string;
+  /** One line for the related-comparisons block on the other /vs pages. */
+  summary: string;
   eyebrow: string;
   title: string;
   intro: string;
@@ -53,6 +56,7 @@ export const COMPARISONS: Comparison[] = [
     shortName: "ChatGPT",
     documentTitle: "CairnCareers vs Asking ChatGPT About Your Career | CairnCareers",
     description: "What you get from asking ChatGPT which entry-level job holds up to AI, compared with CairnCareers: sourced federal task data versus training-data patterns.",
+    summary: "Sourced federal task data and a term-by-term plan, compared with answers from a chatbot's training data.",
     eyebrow: "Comparison",
     title: "CairnCareers vs asking ChatGPT.",
     intro: "Most students try the chatbot first. It is free, it is fast, and it will happily tell you which jobs are safe from AI. The problem is that it cannot show you where any of that came from. This page sets out what each one gives you, and when the chatbot is the right tool.",
@@ -90,6 +94,7 @@ export const COMPARISONS: Comparison[] = [
     shortName: "CareerWing",
     documentTitle: "CairnCareers vs CareerWing | CairnCareers",
     description: "CairnCareers vs CareerWing: a term-by-term roadmap for college students built on federal task data, versus a 30/90/365-day plan for working professionals.",
+    summary: "A term-by-term roadmap for students built on linked sources, compared with CareerWing's 30/90/365-day plan and chat coach.",
     eyebrow: "Comparison",
     title: "CairnCareers vs CareerWing.",
     intro: "CareerWing and CairnCareers both hand you a plan. The difference is who the plan is for and what the clock is. CareerWing counts in days from today. CairnCareers counts in academic terms, because that is the calendar a student actually lives on.",
@@ -126,6 +131,7 @@ export const COMPARISONS: Comparison[] = [
     shortName: "Career Mirror",
     documentTitle: "CairnCareers vs Career Mirror | CairnCareers",
     description: "CairnCareers vs Career Mirror: an AI-exposure score built from sourced federal task data, versus a tool with no published methodology we could find.",
+    summary: "An AI-exposure score with every source linked, compared with Career Mirror's career intelligence tool.",
     eyebrow: "Comparison",
     title: "CairnCareers vs Career Mirror.",
     intro: "Career Mirror describes itself as career intelligence for people who are growing, switching, or building. CairnCareers is narrower on purpose: students and recent graduates choosing a first path. The biggest difference is not the audience, though. It is whether you can see where the numbers came from.",
@@ -162,6 +168,7 @@ export const COMPARISONS: Comparison[] = [
     shortName: "Make the Leap",
     documentTitle: "CairnCareers vs Make the Leap | CairnCareers",
     description: "CairnCareers vs Make the Leap: a roadmap that updates each term, built on federal task data, versus one-time reports built on a founder's coaching frameworks.",
+    summary: "A subscription roadmap that updates each term, compared with Make the Leap's one-time career reports.",
     eyebrow: "Comparison",
     title: "CairnCareers vs Make the Leap.",
     intro: "Make the Leap sells one-time reports. CairnCareers is a subscription that keeps your plan current. Both start free and neither needs a resume. The difference is what the result is built from, and what happens after you read it.",
@@ -221,6 +228,7 @@ export default function Compare({ slug }: { slug: string }) {
   return (
     <div className="site-shell">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd(breadcrumb) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: pageJsonLd({ type: "Article", path, headline: c.title.replace(/\.$/, ""), description: c.description }) }} />
       <PageHeader />
       <PageHero eyebrow={c.eyebrow} title={c.title} breadcrumb={breadcrumb}>
         <p>{c.intro}</p>
@@ -276,10 +284,24 @@ export default function Compare({ slug }: { slug: string }) {
           <p>Statements about {c.name === "asking ChatGPT" ? "ChatGPT" : c.shortName} describe its public pages on the date checked and may have changed since. If something here is out of date, <a href="/contact">tell us</a> and we will correct it.</p>
         </section>
 
-        <nav className="vs-others" aria-label="Other comparisons">
-          <span>Also compare</span>
-          {others.map((item) => <a key={item.slug} href={`/vs/${item.slug}`}>CairnCareers vs {item.shortName}</a>)}
-        </nav>
+        {/* Related reading, chosen by cluster: the other three comparisons plus
+            the methodology every comparison cites. Each link carries a line of
+            context so it reads as a recommendation, not a bare listing. */}
+        <section className="vs-related" aria-labelledby="vs-related-title">
+          <h2 id="vs-related-title">Related comparisons</h2>
+          <ul>
+            {others.map((item) => (
+              <li key={item.slug}>
+                <a href={`/vs/${item.slug}`}>CairnCareers vs {item.shortName}</a>
+                <p>{item.summary}</p>
+              </li>
+            ))}
+            <li>
+              <a href="/methodology">How the AI-exposure score is calculated</a>
+              <p>The three sources behind the AI-exposure score this page cites, each one linked.</p>
+            </li>
+          </ul>
+        </section>
       </div>
 
       <PageFooter />

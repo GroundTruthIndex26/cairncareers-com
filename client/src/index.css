@@ -279,6 +279,9 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .compare-links a { display:inline-flex; align-items:center; gap:8px; font:700 12px "IBM Plex Mono","IBM Plex Mono Fallback",monospace; letter-spacing:.06em; text-transform:uppercase; border-bottom:2px solid var(--ink); padding:6px 2px; }
 .compare-links a:hover { border-color:var(--cyan); }
 .compare-links svg { width:16px; height:16px; }
+.compare-others { margin:18px 0 0; font-size:15px; line-height:1.6; }
+.compare-others a { text-decoration:underline; text-underline-offset:3px; }
+.compare-others a:hover { text-decoration-color:var(--cyan); }
 .vs-body { padding:56px 0 90px; }
 .vs-table { width:100%; border-collapse:collapse; border:2px solid var(--ink); background:var(--paper-light); box-shadow:8px 8px 0 var(--ink); }
 .vs-table th,.vs-table td { padding:16px 18px; vertical-align:top; text-align:left; border-top:1px solid rgba(11,13,12,.18); line-height:1.55; }
@@ -303,10 +306,13 @@ img.cairn-mark { background:transparent; border:0; box-shadow:3px 3px 0 var(--in
 .vs-notes li { margin:6px 0; font-size:14px; line-height:1.5; color:#3a3f3c; }
 .vs-notes a { text-decoration:underline; text-decoration-color:var(--cyan); text-underline-offset:3px; }
 .vs-notes p { margin:14px 0 0; font-size:14px; color:#3a3f3c; }
-.vs-others { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:32px; font:700 12px "IBM Plex Mono","IBM Plex Mono Fallback",monospace; text-transform:uppercase; letter-spacing:.05em; }
-.vs-others span { color:#5c635e; }
-.vs-others a { border-bottom:2px solid var(--ink); padding:4px 0; }
-.vs-others a:hover { border-color:var(--cyan); }
+.vs-related { margin-top:40px; }
+.vs-related h2 { margin:0; font:800 12px "IBM Plex Mono","IBM Plex Mono Fallback",monospace; letter-spacing:.08em; text-transform:uppercase; color:#5c635e; }
+.vs-related ul { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin:16px 0 0; padding:0; list-style:none; }
+.vs-related li { border-top:2px solid var(--ink); padding-top:12px; }
+.vs-related a { font:700 12px "IBM Plex Mono","IBM Plex Mono Fallback",monospace; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid var(--ink); padding:4px 0; }
+.vs-related a:hover { border-color:var(--cyan); }
+.vs-related p { margin:10px 0 0; font-size:14px; line-height:1.5; color:#2c302d; }
 .footer-compare a { text-decoration:underline; text-underline-offset:2px; }
 .sample-dashboard-section { padding:100px 0; }
 .sample-dashboard-heading { max-width:720px; }
